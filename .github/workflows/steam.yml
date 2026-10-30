@@ -1,8 +1,13 @@
 name: Steam achievements
 on:
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "17 */2 * * *"
   workflow_dispatch:
+    inputs:
+      test:
+        description: "Test run: write steam-test.json only, the bot is not affected"
+        type: boolean
+        default: false
 permissions:
   contents: write
 jobs:
@@ -13,13 +18,16 @@ jobs:
       - name: Read finished games from Steam
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          TEST_MODE: ${{ inputs.test }}
+          PLAY_APPS: '[620,7670,8850,12210,33230,42700,48190,108710,200260,201810,201870,202970,204450,205100,208650,209000,219150,228380,234140,238320,239140,242050,261570,272860,274170,275850,286690,287700,289650,292030,311210,350080,356190,367520,368500,377160,379430,379720,387290,391220,403640,409710,409720,412020,414340,414700,418370,447040,460930,474960,476600,480490,489830,493490,524220,532210,534380,548570,582160,601150,612470,612880,617290,627270,629820,668580,692890,747350,750920,752590,782330,812140,847370,883710,911400,934700,952060,952070,960910,960990,978300,990080,1029690,1057090,1065310,1088850,1092790,1097200,1097840,1139900,1145360,1172380,1174180,1182900,1190000,1196590,1222680,1237970,1238810,1238840,1238860,1245620,1249970,1262540,1282100,1307710,1328660,1328670,1332010,1338770,1373960,1421250,1449690,1465360,1493640,1496790,1544020,1546970,1546990,1547000,1551980,1577120,1583230,1612420,1620730,1627720,1659040,1693980,1771300,1774580,1850570,1895880,1903340,1939970,2000950,2050650,2054970,2058190,2069250,2096600,2096610,2109300,2144740,2169200,2172010,2208920,2231380,2239550,2248760,2255370,2358720,2369390,2416450,2420110,2440510,2461850,2477340,2561580,2638890,2698940,2751000,3008130,3017860,3035570,3159330,3280350,3321460,3357650,3595230,3595270,3669870,4018950,4078430,4115450,4384550]'
           FINISH_TABLE: '{"pragmata":{"app":3357650,"ach":["9"]},"hellraiser":{"app":1551980,"ach":["ACH_EXPERIENCE_BEYOND_LIMITS","ACH_HUMAN_AFTER_ALL"]},"doom-tda":{"app":3017860,"ach":["NEW_ACHIEVEMENT_1_7"]},"re2":{"app":883710,"ach":["NEW_ACHIEVEMENT_1_7","NEW_ACHIEVEMENT_1_8"]},"gta3":{"app":1546970,"ach":["ACH18"]},"gtavc":{"app":1546990,"ach":["ACH30"]},"gtasa":{"app":1547000,"ach":["ACH03"]},"gta4":{"app":12210,"ach":["STORYDONE"]},"re7":{"app":418370,"ach":["ACHIEVEMENT_07","ACHIEVEMENT_08"]},"inscryption":{"app":1092790,"ach":["STORY_PROGRESS_9"]},"rdr2":{"app":1174180,"ach":["Achievement10"]},"stray":{"app":1332010,"ach":["ACH_016"]},"witcher3":{"app":292030,"ach":["PASSED_THE_TRIAL"]},"doom2016":{"app":379720,"ach":["ach_6"]},"eternal":{"app":782330,"ach":["NEW_ACHIEVEMENT_1_7"]},"deadspace":{"app":1693980,"ach":["ach12"]},"callisto":{"app":1544020,"ach":["FINISH_GAME"]},"untildawn":{"app":2172010,"ach":["TRP_CABIN"]},"re4":{"app":2050650,"ach":["28","30","32"]},"village":{"app":1196590,"ach":["10"]},"dis2":{"app":403640,"ach":["ACH_42","ACH_43"]},"e33":{"app":1903340,"ach":["THE_END"]},"tno":{"app":201810,"ach":["ach_9"]},"ds":{"app":1850570,"ach":["015"]},"wolf2":{"app":612880,"ach":["ach_21"]},"ratchet":{"app":1895880,"ach":["Complete_Fin"]},"se5":{"app":1029690,"ach":["REWARD_11_GAME_SUBTITLE"]},"gotg":{"app":1088850,"ach":["NEW_ACHIEVEMENT_16"]},"hellisus":{"app":1620730,"ach":["Act03_Complete"]},"kcd":{"app":379430,"ach":["TheEnd"]},"kcd2":{"app":1771300,"ach":["22"]},"crimson":{"app":3321460,"ach":["ExpertStoryteller"]},"gears5":{"app":1097840,"ach":["CompleteAllActsOfCampaignAnyDifficulty"]},"evilwest":{"app":1065310,"ach":["ACH_GAME_COMPLETED"]},"bo1":{"app":42700,"ach":["SP_WIN_UNDERWATERBASE"]},"roboquest":{"app":692890,"ach":["FINISH_GAME"]},"ds2":{"app":3280350,"ach":["trophy_016"]},"bo2":{"app":202970,"ach":["SP_RTS_CARRIER"]},"wwii":{"app":476600,"ach":["LEVEL_11"]},"bo3":{"app":311210,"ach":["CP_CAMPAIGN_COMPLETE"]}}'
         run: |
           python3 - <<'PY'
           import json, os, sys, time, urllib.error, urllib.parse, urllib.request
           from datetime import datetime, timezone
           STEAM_ID = "76561198861373469"
-          CUTOFF = int(datetime(2026, 10, 24, tzinfo=timezone.utc).timestamp())
+          TEST = os.environ.get("TEST_MODE") == "true"
+          CUTOFF = 0 if TEST else int(datetime(2026, 10, 24, tzinfo=timezone.utc).timestamp())
           GAMES = json.loads(os.environ["FINISH_TABLE"])
           KEY = os.environ["STEAM_API_KEY"]
 
@@ -65,17 +73,42 @@ jobs:
           old = {}
           if os.path.exists("steam.json"):
               old = json.load(open("steam.json"))
+
+          # minutes per game; a failed call keeps the last known values
+          playtime = old.get("playtime", {})
+          wanted = set(json.loads(os.environ["PLAY_APPS"]))
+          qs = urllib.parse.urlencode({"key": KEY, "steamid": STEAM_ID, "include_played_free_games": 1})
+          try:
+              with urllib.request.urlopen("https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?" + qs, timeout=30) as r:
+                  games = (json.load(r).get("response") or {}).get("games")
+              if games:
+                  playtime = {str(g["appid"]): g.get("playtime_forever", 0) for g in games if g.get("appid") in wanted}
+          except Exception:
+              print("owned games: no answer", flush=True)
+
+          # time spent before the first sync does not count; a game bought later starts from zero
+          first = "baseline" not in old
+          baseline = dict(old.get("baseline", {}))
+          for app, minutes in playtime.items():
+              baseline.setdefault(app, minutes if first else 0)
+
+          if TEST:
+              out = {"finished": finished, "unavailable": sorted(unavailable), "hidden": sorted(hidden), "errors": errors, "playtime": playtime, "baseline": baseline, "updated": int(time.time())}
+              json.dump(out, open("steam-test.json", "w"), indent=0, sort_keys=True)
+              print(f"TEST finished={len(finished)} playtime={len(playtime)}")
+              sys.exit(0)
+
           # a temporary Steam failure must not lose what was already seen
           merged = {**old.get("finished", {}), **finished}
-          out = {"finished": merged, "unavailable": sorted(unavailable), "hidden": sorted(hidden), "errors": errors}
+          out = {"finished": merged, "unavailable": sorted(unavailable), "hidden": sorted(hidden), "errors": errors, "playtime": playtime, "baseline": baseline}
           if {k: old.get(k) for k in out} != out:
               out["updated"] = int(time.time())
               json.dump(out, open("steam.json", "w"), indent=0, sort_keys=True)
-          print(f"finished={len(merged)} unavailable={len(unavailable)} hidden={len(hidden)} errors={len(errors)}")
+          print(f"finished={len(merged)} unavailable={len(unavailable)} hidden={len(hidden)} errors={len(errors)} playtime={len(playtime)}")
           PY
       - name: Save the result
         run: |
-          git add steam.json 2>/dev/null || exit 0
+          git add steam*.json 2>/dev/null || exit 0
           git diff --cached --quiet && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
