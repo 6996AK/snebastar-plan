@@ -369,6 +369,9 @@ button:disabled{opacity:.45;cursor:default}
 .tro .pr{font-family:var(--f-mono);font-size:11px;color:var(--mute);margin-top:4px}
 .cx-sec-h{display:flex;align-items:baseline;gap:8px 16px;flex-wrap:wrap;margin-top:22px}
 .cx-sec-h h2{font-family:var(--f-display);font-weight:700;text-transform:uppercase;font-size:clamp(22px,4vw,30px);margin:0}
+/* Steam covers carry their own title */
+.cover:has(img.art[src*="steamstatic"]) > .ct,.cover:has(img.art[src*="steamstatic"]) > .yr{display:none}
+.cover:has(img.art[src*="steamstatic"])::after{background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,transparent 22%)}
 /* ---------- status for Telegram ---------- */
 .viewbar .share-btn{margin-right:auto;padding:6px 14px;font-size:12.5px}
 .share{position:relative;z-index:2;box-sizing:border-box;max-width:1000px;margin:10px auto 0;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
@@ -503,7 +506,7 @@ button:disabled{opacity:.45;cursor:default}
 
   <footer class="foot">
     <div class="save" id="save-note">Отметки сохраняются в этом браузере. Основное место для них — бот в Telegram.</div>
-    <div>Часы — примерная длина основного сюжета; у начатых игр — сколько осталось до титров. Обложки нарисованы по мотивам игр, это не официальные постеры.</div>
+    <div>Часы — примерная длина основного сюжета; у начатых игр — сколько осталось до титров. Обложки — из Steam; у игр, которых там нет, они нарисованы по мотивам.</div>
   </footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -629,12 +632,26 @@ const pending = {};
 /* ---------- generated cover art ---------- */
 const ART = {};
 let artDefer = false;
+const STEAM_BASE = "https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/";
+const STEAM_COVER = {"pragmata":"3357650/2c65f388cb3ac6631c8a38ff1a59903263fc70e9/library_capsule.jpg?t=1791454600","hellraiser":"1551980/07b6068f2992ba42c2d48846eea5703b7742293b/library_600x900.jpg?t=1791462446","doom-tda":"3017860/e670b2a17acb4bfd60dfb8fb6d4d8cb5b1d5c07c/library_600x900.jpg?t=1789406231","re2":"883710/library_600x900.jpg?t=1779433152","gta3":"1546970/library_600x900.jpg?t=1781138540","gtavc":"1546990/library_600x900.jpg?t=1781138647","gtasa":"1547000/library_600x900.jpg?t=1781138712","gta4":"12210/library_600x900.jpg?t=1721061564","re7":"418370/library_600x900.jpg?t=1778464947","pbz":"4115450/471e77854910665c03eb9a53ad06f2ac12903acd/library_capsule.jpg?t=1793261976","indika":"1373960/library_600x900.jpg?t=1765218123","control-r":"3669870/7d4b4f430dc4d07e6562eb445456f9615cb52f77/library_capsule.jpg?t=1793357289","inscryption":"1092790/library_600x900.jpg?t=1777572925","titanfall2":"1237970/library_600x900.jpg?t=1779987598","rdr2":"1174180/library_600x900.jpg?t=1759502961","stray":"1332010/9c1bae81b2603c25ccf2a8f4944b3b58227005d7/library_capsule.jpg?t=1785424330","witcher3":"292030/dd1c19c4e41b120ddfa35734cc31f79254c25082/library_capsule.jpg?t=1790845156","doom2016":"379720/library_600x900.jpg?t=1750784856","eternal":"782330/library_600x900.jpg?t=1783432602","deadspace":"1693980/library_600x900.jpg?t=1777396576","callisto":"1544020/library_600x900.jpg?t=1760331403","untildawn":"2172010/library_600x900.jpg?t=1750959555","re4":"2050650/library_600x900.jpg?t=1772502922","village":"1196590/library_600x900.jpg?t=1776927117","prey":"480490/library_600x900.jpg?t=1784141088","dis2":"403640/library_600x900.jpg?t=1750785918","hol":"1583230/library_600x900.jpg?t=1792678709","e33":"1903340/8b21381a43ac5a535a838f723815f8fe14ceaf7c/library_600x900.jpg?t=1782830877","tno":"201810/library_600x900.jpg?t=1750784496","ds":"1850570/library_600x900.jpg?t=1793287496","wolf2":"612880/library_600x900.jpg?t=1750784115","ratchet":"1895880/library_600x900.jpg?t=1787838873","se5":"1029690/library_600x900.jpg?t=1770633150","bunny":"1421250/library_600x900.jpg?t=1789917370","gotg":"1088850/library_600x900.jpg?t=1780588517","hellisus":"1620730/e3cb527066ddee13371bc3f65e2c00dbadd624dc/library_600x900.jpg?t=1791467530","wd2":"447040/library_600x900.jpg?t=1751986887","kcd":"379430/e9ea7b1f4d8339f44e517963039a5a5544176497/library_capsule.jpg?t=1770998376","kcd2":"1771300/library_600x900.jpg?t=1777975568","crimson":"3321460/85f762166594b84330761c11d3106182634c882c/library_capsule.jpg?t=1792637341","gears5":"1097840/library_600x900.jpg?t=1780003997","evilwest":"1065310/library_600x900.jpg?t=1761845937","p-cyberpunk":"1091500/6399de67cce3cecadce7900e03f6e09ff910a235/library_capsule.jpg?t=1792682505","p-gowr":"2322010/library_600x900.jpg?t=1776465233","p-tsushima":"2215430/library_600x900.jpg?t=1763409398","p-tlou2":"2531310/aeac394b61ac94b5d4ea939351baf3943ac0b282/library_600x900.jpg?t=1750959180","p-gow":"1593500/library_600x900.jpg?t=1763059412","p-spiderman":"1817070/library_600x900.jpg?t=1787838689","p-007":"3768760/1159a696d257cbeb3f4479be3466cfba2ae938a0/library_600x900.jpg?t=1791886607","p-uncharted":"1659420/library_600x900.jpg?t=1779309472","p-fc5":"552520/17a8fde1e04966697669485d53f4c03d0afb7efd/library_capsule.jpg?t=1792530774","p-tlou1":"1888930/library_600x900.jpg?t=1750959031","p-rerequiem":"3764200/ed3b2cae7d15f598f41006f5f1e605ec5517b5e4/library_capsule.jpg?t=1779840172","p-spiderman2":"2651280/6fa28738ef8cde05390d3f0a9b942185b5763cbd/library_600x900.jpg?t=1763569811","p-milesmorales":"1817190/library_600x900.jpg?t=1787838710","p-splitfiction":"2001120/f9b802097eff97ac7edcc92f864d4b9a91516b67/library_600x900.jpg?t=1763484567","p-awayout":"1222700/library_600x900.jpg?t=1777323433","p-fc3":"220240/library_600x900.jpg?t=1785282057","p-se4":"312660/library_600x900.jpg?t=1681207252","p-maxpayne3":"204100/library_600x900.jpg?t=1718391374","p-ng4":"2627260/ee9b05a8120a3a4270461da133db1a10933346c9/library_600x900.jpg?t=1772643576","p-detroit":"1222140/library_600x900.jpg?t=1667468479","p-ryse":"302510/75916078093806aaebec481c6a3cca6a771cb51b/library_capsule.jpg?t=1783415457","p-bulletstorm":"501590/library_600x900.jpg?t=1782157737","p-dispatch":"2592160/6754ae9d2f555ee1cf37f9d44021d34554d9991d/library_600x900.jpg?t=1792683942","p-houseofashes":"1281590/library_600x900.jpg?t=1728912876","p-gtav":"3240220/394239e5da54fed177bd0ab04590812f6add1bb5/library_600x900.jpg?t=1781187782","p-mafia1":"1030840/library_600x900.jpg?t=1786727529","p-mafia2":"1030830/library_600x900.jpg?t=1786727561","p-mw4":"4435490/c71bc2cb60e440d1a0d2435d0c06c4d4a4050edf/library_capsule.jpg?t=1793201144","galactic":"4078430/16514821db6559e75c9067285fee5dd198492aee/library_capsule.jpg?t=1791388584","onimusha":"2638890/730daf025e5922da7441a4c02b1999f27dc026fd/library_capsule.jpg?t=1790383151","bo1":"42700/library_600x900.jpg?t=1780962720","roboquest":"692890/library_600x900.jpg?t=1780581844","hol2":"2069250/e0c451a4e1ac4502dfc52d97a0268248065796c4/library_600x900.jpg?t=1792678731","ds2":"3280350/9b523fd411eeaefe80f238489745325a1cd2317f/library_capsule.jpg?t=1774022345","mouse":"2416450/f8dc9ffcdabf10bea97e6b3d9cef3a8109339ca6/library_600x900.jpg?t=1793137611","bo2":"202970/library_600x900.jpg?t=1780962925","wwii":"476600/library_600x900.jpg?t=1780963893","bo3":"311210/library_600x900.jpg?t=1780963650"};
+const steamCover = id => STEAM_COVER[id] ? STEAM_BASE + STEAM_COVER[id] : "";
+let coverRender = null;
+/* a cover Steam did not serve falls back to the drawn one */
+document.addEventListener("error", e => {
+  const el = e.target;
+  if (!el || el.tagName !== "IMG" || !el.src.startsWith(STEAM_BASE)) return;
+  const id = Object.keys(STEAM_COVER).find(k => STEAM_BASE + STEAM_COVER[k] === el.src);
+  if (!id) return;
+  delete STEAM_COVER[id];
+  clearTimeout(coverRender); coverRender = setTimeout(render, 300);
+}, true);
 function hash(s){ let h = 2166136261; for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 function rng(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
 const css = (c, a) => a == null ? "rgb(" + c.join(",") + ")" : "rgba(" + c.join(",") + "," + a + ")";
 function drawArt(id, force){
+  const sc = steamCover(id); if (sc) return sc;
   if (ART[id]) return ART[id];
   if (artDefer && !force) return "";
   const g = GAMES[id], W = 300, H = 450, S = innerWidth < 700 ? 1.5 : 2;
@@ -1198,7 +1215,7 @@ function bootArt(){
   cur.g.concat(G.g, cxDefaultSel()).forEach(i => drawArt(i));
   artDefer = true;
   render();
-  const rest = Object.keys(GAMES).filter(i => !ART[i]);
+  const rest = Object.keys(GAMES).filter(i => !ART[i] && !steamCover(i));
   const step = () => {
     const end = performance.now() + 12;
     while (rest.length && performance.now() < end) drawArt(rest.shift(), true);
