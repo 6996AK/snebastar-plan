@@ -30,6 +30,8 @@ jobs:
           CUTOFF = 0 if TEST else int(datetime(2026, 10, 24, tzinfo=timezone.utc).timestamp())
           GAMES = json.loads(os.environ["FINISH_TABLE"])
           KEY = os.environ["STEAM_API_KEY"]
+          if TEST:
+              GAMES["p-tlou2"] = {"app": 2531310, "ach": ["1138aa8adde81250"]}
 
           def fetch(app):
               qs = urllib.parse.urlencode({"key": KEY, "steamid": STEAM_ID, "appid": app})
