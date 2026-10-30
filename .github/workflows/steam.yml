@@ -37,37 +37,41 @@ jobs:
               except Exception:
                   return 0, {}
 
-          finished, unavailable, failed = {}, [], 0
+          finished, unavailable, hidden, errors = {}, [], [], {}
           for gid, g in GAMES.items():
               code, body = fetch(g["app"])
-              stats = body.get("playerstats") or {}
-              if "not public" in str(stats.get("error", "")).lower():
-                  sys.exit("Steam profile game details are not public")
-              if code in (401, 403):
-                  sys.exit("Steam refused the key: check the STEAM_API_KEY secret")
-              if not stats.get("success"):
-                  if code == 0 or code >= 500:
-                      failed += 1
-                  else:
-                      unavailable.append(gid)
-                  continue
-              times = [a["unlocktime"] for a in stats.get("achievements", []) if a["apiname"] in g["ach"] and a["achieved"]]
-              if times and min(times) >= CUTOFF:
-                  finished[gid] = min(times)
               time.sleep(0.4)
+              stats = body.get("playerstats") if isinstance(body, dict) else None
+              stats = stats if isinstance(stats, dict) else {}
+              if "not public" in str(stats.get("error", "")).lower():
+                  hidden.append(gid)
+              elif stats.get("success"):
+                  rows = stats.get("achievements") or []
+                  times = [a.get("unlocktime", 0) for a in rows if a.get("apiname") in g["ach"] and a.get("achieved")]
+                  if times and min(times) >= CUTOFF:
+                      finished[gid] = min(times)
+              elif code == 400:
+                  unavailable.append(gid)
+              else:
+                  errors[gid] = code
+              print(gid, code, flush=True)
 
-          if failed > len(GAMES) / 2:
-              sys.exit(f"Steam did not answer for {failed} games")
+          if len(hidden) == len(GAMES):
+              sys.exit("Steam profile game details are not public")
+          if errors and all(c in (401, 403) for c in errors.values()) and len(errors) == len(GAMES):
+              sys.exit("Steam refused the key: check the STEAM_API_KEY secret")
+          if len(errors) > len(GAMES) / 2:
+              sys.exit(f"Steam did not answer for {len(errors)} games: {sorted(set(errors.values()))}")
           old = {}
           if os.path.exists("steam.json"):
               old = json.load(open("steam.json"))
           # a temporary Steam failure must not lose what was already seen
           merged = {**old.get("finished", {}), **finished}
-          out = {"finished": merged, "unavailable": sorted(unavailable)}
+          out = {"finished": merged, "unavailable": sorted(unavailable), "hidden": sorted(hidden), "errors": errors}
           if {k: old.get(k) for k in out} != out:
               out["updated"] = int(time.time())
               json.dump(out, open("steam.json", "w"), indent=0, sort_keys=True)
-          print(f"finished={len(merged)} unavailable={len(unavailable)} failed={failed}")
+          print(f"finished={len(merged)} unavailable={len(unavailable)} hidden={len(hidden)} errors={len(errors)}")
           PY
       - name: Save the result
         run: |
