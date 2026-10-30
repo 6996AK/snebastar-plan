@@ -434,7 +434,7 @@ button:disabled{opacity:.45;cursor:default}
     <ul class="mini" id="cx-pro"></ul>
   </section>
 
-  <footer class="foot"><div class="save" id="cx-save-note">Отметки сохраняются в этом браузере. Основное место для них — бот в Telegram.</div></footer>
+  <footer class="foot"><div id="cx-steam-note"></div><div class="save" id="cx-save-note">Отметки сохраняются в этом браузере. Основное место для них — бот в Telegram.</div></footer>
 </div>
 <div class="wrap" id="view-classic" hidden>
   <header class="hero">
@@ -838,9 +838,9 @@ function achContext(){
     total: Object.keys(GAMES).filter(i => st(i) === "done").length};
 }
 let toastTimer = null;
-function notice(text){
+function notice(text, label){
   const t = document.getElementById("toast");
-  t.innerHTML = '<span class="hex">!</span><span><small>Внимание</small>' + esc(text) + '</span>';
+  t.innerHTML = '<span class="hex">!</span><span><small>' + esc(label || "Внимание") + '</small>' + esc(text) + '</span>';
   t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 6000);
 }
 function toast(a){
@@ -1236,6 +1236,28 @@ async function loadCloud(){
   if (items.meta) try { const v = JSON.parse(items.meta); meta = {base: Number(v.base) || 0, log: Array.isArray(v.log) ? v.log : [], prev: v.prev || null}; } catch (e) {}
   saveLocal();
 }
+/* ---------- Steam: each finished game is applied once, so a removed mark stays removed ---------- */
+let cloudFailed = false;
+async function applySteam(){
+  if (cloudFailed) return;
+  let data;
+  try { const r = await fetch("https://raw.githubusercontent.com/6996ak/snebastar-plan/main/steam.json", {cache: "no-store"}); if (!r.ok) return; data = await r.json(); } catch (e) { return; }
+  const when = data.updated ? new Date(data.updated * 1000).toLocaleString("ru-RU", {day: "numeric", month: "long", hour: "2-digit", minute: "2-digit"}) : "";
+  if (when) document.getElementById("cx-steam-note").textContent = "Steam проверен: " + when + ".";
+  let seen = [];
+  try { seen = JSON.parse((cloud ? await cloudCall("getItem", "steam") : localStorage.getItem("plan-steam-seen")) || "[]"); } catch (e) { return; }
+  const fresh = Object.keys(data.finished || {}).filter(i => GAMES[i] && !seen.includes(i));
+  if (!fresh.length) return;
+  const marked = [];
+  fresh.forEach(i => {
+    if (closed(i)) return;
+    state[i] = {s: "done", b: GAMES[i].buy ? true : rec(i).b, t: Number(data.finished[i]) * 1000 || Date.now()};
+    marked.push(i); persist(i);
+  });
+  const next = JSON.stringify(seen.concat(fresh));
+  try { if (cloud) await cloudCall("setItem", "steam", next); else localStorage.setItem("plan-steam-seen", next); } catch (e) {}
+  if (marked.length){ render(); notice("Пройдено: " + marked.map(i => GAMES[i].ct || GAMES[i].t).join(", "), "Достижение в Steam"); }
+}
 async function connectTelegram(){
   const tg = window.Telegram && window.Telegram.WebApp;
   if (!tg || !tg.initData) { dataReady = true; return; }
@@ -1246,14 +1268,14 @@ async function connectTelegram(){
   cloud = tg.CloudStorage;
   readOnly = true; render();
   try { await loadCloud(); setNote("Отметки сохраняются в Telegram, их видно на всех твоих устройствах."); }
-  catch (e) { setNote("Не удалось загрузить отметки из Telegram. Закрой и открой приложение."); notice("Не удалось загрузить отметки."); }
+  catch (e) { cloudFailed = true; setNote("Не удалось загрузить отметки из Telegram. Закрой и открой приложение."); notice("Не удалось загрузить отметки."); }
   readOnly = false; achPrev = null; render(); dataReady = true; renderAch();
 }
 (() => {
   const sdk = document.createElement("script");
   const fail = () => { if (!dataReady && !cloud) dataReady = true; };
   sdk.src = "https://telegram.org/js/telegram-web-app.js";
-  sdk.onload = connectTelegram; sdk.onerror = fail;
+  sdk.onload = () => connectTelegram().then(applySteam); sdk.onerror = () => { fail(); applySteam(); };
   document.head.appendChild(sdk);
 })();
 
