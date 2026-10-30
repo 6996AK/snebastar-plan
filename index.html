@@ -1,0 +1,1270 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#06070b;color:#f1efe9}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>План прохождения SnebaStar</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Concept: a night-time game launcher. A blurred backdrop of the current game sits behind glass panels; every act is a film chapter tinted by its own poster; covers are generated cinematic posters. Single dark theme by design. */
+:root{
+  --bg:#06070b; --panel:rgba(20,23,32,.66); --panel-2:rgba(255,255,255,.04); --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.16);
+  --fg:#f1efe9; --mute:#9ea5b6; --accent:#f3b94d; --accent-2:#ffd98a; --play:#56d4ff; --done:#2fd593; --em:#2fd593; --em-d:#0c9a64; --drop:#ff6f7d;
+  --f-display:"Unbounded","Manrope",system-ui,sans-serif;
+  --f-poster:"Oswald","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:16px;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;font-weight:500}
+.backdrop{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;filter:blur(46px) saturate(1.25) brightness(.42);transform:scale(1.25);pointer-events:none;transition:background-image .6s ease}
+.backdrop::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 0%,transparent 0%,rgba(6,7,11,.55) 60%,rgba(6,7,11,.92) 100%)}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 80px}
+
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+h1{font-family:var(--f-display);font-weight:700;text-transform:uppercase;font-size:clamp(30px,7.4vw,60px);line-height:.98;letter-spacing:-.01em;margin:8px 0 0;text-wrap:balance}
+
+/* Hero */
+.hero{position:relative;border-radius:22px;overflow:hidden;min-height:340px;display:flex;flex-direction:column;justify-content:flex-end;color:#f6f3ec;background:#0b0d12;border:1px solid var(--line-2);box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+.hero-art{position:absolute;inset:0;background-size:cover;background-position:center 30%;animation:drift 40s ease-in-out infinite alternate}
+@keyframes drift{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.14) translate(-2%,1.5%)}}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(6,7,11,.1) 0%,rgba(6,7,11,.45) 45%,rgba(6,7,11,.95) 100%),linear-gradient(90deg,rgba(6,7,11,.65) 0%,transparent 60%)}
+.hero-in{position:relative;z-index:2;padding:26px clamp(18px,4vw,36px) 24px;display:grid;gap:16px}
+.hero .eyebrow{color:rgba(246,243,236,.75)}
+.rank{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px}
+.rank-name{font-family:var(--f-display);font-weight:700;text-transform:uppercase;font-size:20px;letter-spacing:.04em;line-height:1;background:linear-gradient(180deg,#ffe7a8,#e9a23a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rank-sub{font-size:13.5px;color:rgba(246,243,236,.82)}
+.xp{height:6px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden;max-width:540px}
+.xp i{display:block;height:100%;background:linear-gradient(90deg,#e9a23a,#ffe7a8);box-shadow:0 0 12px rgba(243,185,77,.7);transition:width .5s ease}
+.now{display:flex;flex-wrap:wrap;gap:8px}
+.now span{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;background:rgba(10,12,18,.5);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px 12px 4px 5px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.now span i{width:24px;height:24px;border-radius:50%;background-size:cover;background-position:center;flex:none;box-shadow:0 0 0 1.5px var(--play)}
+.now .lbl{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;background:none;border:0;padding:4px 0;color:var(--play);backdrop-filter:none;-webkit-backdrop-filter:none}
+
+/* Act map */
+.map-wrap{overflow-x:auto;margin-top:18px;padding:4px 2px 6px}
+.map{list-style:none;margin:0;padding:6px 4px;display:flex;align-items:center;min-width:max-content}
+.map li{display:flex;align-items:center}
+.map li + li::before{content:"";width:16px;height:2px;background:var(--line-2)}
+.map li.past + li::before{background:var(--done)}
+.map a{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--line-2);font-family:var(--f-display);font-weight:600;font-size:11px;color:var(--mute);text-decoration:none;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .2s ease,border-color .2s ease}
+.map li.past a{background:var(--done);border-color:var(--done);color:#07130b}
+.map li.cur a{border-color:var(--accent);color:#1c1204;background:linear-gradient(180deg,#ffe7a8,#e9a23a);box-shadow:0 0 0 5px rgba(243,185,77,.18),0 0 18px rgba(243,185,77,.55);animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(243,185,77,.08),0 0 26px rgba(243,185,77,.7)}}
+.map a:hover{transform:translateY(-2px);border-color:var(--accent);color:var(--fg)}
+
+/* Panels */
+.top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;margin-top:16px}
+.top .wide{grid-column:1 / -1}
+@media (max-width:720px){.top{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;min-width:0;backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2)}
+.panel h2,.ach-top h2{font-family:var(--f-display);font-weight:600;text-transform:uppercase;font-size:15px;letter-spacing:.06em;margin:0}
+
+.meter{display:flex;gap:8px;margin-top:14px}
+.pip{flex:1;height:36px;border-radius:8px;border:1.5px dashed var(--line-2);display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;color:var(--mute)}
+.pip.on{border:1.5px solid var(--done);background:linear-gradient(180deg,rgba(114,224,148,.32),rgba(114,224,148,.12));color:var(--fg);box-shadow:0 0 14px rgba(114,224,148,.25)}
+.meter-cap{margin-top:10px;font-size:14px}
+.meter-cap b{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums}
+.meter-cap .ok{color:var(--done);font-weight:700}
+.buy-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:12px}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--fg);cursor:pointer;transition:border-color .2s ease,background .2s ease}
+.btn:hover{border-color:var(--accent);background:rgba(243,185,77,.1)}
+.small{font-size:12.5px;color:var(--mute)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.stat b{display:block;font-family:var(--f-mono);font-weight:500;font-size:21px;line-height:1.2;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--mute)}
+.stat.d b{color:var(--done)} .stat.p b{color:var(--play)} .stat.l b{color:var(--accent)}
+
+ol.rules{margin:12px 0 0;padding:0 0 0 1.3em;display:grid;gap:7px;font-size:14px}
+ol.rules li::marker{font-family:var(--f-mono);color:var(--accent)}
+
+ol.buys{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:2px 24px}
+ol.buys li{display:grid;grid-template-columns:2.2em 32px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+ol.buys .bn{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+ol.buys .bi{width:32px;height:44px;border-radius:5px;background-size:cover;background-position:center;box-shadow:0 4px 10px rgba(0,0,0,.4)}
+ol.buys .bt{min-width:0;overflow-wrap:anywhere;line-height:1.3;font-weight:600}
+ol.buys .bt small{display:block;font-family:var(--f-mono);font-size:11px;font-weight:400;color:var(--mute);margin-top:2px}
+ol.buys .bs{font-family:var(--f-mono);font-size:12px;color:var(--fg);white-space:nowrap}
+ol.buys li.sale .bs{color:var(--accent)}
+ol.buys li.got .bt{color:var(--mute);text-decoration:line-through}
+ol.buys li.got .bs{color:var(--done);text-decoration:line-through}
+.total{display:flex;flex-wrap:wrap;gap:6px 24px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:13.5px}
+.total b{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums;color:var(--accent-2)}
+
+/* Achievements */
+.ach-wrap{margin-top:44px}
+.ach-top{display:flex;align-items:baseline;gap:8px 16px;flex-wrap:wrap}
+.ach-top h2{font-size:18px}
+.ach{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ach li{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;align-items:center;padding:11px 13px;border:1px solid var(--line);border-radius:14px;background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.hex{width:46px;height:52px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:13px;letter-spacing:.02em;background:rgba(255,255,255,.08);color:var(--mute)}
+.ach li.got .hex{background:linear-gradient(160deg,#fff0c2,#efb24a 55%,#a8650f);color:#2a1a04}
+.ach li.got{border-color:rgba(243,185,77,.4);box-shadow:0 0 22px -8px rgba(243,185,77,.55)}
+.ach .an{font-weight:700;font-size:14px;line-height:1.25}
+.ach li:not(.got) .an{color:var(--mute)}
+.ach .ad{font-size:12.5px;color:var(--mute);line-height:1.35;margin-top:2px}
+.ach .ap{display:flex;align-items:center;gap:8px;margin-top:6px;font-family:var(--f-mono);font-size:11px;color:var(--mute);font-variant-numeric:tabular-nums}
+.ach .ap i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden;position:relative}
+.ach .ap i b{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#e9a23a,#ffe7a8)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:20;display:flex;align-items:center;gap:12px;max-width:calc(100% - 32px);background:rgba(16,18,26,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#f4f1ea;border:1px solid rgba(243,185,77,.7);border-radius:14px;padding:10px 18px 10px 10px;box-shadow:0 14px 40px rgba(0,0,0,.55),0 0 30px -6px rgba(243,185,77,.5);font-size:14px;font-weight:600}
+.toast[hidden]{display:none}
+.toast .hex{width:38px;height:43px;font-size:12px;background:linear-gradient(160deg,#fff0c2,#efb24a 55%,#a8650f);color:#2a1a04;flex:none}
+.toast small{display:block;font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+
+/* Prologue */
+.prologue{margin-top:44px;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);padding:4px 20px}
+.prologue > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;padding:16px 0}
+.prologue > summary::-webkit-details-marker{display:none}
+.numeral.sm{grid-row:auto;font-size:42px}
+.prologue .pt{display:block;font-family:var(--f-display);font-weight:600;text-transform:uppercase;font-size:19px;line-height:1.1}
+.prologue .pt::after{content:" +";color:var(--accent)}
+.prologue[open] .pt::after{content:" −"}
+.prologue .eyebrow{color:var(--accent)}
+.prologue .sub{color:var(--mute);font-size:14px;margin:0;max-width:70ch}
+.mini{list-style:none;margin:16px 0 20px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px}
+.mini button{all:unset;cursor:pointer;display:block;width:100%;border-radius:10px}
+.mini button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mini .cover{box-shadow:0 6px 16px rgba(0,0,0,.45)}
+.mini .ct{font-size:12cqw}
+.mini .ok{position:absolute;z-index:2;right:6cqw;top:6cqw;width:18cqw;height:18cqw;border-radius:50%;background:var(--done);color:#07130b;display:grid;place-items:center;box-shadow:0 0 10px rgba(114,224,148,.6)}
+.mini .ok svg{width:60%;height:60%}
+.mini li.off .cover{filter:grayscale(1) brightness(.4)}
+.mini li.off .ok{background:rgba(255,255,255,.18);color:transparent;box-shadow:none}
+
+/* Acts */
+.act{position:relative;margin-top:22px;padding:26px clamp(16px,3vw,26px) 28px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(135deg,color-mix(in srgb,var(--tint,#333) 22%,rgba(14,16,22,.82)) 0%,rgba(14,16,22,.78) 55%);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);scroll-margin-top:16px;overflow:hidden}
+.act::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--tint,#888) 80%,#fff),transparent);opacity:.6}
+main#plan{margin-top:30px}
+.act-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 18px;align-items:end}
+.numeral{grid-row:span 2;font-family:var(--f-display);font-weight:700;font-size:clamp(46px,9vw,78px);line-height:.82;color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--tint,#f3b94d) 55%,#f3b94d);letter-spacing:-.02em}
+.act.cur .numeral{color:var(--accent);-webkit-text-stroke:0;text-shadow:0 0 30px rgba(243,185,77,.45)}
+.act-kicker{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+.act-kicker .eyebrow{color:var(--accent)}
+.act-kicker .tag{font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#1c1204;background:var(--accent);border-radius:999px;padding:2px 9px}
+.act-meta{font-family:var(--f-mono);font-size:11.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+.act h3{font-family:var(--f-display);font-weight:600;text-transform:uppercase;font-size:clamp(20px,4vw,30px);line-height:1.05;letter-spacing:.005em;margin:0;text-wrap:balance}
+.act .sub{color:var(--mute);font-size:14.5px;margin:12px 0 0;max-width:66ch}
+.unlock{display:inline-flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:20px;font-size:13px;font-weight:600;color:var(--fg);border:1px dashed rgba(243,185,77,.7);background:rgba(243,185,77,.07);border-radius:999px;padding:6px 14px}
+.unlock b{font-family:var(--f-mono);font-weight:500;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+
+details.act.fin{padding-block:6px;background:rgba(14,16,22,.62)}
+details.act.fin > summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:12px 0}
+details.act.fin > summary::-webkit-details-marker{display:none}
+details.act.fin > summary .act-head{flex:1 1 260px;min-width:0}
+details.act.fin .numeral{font-size:38px;color:var(--done);-webkit-text-stroke:0;opacity:.9}
+details.act.fin h3{font-size:18px;color:var(--mute);text-decoration:line-through;text-decoration-color:rgba(158,165,182,.5)}
+details.act.fin[open]{padding-bottom:26px}
+details.act.fin[open] h3{color:var(--fg);text-decoration:none}
+.tag.fin-tag{background:var(--done)!important;color:#07130b!important}
+.thumbs{display:flex}
+.thumbs i{width:28px;height:40px;border-radius:4px;background-size:cover;background-position:center;border:2px solid #0e1016;margin-left:-9px;filter:grayscale(.4)}
+.thumbs i:first-child{margin-left:0}
+.fold{font-size:12.5px;font-weight:600;color:var(--mute);border:1px solid var(--line-2);border-radius:999px;padding:5px 13px}
+details.act.fin > summary:hover .fold{color:var(--fg);border-color:var(--accent)}
+
+/* Cards */
+.shelf{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:26px 18px}
+@media (max-width:420px){.shelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}}
+.card{min-width:0;display:flex;flex-direction:column;gap:9px}
+.cover{position:relative;aspect-ratio:2/3;max-width:100%;border-radius:12px;overflow:hidden;container-type:inline-size;background:#111;box-shadow:0 14px 30px -12px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.08);transition:transform .25s ease,box-shadow .25s ease,filter .25s ease}
+.cover img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3) 0%,transparent 20%,transparent 46%,rgba(0,0,0,.8) 100%);pointer-events:none}
+.cover::before{content:"";position:absolute;inset:0;z-index:3;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.16) 0%,transparent 28%);pointer-events:none;mix-blend-mode:screen}
+.yr{position:absolute;z-index:1;left:8cqw;top:7cqw;font-family:var(--f-mono);font-size:7cqw;color:#fff;opacity:.88;letter-spacing:.08em}
+.ct{position:absolute;left:8cqw;right:8cqw;bottom:8cqw;z-index:1;font-family:var(--f-poster);font-weight:700;text-transform:uppercase;line-height:.93;font-size:13.5cqw;color:#fff;letter-spacing:.01em;overflow-wrap:anywhere;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.ct.long{font-size:11cqw}
+.ct.xl{font-size:9.6cqw}
+.ct small{display:block;font-weight:500;font-size:7cqw;letter-spacing:.14em;color:var(--ink);margin-top:2.5cqw;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.ct::before{content:"";display:block;width:16cqw;height:1.3cqw;background:var(--ink);margin-bottom:3cqw;box-shadow:0 0 8px var(--ink)}
+.stamp{position:absolute;z-index:2;left:50%;top:42%;transform:translate(-50%,-50%) rotate(-12deg);font-family:var(--f-poster);font-weight:700;text-transform:uppercase;font-size:13cqw;letter-spacing:.08em;padding:1.5cqw 5cqw;border:1.2cqw solid currentColor;border-radius:2cqw;background:rgba(0,0,0,.45);white-space:nowrap;backdrop-filter:blur(2px)}
+.card.is-done .cover{filter:grayscale(.65) brightness(.78)}
+.card.is-done .stamp{color:#a6f0b8}
+.card.is-drop .cover{filter:grayscale(1) brightness(.45)}
+.card.is-drop .stamp{color:#ffa3ad}
+.card.is-play .cover{box-shadow:0 0 0 2px var(--play),0 18px 40px -10px rgba(86,212,255,.55)}
+.card.is-wish .cover{filter:saturate(.45) brightness(.72);outline:2px dashed var(--accent);outline-offset:-2px}
+.badge{position:absolute;z-index:4;right:6cqw;top:6cqw;font-family:var(--f-mono);font-size:6.5cqw;font-weight:500;letter-spacing:.1em;border-radius:999px;padding:1cqw 4cqw}
+.badge.live{color:#04121a;background:var(--play);box-shadow:0 0 12px rgba(86,212,255,.7)}
+.badge.wish{color:#1c1204;background:var(--accent)}
+@media (hover:hover){.card:hover .cover{transform:translateY(-5px) scale(1.015);box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 70%,transparent),0 24px 44px -14px color-mix(in srgb,var(--ink) 55%,transparent)}}
+
+.info{min-width:0}
+.name{font-weight:700;font-size:14.5px;line-height:1.3;overflow-wrap:anywhere}
+.card.is-done .name,.card.is-drop .name{color:var(--mute);text-decoration:line-through;text-decoration-color:rgba(158,165,182,.6)}
+.meta{display:flex;flex-wrap:wrap;gap:2px 10px;margin-top:4px;font-family:var(--f-mono);font-size:11.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+.role{color:var(--fg);letter-spacing:.04em}
+.role.r-finish,.role.r-buy{color:var(--accent)} .role.r-coop{color:var(--play)}
+.note{font-size:13px;color:var(--mute);margin-top:5px;line-height:1.45;font-weight:500}
+
+.ctrl{display:flex;gap:6px;margin-top:auto}
+.ib{flex:1;min-width:0;height:32px;border-radius:9px;border:1px solid var(--line-2);background:var(--panel-2);color:var(--mute);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font:inherit;font-size:12px;font-weight:600;padding:0 6px;white-space:nowrap;transition:all .15s ease}
+.ib svg{width:14px;height:14px;flex:none}
+.ib:hover{color:var(--fg);border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.07)}
+.ib.play[aria-pressed="true"]{border-color:var(--play);color:var(--play);background:rgba(86,212,255,.14);box-shadow:0 0 12px -2px rgba(86,212,255,.5)}
+.ib.done[aria-pressed="true"]{border-color:var(--done);color:#07130b;background:var(--done)}
+.ib.drop[aria-pressed="true"]{border-color:var(--drop);color:var(--drop);background:rgba(255,111,125,.14)}
+.ib.cart{border-color:var(--accent);color:var(--accent);background:rgba(243,185,77,.08)}
+.ib.cart:hover{background:rgba(243,185,77,.18)}
+.unbuy{background:none;border:0;padding:0;font:inherit;font-size:11.5px;color:var(--mute);text-decoration:underline;cursor:pointer;align-self:flex-start}
+button:disabled{opacity:.45;cursor:default}
+
+.foot{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:grid;gap:6px;max-width:70ch}
+.foot .save{color:var(--fg)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){.hero-art,.map li.cur a{animation:none}.cover,.xp i,.backdrop{transition:none}}
+[hidden]{display:none!important}
+/* emerald marks: done = solid round check, bought = outlined bag-check */
+.okd{position:absolute;z-index:5;right:6cqw;top:6cqw;width:21cqw;height:21cqw;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#7cf2c0,var(--em) 55%,var(--em-d));color:#03170e;box-shadow:0 0 0 1.2cqw rgba(3,23,14,.55),0 0 14px rgba(47,213,147,.75)}
+.okd svg{width:58%;height:58%}
+.okb{position:absolute;z-index:5;right:6cqw;top:6cqw;width:22cqw;height:22cqw;border-radius:30%;display:grid;place-items:center;background:rgba(4,22,15,.82);border:1.2cqw solid var(--em);color:var(--em);box-shadow:0 0 14px rgba(47,213,147,.55);backdrop-filter:blur(4px)}
+.okb svg{width:62%;height:62%}
+/* act blocks */
+.acts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;margin-top:14px}
+.ab{all:unset;position:relative;box-sizing:border-box;aspect-ratio:4/5;border-radius:18px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;border:1px solid var(--line-2);background:#0d0f15;box-shadow:0 14px 30px -14px rgba(0,0,0,.8);transition:transform .2s ease,box-shadow .2s ease;container-type:inline-size;max-width:100%}
+.ab:hover{transform:translateY(-4px);box-shadow:0 0 0 1px color-mix(in srgb,var(--tint) 70%,#fff),0 22px 40px -14px color-mix(in srgb,var(--tint) 60%,transparent)}
+.ab:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.ab-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:blur(2px) saturate(1.1) brightness(.6);transform:scale(1.08)}
+.ab::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,11,.2) 0%,rgba(6,7,11,.35) 40%,rgba(6,7,11,.92) 100%)}
+.ab > *:not(.ab-bg){position:relative;z-index:2}
+.ab-num{position:absolute!important;left:14px;top:10px;font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1;color:transparent;-webkit-text-stroke:1.3px rgba(255,255,255,.85)}
+.ab.cur .ab-num{color:var(--accent);-webkit-text-stroke:0;text-shadow:0 0 18px rgba(243,185,77,.6)}
+.ab.cur{border-color:rgba(243,185,77,.7);box-shadow:0 0 0 1px rgba(243,185,77,.5),0 0 30px -8px rgba(243,185,77,.6)}
+.ab.fin .ab-num{color:var(--em);-webkit-text-stroke:0}
+.ab.fin .ab-bg{filter:blur(2px) grayscale(.6) brightness(.45)}
+.ab > .okd.ab-ok{position:absolute!important;right:12px;top:12px;width:28px;height:28px;box-shadow:0 0 0 3px rgba(3,23,14,.55),0 0 14px rgba(47,213,147,.75)}
+.ab-tag{position:absolute!important;right:12px;top:12px;font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#1c1204;background:var(--accent);border-radius:999px;padding:2px 8px}
+.ab-fan{display:flex;justify-content:center;margin:0 0 10px;height:46%}
+.ab-fan img{height:100%;aspect-ratio:2/3;object-fit:cover;border-radius:7px;box-shadow:0 8px 18px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.18);margin-left:-14%;transform:rotate(calc((var(--k) - 1) * 7deg)) translateY(calc(var(--k) * 0px));transform-origin:bottom center}
+.ab-fan img:first-child{margin-left:0}
+.ab.fin .ab-fan img{filter:grayscale(.6) brightness(.8)}
+.ab-t{font-family:var(--f-display);font-weight:600;font-size:13.5px;text-transform:uppercase;line-height:1.15;letter-spacing:.02em;text-wrap:balance;overflow-wrap:anywhere}
+.ab.fin .ab-t{color:var(--mute)}
+.ab-p{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.14);overflow:hidden;margin-top:9px}
+.ab-p i{display:block;height:100%;background:linear-gradient(90deg,var(--em-d),var(--em))}
+.ab-m{font-family:var(--f-mono);font-size:11px;color:var(--mute);margin-top:5px}
+.ab-open{grid-column:1 / -1;position:relative;border-radius:20px;border:1px solid var(--line-2);padding:20px clamp(14px,3vw,24px) 22px;background:linear-gradient(135deg,color-mix(in srgb,var(--tint) 24%,rgba(14,16,22,.85)) 0%,rgba(14,16,22,.82) 60%);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.ab-oh{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 16px;align-items:center}
+.ab-num.big{position:static!important;font-size:52px}
+.ab-ot h3{font-family:var(--f-display);font-weight:600;text-transform:uppercase;font-size:clamp(18px,3.4vw,26px);line-height:1.05;margin:4px 0 0;text-wrap:balance}
+.ab-x{font:inherit;font-size:12.5px;font-weight:600;color:var(--mute);background:var(--panel-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 14px;cursor:pointer}
+.ab-x:hover{color:var(--fg);border-color:var(--accent)}
+.ab-open .sub{color:var(--mute);font-size:14px;margin:10px 0 0;max-width:66ch}
+.ab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:14px;margin-top:16px}
+.ab-grid .cx-tile{width:auto}
+@media (max-width:420px){.acts-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.ab-t{font-size:12px}.ab-num{font-size:24px}}
+/* store blocks */
+.store{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:18px 14px}
+.st{display:flex;flex-direction:column;gap:8px;min-width:0}
+.st > button{all:unset;cursor:pointer;display:block;border-radius:12px}
+.st > button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.st > button:disabled{cursor:default}
+.st .cover{transition:transform .2s ease,filter .2s ease}
+.st > button:not(:disabled):hover .cover{transform:translateY(-4px)}
+.st:not(.got) .cover{filter:saturate(.75) brightness(.85)}
+.st.got .cover{box-shadow:0 0 0 2px var(--em),0 14px 30px -12px rgba(47,213,147,.5)}
+.st-n{position:absolute;z-index:4;left:6cqw;top:6cqw;font-family:var(--f-mono);font-size:7.5cqw;font-weight:500;color:#1c1204;background:var(--accent);border-radius:999px;padding:.8cqw 4cqw}
+.st.got .st-n{background:rgba(255,255,255,.85)}
+.st-i{display:flex;flex-direction:column;gap:2px;min-width:0}
+.st-a{font-family:var(--f-mono);font-size:11px;color:var(--mute)}
+.st.got .st-a{color:var(--em)}
+.st-p{font-family:var(--f-display);font-weight:700;font-size:17px;line-height:1.1}
+.st-p small{display:block;font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-top:3px}
+.st.got .st-p{color:var(--mute);text-decoration:line-through;text-decoration-color:rgba(47,213,147,.7)}
+/* ---------- view switch ---------- */
+.viewbar{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:14px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));display:flex;justify-content:flex-end;align-items:center;gap:10px}
+.viewbar .small{font-family:var(--f-mono);letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+.seg{display:inline-flex;padding:3px;border-radius:999px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.seg button{font:inherit;font-size:12.5px;font-weight:700;color:var(--mute);background:none;border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fg);color:#0b0d12}
+/* ---------- console view ---------- */
+.cx{padding-top:10px}
+.cx-top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;padding:6px 0 4px}
+.cx-brand{font-family:var(--f-display);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase}
+.cx-brand b{color:var(--accent);font-weight:700}
+.cx-tabs{display:flex;gap:4px;flex-wrap:wrap}
+.cx-tabs button{font:inherit;font-family:var(--f-display);font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);background:none;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;position:relative}
+.cx-tabs button[aria-selected="true"]{color:var(--fg)}
+.cx-tabs button[aria-selected="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:2px;height:2px;border-radius:2px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.cx-tabs button:hover{color:var(--fg)}
+.cx-lvl{margin-left:auto;display:flex;align-items:center;gap:10px}
+.ring{--p:0;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1%),rgba(255,255,255,.12) 0);display:grid;place-items:center}
+.ring span{width:36px;height:36px;border-radius:50%;background:#0d0f15;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:13px}
+.cx-lvl .t{line-height:1.2}
+.cx-lvl .t b{display:block;font-family:var(--f-display);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-2)}
+.cx-lvl .t span{font-size:12px;color:var(--mute)}
+
+.cx-spot{position:relative;margin-top:14px;border-radius:24px;overflow:hidden;min-height:400px;border:1px solid var(--line-2);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;padding:clamp(20px,4vw,40px);box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+.cx-spot-art{position:absolute;inset:0;background-size:cover;background-position:center 35%;transform:scale(1.06);animation:drift 40s ease-in-out infinite alternate}
+.cx-spot::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(6,7,11,.92) 0%,rgba(6,7,11,.6) 50%,rgba(6,7,11,.25) 100%),linear-gradient(0deg,rgba(6,7,11,.9) 0%,transparent 55%)}
+.cx-spot-in{position:relative;z-index:2;min-width:0;max-width:560px}
+.cx-spot .eyebrow{color:var(--accent)}
+.cx-title{font-family:var(--f-display);font-weight:700;text-transform:uppercase;font-size:clamp(28px,6vw,52px);line-height:.98;margin:10px 0 0;text-wrap:balance;overflow-wrap:anywhere}
+.cx-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-family:var(--f-mono);font-size:12.5px;color:rgba(241,239,233,.8)}
+.cx-meta .hl{color:var(--ink,#f3b94d)}
+.cx-note{margin:12px 0 0;font-size:15px;color:rgba(241,239,233,.85);max-width:52ch}
+.cx-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.bb{font:inherit;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:all .15s ease}
+.bb svg{width:16px;height:16px}
+.bb:hover{background:rgba(255,255,255,.16)}
+.bb.main{background:#fff;color:#0b0d12;border-color:#fff}
+.bb.on-play{background:var(--play);border-color:var(--play);color:#04121a;box-shadow:0 0 20px -4px var(--play)}
+.bb.on-done{background:var(--done);border-color:var(--done);color:#07130b}
+.bb.on-drop{background:rgba(255,111,125,.2);border-color:var(--drop);color:#ffb3bb}
+.bb.buy{background:var(--accent);border-color:var(--accent);color:#1c1204}
+.cx-poster{position:relative;z-index:2;width:200px}
+@media (max-width:680px){.cx-spot{grid-template-columns:minmax(0,1fr);min-height:0}.cx-poster{display:none}}
+.cx-poster .cover{border-radius:14px;box-shadow:0 24px 50px -10px rgba(0,0,0,.85),0 0 0 1px rgba(255,255,255,.15)}
+
+.cx-row{margin-top:30px}
+.cx-row-h{display:flex;align-items:baseline;gap:6px 12px;flex-wrap:wrap}
+.cx-num{font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--accent);min-width:2.2em}
+.cx-row-h h3{font-family:var(--f-display);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.03em;margin:0}
+.cx-row-h .act-meta{margin-left:auto}
+.cx-row.giants{margin-top:30px;padding:16px 18px 6px;border-radius:20px;border:1px solid rgba(243,185,77,.35);background:linear-gradient(135deg,rgba(243,185,77,.1),rgba(14,16,22,.7) 60%);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.cx-row.done .cx-row-h h3{color:var(--mute)}
+.cx-row.done .cx-num{color:var(--done)}
+.cx-strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-left:10px;padding:14px 10px 16px;margin:2px -10px 0;scrollbar-width:thin}
+.cx-tile{all:unset;flex:none;width:132px;scroll-snap-align:start;cursor:pointer;border-radius:12px;position:relative}
+.cx-tile .cover{transition:transform .2s ease,box-shadow .2s ease}
+.cx-tile:hover .cover{transform:translateY(-4px)}
+.cx-tile[aria-current="true"] .cover{box-shadow:0 0 0 3px #fff,0 16px 34px -10px color-mix(in srgb,var(--ink) 70%,transparent);transform:scale(1.04)}
+.cx-tile:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.cx-tile .ct{font-size:12.5cqw}
+.cx-row.done .cx-tile .cover{filter:grayscale(.6) brightness(.7)}
+.cx-tile.is-done .cover{filter:grayscale(.6) brightness(.75)}
+.cx-tile.is-drop .cover{filter:grayscale(1) brightness(.45)}
+.cx-tile.is-wish .cover{filter:saturate(.45) brightness(.72);outline:2px dashed var(--accent);outline-offset:-2px}
+.cx-tile .chk{position:absolute;z-index:5;right:6cqw;top:6cqw;width:20cqw;height:20cqw;border-radius:50%;display:grid;place-items:center}
+.cx-tile .chk svg{width:60%;height:60%}
+.cx-tile.is-done .chk{background:var(--done);color:#07130b}
+.cx-tile.is-drop .chk{background:var(--drop);color:#2a0508}
+.cx-tile.is-play .chk{background:var(--play);color:#04121a;box-shadow:0 0 10px var(--play)}
+
+.cx-panel-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;margin-top:16px}
+@media (max-width:720px){.cx-panel-grid{grid-template-columns:minmax(0,1fr)}}
+.sc{display:grid;grid-template-columns:86px minmax(0,1fr);gap:14px;padding:12px;border-radius:16px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.sc.got{opacity:.6}
+.sc .cover{border-radius:10px}
+.sc-b{min-width:0;display:flex;flex-direction:column;gap:4px}
+.sc-n{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--accent)}
+.sc-t{font-weight:700;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+.sc-s{font-size:12.5px;color:var(--mute)}
+.sc-p{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:8px}
+.sc-p b{font-family:var(--f-display);font-size:18px;font-weight:700}
+.sc-p b small{display:block;font-family:var(--f-mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;color:var(--accent);text-transform:uppercase}
+.sc .bb{padding:8px 14px;font-size:13px}
+
+.tro-sum{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+.tro-c{display:flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:14px}
+.cup{width:22px;height:22px;flex:none}
+.tro{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.tro li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.tro li .cup{width:34px;height:34px}
+.tro li:not(.got) .cup{filter:grayscale(1) brightness(.5)}
+.tro li.got{border-color:rgba(243,185,77,.35)}
+.tro .an{font-weight:700;font-size:14px}
+.tro li:not(.got) .an{color:var(--mute)}
+.tro .ad{font-size:12.5px;color:var(--mute);line-height:1.35}
+.tro .tier{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);text-align:right}
+.tro .pr{font-family:var(--f-mono);font-size:11px;color:var(--mute);margin-top:4px}
+.cx-sec-h{display:flex;align-items:baseline;gap:8px 16px;flex-wrap:wrap;margin-top:22px}
+.cx-sec-h h2{font-family:var(--f-display);font-weight:700;text-transform:uppercase;font-size:clamp(22px,4vw,30px);margin:0}
+/* ---------- status for Telegram ---------- */
+.viewbar .share-btn{margin-right:auto;padding:6px 14px;font-size:12.5px}
+.share{position:relative;z-index:2;box-sizing:border-box;max-width:1000px;margin:10px auto 0;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.share textarea{display:block;box-sizing:border-box;width:100%;font:inherit;font-size:16px;line-height:1.45;color:var(--fg);background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;resize:vertical}
+.xfer{margin-top:14px;padding-top:10px;border-top:1px solid var(--line)}
+.xfer summary{cursor:pointer;font-size:13px;font-weight:600}
+.xfer p{margin:8px 0}
+@media (max-width:520px){
+  .viewbar > .small{display:none}
+  .cx-tabs{flex-wrap:nowrap;gap:0;margin-inline:-6px}
+  .cx-tabs button{font-size:11px;letter-spacing:.02em;padding:8px 7px}
+  .cx-tabs button[aria-selected="true"]::after{left:7px;right:7px}
+}
+</style>
+
+<div class="backdrop" id="backdrop" aria-hidden="true"></div>
+<div class="viewbar"><button class="btn share-btn" id="share-btn" type="button" aria-expanded="false" aria-controls="share">Статус и перенос</button><span class="small">Вид</span><div class="seg" role="group" aria-label="Вид страницы"><button type="button" data-view="console" aria-pressed="true">Консоль</button><button type="button" data-view="classic" aria-pressed="false">Главы</button></div></div>
+<div class="share" id="share" hidden><textarea id="share-text" rows="6" readonly aria-label="Статус для Telegram"></textarea><div class="buy-row"><button class="btn" id="share-copy" type="button">Скопировать</button><span class="small" id="share-note" aria-live="polite">Вставь текст в чат.</span></div><details class="xfer"><summary>Перенос отметок</summary><p class="small">Вставь код переноса и нажми «Загрузить». Отметки из кода добавятся к текущим. Кнопка «Показать мой код» даёт резервную копию.</p><textarea id="xfer-text" rows="4" aria-label="Код переноса" autocomplete="off" spellcheck="false"></textarea><div class="buy-row"><button class="btn" id="xfer-load" type="button">Загрузить</button><button class="btn" id="xfer-show" type="button">Показать мой код</button><span class="small" id="xfer-note" aria-live="polite"></span></div></details></div>
+<div class="wrap cx" id="view-console">
+  <header class="cx-top">
+    <div class="cx-brand">Sneba<b>Star</b></div>
+    <nav class="cx-tabs" role="tablist" aria-label="Разделы">
+      <button type="button" role="tab" data-tab="path" aria-selected="true">Путь</button>
+      <button type="button" role="tab" data-tab="store" aria-selected="false">Магазин</button>
+      <button type="button" role="tab" data-tab="trophies" aria-selected="false">Трофеи</button>
+      <button type="button" role="tab" data-tab="prologue" aria-selected="false">Пролог</button>
+    </nav>
+    <div class="cx-lvl"><div class="ring" id="cx-ring"><span>0</span></div><div class="t"><b id="cx-rank">Новичок</b><span id="cx-rank-sub"></span></div></div>
+  </header>
+
+  <section id="cx-path">
+    <div class="cx-spot" id="cx-spot"><div class="cx-spot-art" id="cx-spot-art"></div><div class="cx-spot-in" id="cx-spot-in"></div><div class="cx-poster" id="cx-poster"></div></div>
+    <div id="cx-rows"></div>
+  </section>
+
+  <section id="cx-store" hidden>
+    <div class="cx-sec-h"><h2>Магазин</h2><span class="act-meta">нажми на обложку, чтобы отметить покупку</span></div>
+    <div class="cx-panel-grid">
+      <div class="panel"><h2>До следующей покупки</h2><div class="meter" id="cx-meter"></div><div class="meter-cap" id="cx-meter-cap"></div><div class="total" id="cx-total"></div><div class="buy-row"><button class="btn" id="cx-buy-btn" type="button">Купил игру не из списка</button></div></div>
+      <div class="panel"><h2>Правила</h2><ol class="rules">
+        <li><b>Пять пройденных — одна новая.</b> Считаются только титры.</li>
+        <li>Одновременно максимум две: один гигант и одна игра из акта.</li>
+        <li>Уже пройденное заново не проходишь. Единственное исключение — Mafia II на 100%, и то после всего пути.</li>
+        <li>Не зацепила за 3 часа — вычёркиваешь. Ведьмаку даётся 5 часов.</li>
+        <li>Гиганты идут отдельной дорожкой: по одному, вперемешку с короткими играми.</li>
+        <li>Кооп с братом идёт вне очереди.</li></ol></div>
+    </div>
+    <ul class="store" id="cx-store-list"></ul>
+  </section>
+
+  <section id="cx-trophies" hidden>
+    <div class="cx-sec-h"><h2>Трофеи</h2></div>
+    <div class="panel" style="margin-top:14px"><div class="tro-sum" id="cx-tro-sum"></div></div>
+    <ul class="tro" id="cx-tro"></ul>
+  </section>
+
+  <section id="cx-prologue" hidden>
+    <div class="cx-sec-h"><h2>Пролог</h2><span class="act-meta" id="cx-pro-meta"></span></div>
+    <p class="small" style="max-width:70ch">Всё, что пройдено до этого плана. Считается в ранг, но не в пятёрку до покупки. Нажми на обложку, чтобы снять отметку.</p>
+    <ul class="mini" id="cx-pro"></ul>
+  </section>
+
+  <footer class="foot"><div class="save" id="cx-save-note">Отметки сохраняются в этом браузере. Основное место для них — бот в Telegram.</div></footer>
+</div>
+<div class="wrap" id="view-classic" hidden>
+  <header class="hero">
+    <div class="hero-art" id="hero-art"></div>
+    <div class="hero-in">
+      <div>
+        <div class="eyebrow">SnebaStar · путь игрока</div>
+        <h1>План прохождения</h1>
+      </div>
+      <div class="rank">
+        <div><div class="rank-name" id="rank-name">Новичок</div></div>
+        <div class="rank-sub" id="rank-sub"></div>
+      </div>
+      <div class="xp" aria-hidden="true"><i id="xp" style="width:0"></i></div>
+      <div class="now" id="now"></div>
+    </div>
+  </header>
+
+  <nav class="map-wrap" aria-label="Акты"><ol class="map" id="map"></ol></nav>
+
+  <div class="top">
+    <section class="panel" aria-labelledby="buy-h">
+      <h2 id="buy-h">До следующей покупки</h2>
+      <div class="meter" id="meter" aria-hidden="true"></div>
+      <div class="meter-cap" id="meter-cap" aria-live="polite"></div>
+      <div class="buy-row">
+        <button class="btn" id="buy-btn" type="button">Купил игру не из списка</button>
+        <span class="small" id="buy-last"></span>
+      </div>
+      <div class="stats" aria-live="polite">
+        <div class="stat d"><b id="s-done">0</b><span>пройдено из плана</span></div>
+        <div class="stat p"><b id="s-play">0</b><span>играю сейчас</span></div>
+        <div class="stat l"><b id="s-left">≈ 0 ч</b><span id="s-left-cap">осталось</span></div>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="rules-h">
+      <h2 id="rules-h">Правила</h2>
+      <ol class="rules">
+        <li><b>Пять пройденных — одна новая.</b> Считаются только титры.</li>
+        <li>Одновременно максимум две: один гигант и одна игра из акта.</li>
+        <li>Уже пройденное заново не проходишь. Единственное исключение — Mafia II на 100%, и то после всего пути.</li>
+        <li>Не зацепила за 3 часа — вычёркиваешь. Ведьмаку даётся 5 часов, и это последняя попытка.</li>
+        <li>Гиганты идут отдельной дорожкой: по одному, вперемешку с короткими играми.</li>
+        <li>Кооп с братом идёт вне очереди и в лимит не входит.</li>
+      </ol>
+    </section>
+
+    <section class="panel wide" aria-labelledby="buys-h">
+      <h2 id="buys-h">Покупки по порядку</h2>
+      <p class="small" style="margin:4px 0 0">Каждая открывается после очередных пяти пройденных. Купленная игра сразу встаёт в свой акт.</p>
+      <ol class="buys" id="buys"></ol>
+      <div class="total" id="buy-total"></div>
+    </section>
+  </div>
+
+  <section class="ach-wrap" aria-labelledby="ach-h">
+    <div class="ach-top"><h2 id="ach-h">Достижения</h2><span class="act-meta" id="ach-meta"></span></div>
+    <ul class="ach" id="ach"></ul>
+    <button class="btn" id="ach-more" type="button" style="margin-top:12px">Показать все</button>
+  </section>
+
+  <details class="prologue" id="prologue-wrap"><summary><span class="numeral sm" aria-hidden="true">0</span><span><span class="eyebrow">Пролог</span><span class="pt">Уже пройдено</span></span><span class="act-meta" id="pro-meta"></span></summary>
+    <p class="sub">Всё, что пройдено до этого плана. Считается в ранг, но не в пятёрку до покупки. Если что-то здесь на самом деле не пройдено, нажми на обложку, и отметка снимется.</p>
+    <ul class="mini" id="prologue"></ul>
+  </details>
+
+  <main id="plan"></main>
+
+  <footer class="foot">
+    <div class="save" id="save-note">Отметки сохраняются в этом браузере. Основное место для них — бот в Telegram.</div>
+    <div>Часы — примерная длина основного сюжета; у начатых игр — сколько осталось до титров. Обложки нарисованы по мотивам игр, это не официальные постеры.</div>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+const GAMES = {
+  "pragmata":   {t:"Pragmata", yr:2026, h:5, role:"main", m:"space", c:["#cfe0f4","#3a5584"], ink:"#a8d4ff", note:"Третья локация из пяти."},
+  "hellraiser": {t:"Hellraiser: Revival", ct:"Hellraiser", sub:"Revival", yr:2026, h:null, role:"side", m:"hell", c:["#7a141a","#1a0607"], ink:"#e7c78a", note:"Идёт параллельно с Pragmata."},
+  "doom-tda":   {t:"DOOM: The Dark Ages", ct:"Doom", sub:"The Dark Ages", yr:2025, h:3, role:"finish", m:"hell", c:["#b4521c","#2a1208"], ink:"#ffcf7a", note:"До финала пара вечеров."},
+  "re2":        {t:"Resident Evil 2", ct:"Resident Evil 2", yr:2019, h:2, role:"finish", m:"city", c:["#3c5a52","#08100d"], ink:"#b6f0c8", note:"Финал за одного из героев."},
+  "gta3":       {t:"Grand Theft Auto III", ct:"GTA III", sub:"Liberty City", yr:2001, h:18, role:"main", m:"city", c:["#8a9aa8","#0b0d12"], ink:"#ffcf4a", note:"Начало марафона: Либерти-Сити, 2001 год."},
+  "gtavc":      {t:"Grand Theft Auto: Vice City", ct:"Vice City", sub:"Grand Theft Auto", yr:2002, h:17, role:"main", m:"sea", c:["#ff6ab0","#1a1450"], ink:"#5af0ff", note:"Неон, 80-е и Томми Версетти."},
+  "gtasa":      {t:"Grand Theft Auto: San Andreas", ct:"San Andreas", sub:"Grand Theft Auto", yr:2004, h:32, role:"main", m:"desert", c:["#f0a040","#1e3a1a"], ink:"#a8ff7a", note:"Самая большая часть марафона: три города и пустыня."},
+  "gta4":       {t:"Grand Theft Auto IV: The Complete Edition", ct:"GTA IV", sub:"Complete Edition", yr:2008, h:null, role:"finish", m:"city", c:["#d89a5a","#1a1c24"], ink:"#ffe0a0", note:"Финал марафона — обратно в Либерти-Сити, вместе с дополнениями. Перед стартом оставить одно облако для сэйвов."},
+  "re7":        {t:"Resident Evil 7 Biohazard", ct:"Resident Evil 7", sub:"Biohazard", yr:2017, h:3, role:"finish", m:"forest", c:["#6a5a3a","#0f0c08"], ink:"#e6d3b0", note:"Больше половины позади."},
+  "pbz":        {t:"Phantom Blade Zero", ct:"Phantom Blade", sub:"Zero", yr:2026, h:null, role:"main", m:"mountains", c:["#d9cdb8","#5a1414"], ink:"#ff5a4a", note:"На ПК тормозит уже на компиляции шейдеров. Ждёт PS5 Pro.", ps:true},
+  "order1886":  {t:"The Order: 1886", ct:"The Order", sub:"1886", yr:2015, h:7, role:"main", ps:true, m:"city", c:["#8a7a5a","#14100a"], ink:"#e8c88a", note:"Викторианский Лондон, рыцари и оборотни. Короткая и очень красивая."},
+  "gowl":       {t:"God of War Laufey", ct:"God of War", sub:"Laufey", yr:2027, h:null, role:"main", ps:true, m:"mountains", c:["#bcd0e0","#1a2030"], ink:"#ff6a4a", note:"Новая часть, только на PS5."},
+  "gta6":       {t:"Grand Theft Auto VI", ct:"GTA VI", sub:"Leonida", yr:2026, h:null, role:"main", ps:true, m:"sea", c:["#ff7ab8","#2a1a5a"], ink:"#ffd06a", note:"Возвращение в Вайс-Сити. Логичное продолжение марафона GTA."},
+  "infamous":   {t:"inFAMOUS Second Son", ct:"inFAMOUS", sub:"Second Son", yr:2014, h:11, role:"main", ps:true, m:"city", c:["#4a6a9a","#0a0e16"], ink:"#ff8a3a", note:"Супергерой с силой дыма и неона в Сиэтле."},
+  "yotei":      {t:"Ghost of Yōtei", ct:"Ghost of Yōtei", yr:2025, h:null, role:"main", ps:true, m:"mountains", c:["#f0d8c8","#5a1a1a"], ink:"#ffffff", note:"Хоккайдо, 1603 год, путь мести Ацу."},
+  "indika":     {t:"INDIKA", ct:"Indika", yr:2024, h:4, role:"short", m:"forest", c:["#eae6de","#7d7466"], ink:"#d4483a", note:"Странная и смешная история монахини."},
+  "control-r":  {t:"Control Resonant", ct:"Control", sub:"Resonant", yr:2026, h:null, role:"main", m:"city", c:["#d42a2a","#1a0607"], ink:"#ffffff", note:"Предыстория пересказана в самой игре."},
+  "inscryption":{t:"Inscryption", yr:2021, h:12, role:"short", m:"forest", c:["#7a5a34","#100b07"], ink:"#e8c87a", note:"Карточная игра, которая оказывается чем-то большим."},
+  "titanfall2": {t:"Titanfall 2", ct:"Titanfall 2", yr:2016, h:4, role:"short", m:"mountains", c:["#f08a3a","#1b2430"], ink:"#ffb066", note:"Одна из лучших коротких шутерных кампаний."},
+  "rdr2":       {t:"Red Dead Redemption 2", ct:"Red Dead", sub:"Redemption 2", yr:2018, h:50, role:"main", m:"desert", c:["#e07a3a","#3a1410"], ink:"#ffd9a0", note:"Заново, с самого начала."},
+  "stray":      {t:"Stray", yr:2022, h:4, role:"short", m:"city", c:["#ffa04a","#16263a"], ink:"#ffd08a", note:"Приключение за кота в городе роботов."},
+  "witcher3":   {t:"Ведьмак 3: Дикая Охота", ct:"Ведьмак 3", sub:"Дикая Охота", yr:2015, h:52, role:"main", m:"mountains", c:["#9aa6b0","#141a20"], ink:"#ff6b5a", note:"Последняя попытка: 5 часов на то, чтобы затянуло. Плюс два дополнения."},
+  "doom2016":   {t:"DOOM (2016)", ct:"Doom", sub:"2016", yr:2016, h:11, role:"short", m:"hell", c:["#d0461e","#1a0804"], ink:"#ffd07a", note:"Чистый драйв после самураев."},
+  "eternal":    {t:"DOOM Eternal", ct:"Doom", sub:"Eternal", yr:2020, h:14, role:"short", m:"hell", c:["#a83a6a","#14050c"], ink:"#ffb0d0", note:"Сразу после DOOM 2016."},
+  "deadspace":  {t:"Dead Space", ct:"Dead Space", yr:2023, h:12, role:"main", m:"space", c:["#7a7a4a","#0c0d08"], ink:"#ffb84a", note:"Ремейк классики космического хоррора."},
+  "callisto":   {t:"The Callisto Protocol", ct:"Callisto", sub:"Protocol", yr:2022, h:12, role:"main", m:"space", c:["#3a6a9a","#06090d"], ink:"#9fd8ff", note:"От создателей Dead Space — специально далеко от него, чтобы не приелось."},
+  "untildawn":  {t:"Until Dawn", ct:"Until Dawn", yr:2024, h:9, price:1700, buy:3, after:"акта V", m:"forest", c:["#4a6890","#07090d"], ink:"#d8e8ff", note:"Интерактивный хоррор в заснеженных горах."},
+  "re4":        {t:"Resident Evil 4", ct:"Resident Evil 4", yr:2023, h:16, role:"main", m:"forest", c:["#a07a3a","#140f08"], ink:"#ffd890", note:"Заново, с начала. Третье исключение из правила."},
+  "village":    {t:"Resident Evil Village", ct:"Village", sub:"Resident Evil", yr:2021, h:10, role:"short", m:"mountains", c:["#8a96a8","#0c0e12"], ink:"#e8ddc8", note:"Продолжение истории Итана после RE7."},
+  "prey":       {t:"Prey", yr:2017, h:17, role:"main", m:"space", c:["#c9d4e0","#2d3a4a"], ink:"#ffffff", note:"Станция «Талос-1», иммерсив-сим от Arkane."},
+  "dis2":       {t:"Dishonored 2", ct:"Dishonored 2", yr:2016, h:14, role:"main", m:"sea", c:["#f0b860","#3a2414"], ink:"#ffe2a8", note:"Тоже Arkane, тот же стиль, через акт после Prey."},
+  "hol":        {t:"High on Life", ct:"High on Life", yr:2022, h:10, role:"short", m:"space", c:["#5ae0a0","#5a2ad0"], ink:"#d8ff6a", note:"Комедийный шутер с говорящими пушками."},
+  "e33":        {t:"Clair Obscur: Expedition 33", ct:"Expedition 33", sub:"Clair Obscur", yr:2025, h:30, role:"main", m:"sea", mono:true, c:["#e8b8a0","#2a2450"], ink:"#ffe6c0", note:"Заново: прошлое прохождение забылось."},
+  "tno":        {t:"Wolfenstein: The New Order", ct:"Wolfenstein", sub:"The New Order", yr:2014, h:12, role:"short", m:"city", c:["#8a2a2a","#101010"], ink:"#f2e6d6", note:"Wolfenstein, часть 1 из 2."},
+  "ds":         {t:"Death Stranding Director's Cut", ct:"Death Stranding", yr:2019, h:40, role:"main", m:"mountains", c:["#a8b8be","#1c2428"], ink:"#ffd24a", note:"Медитативные доставки от Кодзимы."},
+  "wolf2":      {t:"Wolfenstein II: The New Colossus", ct:"Wolfenstein II", sub:"The New Colossus", yr:2017, h:11, role:"short", m:"city", c:["#3a5a8a","#5a141c"], ink:"#ffe6b0", note:"Wolfenstein, часть 2 из 2."},
+  "ratchet":    {t:"Ratchet & Clank: Сквозь миры", ct:"Ratchet & Clank", sub:"Rift Apart", yr:2021, h:11, role:"main", m:"space", c:["#a06aff","#1a2a6b"], ink:"#ffd23d", note:"Яркий экшен с прыжками между мирами."},
+  "se5":        {t:"Sniper Elite 5", ct:"Sniper Elite 5", yr:2022, h:12, role:"short", m:"forest", c:["#a0a878","#1c1f16"], ink:"#f0e6c8", note:"Франция 1944-го, большие уровни-песочницы."},
+  "bunny":      {t:"Зайчик (Tiny Bunny)", ct:"Зайчик", sub:"Tiny Bunny", yr:2025, h:null, role:"short", m:"forest", c:["#d4d0c8","#2a2622"], ink:"#ff5a5a", note:"Хоррор-новелла. Заново с самого начала: в новелле главное — вникнуть в суть."},
+  "gotg":       {t:"Marvel's Guardians of the Galaxy", ct:"Guardians", sub:"of the Galaxy", yr:2021, h:16, role:"short", m:"space", c:["#ff7a4a","#3a1a6b"], ink:"#ffd86a", note:"Сюжет, юмор и музыка 80-х."},
+  "hellisus":   {t:"Hell is Us", ct:"Hell is Us", yr:2025, h:22, role:"main", m:"forest", c:["#8a8c6a","#121310"], ink:"#e8e2cc", note:"Экшен-адвенчура без маркеров на карте."},
+  "wd2":        {t:"Watch Dogs 2", ct:"Watch Dogs 2", yr:2016, h:15, role:"main", m:"city", c:["#3ac8d8","#221a4a"], ink:"#f4ff6a", note:"Хакеры в Сан-Франциско. Заново, с самого начала."},
+  "kcd":        {t:"Kingdom Come: Deliverance", ct:"Kingdom Come", sub:"Deliverance", yr:2018, h:42, role:"main", m:"forest", c:["#a0a868","#1a1e10"], ink:"#f4e2a0", note:"Реалистичное средневековье, Богемия."},
+  "kcd2":       {t:"Kingdom Come: Deliverance II", ct:"Kingdom Come", sub:"Deliverance II", yr:2025, h:60, role:"main", m:"mountains", c:["#d0a060","#1f160c"], ink:"#ffe6b0", note:"Продолжение. Перед ним BO2 как передышка."},
+  "crimson":    {t:"Crimson Desert", ct:"Crimson Desert", yr:2026, h:80, role:"main", m:"desert", c:["#d04a3a","#1b0d0b"], ink:"#ffd8a8", note:"Самая большая игра в списке."},
+  "gears5":     {t:"Gears 5", ct:"Gears 5", yr:2019, h:11, role:"coop", m:"desert", c:["#c8a888","#1a1412"], ink:"#ff4a3d", note:"У брата уже есть, можно начинать хоть сейчас."},
+  "evilwest":   {t:"Evil West", ct:"Evil West", yr:2022, h:10, role:"coop", m:"desert", c:["#e8803a","#2a1408"], ink:"#ffd8a0", note:"Когда брат купит."},
+
+  "p-cyberpunk": {t:"Cyberpunk 2077", yr:2020, h:null, pro:true, m:"city", c:["#f0e04a","#1a0a2a"], ink:"#4af0ff"},
+  "p-gowr": {t:"God of War Рагнарёк", ct:"Рагнарёк", yr:2022, h:null, pro:true, m:"mountains", c:["#a8c8e0","#1a2030"], ink:"#ff8a4a"},
+  "p-tsushima": {t:"Призрак Цусимы", ct:"Цусима", yr:2020, h:null, pro:true, m:"mountains", c:["#e8a0a8","#2a1020"], ink:"#fff0e0"},
+  "p-tlou2": {t:"Одни из нас: Часть II", ct:"The Last of Us II", yr:2020, h:null, pro:true, m:"city", c:["#a8b890","#1a2018"], ink:"#ffd8a0"},
+  "p-gow": {t:"God of War", yr:2018, h:null, pro:true, m:"forest", c:["#b0c0b0","#141a18"], ink:"#ff5a4a"},
+  "p-spiderman": {t:"Marvel's Spider-Man Remastered", ct:"Spider-Man", yr:2018, h:null, pro:true, m:"city", c:["#5a8ad0","#0a1028"], ink:"#ff4a4a"},
+  "p-007": {t:"007 First Light", yr:2026, h:null, pro:true, m:"city", c:["#d0c0a0","#101418"], ink:"#ffd060"},
+  "p-uncharted": {t:"Uncharted: Наследие воров", ct:"Uncharted", yr:2016, h:null, pro:true, m:"sea", c:["#f0c890","#1a2a3a"], ink:"#ffe0a0"},
+  "p-fc5": {t:"Far Cry 5", yr:2018, h:null, pro:true, m:"forest", c:["#e0b070","#2a1a10"], ink:"#ff6a3a"},
+  "p-tlou1": {t:"Одни из нас: Часть I", ct:"The Last of Us", yr:2013, h:null, pro:true, m:"forest", c:["#c0b080","#1a1a10"], ink:"#ffe0a0"},
+  "p-rerequiem": {t:"Resident Evil Requiem", ct:"RE Requiem", yr:2026, h:null, pro:true, m:"city", c:["#8a2a3a","#0a0608"], ink:"#ff5a6a"},
+  "p-spiderman2": {t:"Marvel's Spider-Man 2", ct:"Spider-Man 2", yr:2023, h:null, pro:true, m:"city", c:["#e05a5a","#120818"], ink:"#ffd060"},
+  "p-milesmorales": {t:"Spider-Man: Miles Morales", ct:"Miles Morales", yr:2020, h:null, pro:true, m:"city", c:["#a060ff","#0a0618"], ink:"#ff5a5a"},
+  "p-splitfiction": {t:"Split Fiction", yr:2025, h:null, pro:true, m:"space", c:["#a070ff","#1a1040"], ink:"#ffd23d"},
+  "p-awayout": {t:"A Way Out", yr:2018, h:null, pro:true, m:"forest", c:["#d0a070","#1a140e"], ink:"#ffe0b0"},
+  "p-fc3": {t:"Far Cry 3", yr:2012, h:null, pro:true, m:"sea", c:["#5ad0c0","#0a2028"], ink:"#ff5a5a"},
+  "p-se4": {t:"Sniper Elite 4", yr:2017, h:null, pro:true, m:"sea", c:["#e0c080","#1a2018"], ink:"#f0e6c8"},
+  "p-maxpayne3": {t:"Max Payne 3", yr:2012, h:null, pro:true, m:"city", c:["#e0a040","#1a0a0a"], ink:"#ffffff"},
+  "p-ng4": {t:"Ninja Gaiden 4", yr:2025, h:null, pro:true, m:"city", c:["#4a5aa0","#05060e"], ink:"#ff3a3a"},
+  "p-detroit": {t:"Detroit: Become Human", ct:"Detroit", yr:2018, h:null, pro:true, m:"city", c:["#7ab0e0","#0a1420"], ink:"#5ad0ff"},
+  "p-ryse": {t:"Ryse: Son of Rome", ct:"Ryse", yr:2013, h:null, pro:true, m:"desert", c:["#e0b060","#2a140a"], ink:"#ffd890"},
+  "p-bulletstorm": {t:"Bulletstorm", yr:2011, h:null, pro:true, m:"desert", c:["#ff8a3a","#2a0a10"], ink:"#7affea"},
+  "p-dispatch": {t:"Dispatch", yr:2025, h:null, pro:true, m:"city", c:["#4aa0e0","#101830"], ink:"#ffd23d"},
+  "p-houseofashes": {t:"The Dark Pictures: House of Ashes", ct:"House of Ashes", yr:2021, h:null, pro:true, m:"desert", c:["#d0a060","#1a1008"], ink:"#ff6a3a"},
+  "p-gtav": {t:"Grand Theft Auto V", ct:"GTA V", yr:2013, h:null, pro:true, m:"sea", c:["#ffb070","#2a1a40"], ink:"#7affb0"},
+  "p-mafia1": {t:"Mafia: Definitive Edition", ct:"Mafia", yr:2020, h:null, pro:true, m:"city", c:["#c0a070","#141008"], ink:"#ffe0a0"},
+  "p-mafia2": {t:"Mafia II: Definitive Edition", ct:"Mafia II", yr:2020, h:null, pro:true, m:"city", c:["#a0b0c8","#0e1018"], ink:"#ffe0a0"},
+  "p-mw4": {t:"Call of Duty: Modern Warfare 4", ct:"MW4", yr:2026, h:null, pro:true, m:"mountains", c:["#a0b0b8","#101418"], ink:"#c8ff5a"},
+
+  "galactic":   {t:"Star Wars: Galactic Racer", ct:"Galactic Racer", sub:"Star Wars", yr:2026, h:null, price:3626, buy:1, after:"акта II", m:"desert", c:["#f2c86a","#1a2a4a"], ink:"#ffe08a", note:"Гонки после пяти первых титров."},
+  "onimusha":   {t:"Onimusha: Way of the Sword", ct:"Onimusha", sub:"Way of the Sword", yr:2026, h:null, price:4400, buy:2, after:"акта IV", m:"mountains", c:["#c8584a","#0d0d12"], ink:"#ffd8a0", note:"Самураи от Capcom."},
+  "bo1":        {t:"Call of Duty: Black Ops", ct:"Black Ops", sub:"Call of Duty", yr:2010, h:6, price:540, buy:4, after:"акта VII", m:"city", c:["#6a6a4a","#121210"], ink:"#ff9a1f", note:"Короткая кампания, начало трилогии."},
+  "re4sw":      {t:"Resident Evil 4: Separate Ways", ct:"Separate Ways", sub:"Resident Evil 4", yr:2023, h:5, price:930, buy:"DLC", after:"акта III", m:"forest", c:["#6a2a50","#0d070c"], ink:"#ff5a7a", note:"Дополнение за Аду. Взято в составе RE4 Gold Edition со скидкой 70%, вместе с набором Extra DLC. В правило не входит."},
+  "roboquest":  {t:"Roboquest", yr:2023, h:10, price:770, buy:5, after:"акта IX", m:"desert", c:["#ff8a3e","#2d1b4e"], ink:"#ffe08a", note:"Быстрый рогалик-шутер на вечера."},
+  "hol2":       {t:"High on Life 2", ct:"High on Life 2", yr:2026, h:null, price:1500, buy:6, after:"акта X", m:"space", c:["#ff6ad0","#2a1a6a"], ink:"#d8ff6a", note:"Продолжение говорящих пушек."},
+  "ds2":        {t:"Death Stranding 2: On the Beach", ct:"Death Stranding 2", sub:"On the Beach", yr:2026, h:45, price:3000, buy:7, after:"Death Stranding", m:"sea", c:["#7ab8d0","#0e1e2a"], ink:"#ffd24a", note:"Сразу после первой части, но через привал."},
+  "mouse":      {t:"Частный детектив Маус", ct:"Mouse", sub:"P.I. For Hire", yr:2026, h:null, price:1630, buy:8, after:"акта XI", m:"city", gray:true, c:["#e8e2d4","#2a2622"], ink:"#ffffff", note:"Шутер-нуар в стиле мультиков 30-х."},
+  "bo2":        {t:"Call of Duty: Black Ops II", ct:"Black Ops II", sub:"Call of Duty", yr:2012, h:7, price:3600, sale:true, buy:9, after:"акта XII", m:"city", c:["#2d4a6a","#05080c"], ink:"#3ad0ff", note:"Кампания на пару вечеров."},
+  "wwii":       {t:"Call of Duty: WWII", ct:"WWII", sub:"Call of Duty", yr:2017, h:7, price:4000, sale:true, buy:11, after:"акта XIV", m:"sea", c:["#b0a07a","#1a1810"], ink:"#ffe0a0", note:"Нормандия и Европа 1944-го."},
+  "bo3":        {t:"Call of Duty: Black Ops III", ct:"Black Ops III", sub:"Call of Duty", yr:2015, h:8, price:1500, sale:true, buy:10, after:"акта XIV", m:"city", c:["#5a2a2a","#0a0505"], ink:"#ff5a4a", note:"Финал трилогии. Можно раньше, если что-то вычеркнешь."}
+};
+const ACTS = [
+  {r:"I",     t:"Луна и шкатулка", sub:"Pragmata и Hellraiser, а между ними короткий финал RE2.", g:["pragmata","hellraiser","re2"]},
+  {r:"II",    t:"Хвосты", sub:"Добить RE7 и DOOM: The Dark Ages, а потом выдохнуть с котом из Stray.", g:["re7","doom-tda","stray"], unlock:"galactic"},
+  {r:"III",   t:"Полный газ", sub:"Гонки Galactic Racer, INDIKA и Titanfall 2.", g:["galactic","indika","titanfall2"]},
+  {r:"IV",    t:"Обитель зла", sub:"RE4 заново вместе с Separate Ways, а для контраста — Control Resonant.", g:["re4","re4sw","control-r"], unlock:"onimusha"},
+  {r:"V",     t:"Сталь и пламя", sub:"Самураи Onimusha и два DOOM по порядку.", g:["onimusha","doom2016","eternal"], unlock:"untildawn"},
+  {r:"VI",    t:"Мёртвые станции", sub:"Две космические станции: хоррор Dead Space и иммерсив-сим Prey.", g:["deadspace","prey"]},
+  {r:"VII",   t:"Назад в Либерти-Сити", kicker:"Марафон GTA", sub:"Все четыре части по порядку выхода: III, Vice City, San Andreas и IV. Около ста часов, поэтому пока идёт марафон, дорожка гигантов стоит на паузе.", g:["gta3","gtavc","gtasa","gta4"], unlock:"bo1"},
+  {r:"VIII",  t:"Под маской", sub:"Маньяк в маске из Until Dawn, маска Корво в Dishonored 2 и Black Ops на вечера.", g:["untildawn","dis2","bo1"]},
+  {r:"IX",    t:"Ради тех, кто придёт после", sub:"Expedition 33 заново. Короткие — Wolfenstein и High on Life.", g:["e33","tno","hol"], unlock:"roboquest"},
+  {r:"X",     t:"Привал", sub:"Зайчик с самого начала и Roboquest для разрядки.", g:["bunny","roboquest"], unlock:"hol2"},
+  {r:"XI",    t:"Перезарядка", sub:"Вторая Wolfenstein, Ratchet & Clank и High on Life 2.", g:["wolf2","ratchet","hol2"], unlock:"mouse"},
+  {r:"XII",   t:"Чужая луна", sub:"Тюрьма на спутнике Юпитера в Callisto, Sniper Elite 5 и детектив Маус.", g:["callisto","se5","mouse"], unlock:"bo2"},
+  {r:"XIII",  t:"Город теней", sub:"Hell is Us, Watch Dogs 2 и Inscryption.", g:["hellisus","wd2","inscryption"]},
+  {r:"XIV",   t:"Деревня и галактика", sub:"Resident Evil Village, Стражи Галактики и Black Ops II.", g:["village","gotg","bo2"], unlock:["bo3","wwii"]},
+  {r:"XV",    t:"Последний рубеж", sub:"Финал пути: Black Ops III и WWII.", g:["bo3","wwii"]},
+  {r:"G",     t:"Гиганты", kicker:"Отдельная дорожка", giant:true, side:true, sub:"Большие игры идут не в актах, а параллельно с ними: один гигант за раз, вперемешку с короткими играми из актов. Порядок — сверху вниз.", g:["rdr2","witcher3","ds","kcd","ds2","kcd2","crimson"]},
+  {r:"×2",    t:"Братья по оружию", kicker:"Кооп вне очереди", sub:"С братом, параллельно основному пути. В лимит двух игр не входит.", g:["gears5","evilwest"], side:true},
+  {r:"PS",    t:"Ждёт PS5 Pro", kicker:"После пути", sub:"То, что не выходит на ПК или не пошло на нём. Всё это дождётся PS5 Pro после пути и в правило не входит.", g:["gta6","yotei","gowl","pbz","infamous","order1886"], side:true}
+];
+const RANKS = [[0,"Новичок"],[5,"Искатель"],[15,"Охотник"],[25,"Ветеран"],[40,"Мастер"],[55,"Легенда"],[75,"Прошедший путь"]];
+const ROLE = {main:["основная",""], side:["параллельно",""], short:["короткая",""], finish:["добить","r-finish"], coop:["кооп","r-coop"]};
+const KEY = "plan-snebastar-v1";
+let state = {}, meta = {base:0, log:[]}, db = null, cloud = null, readOnly = false;
+const openActs = new Set();
+const pending = {};
+
+/* ---------- generated cover art ---------- */
+const ART = {};
+let artDefer = false;
+function hash(s){ let h = 2166136261; for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+const css = (c, a) => a == null ? "rgb(" + c.join(",") + ")" : "rgba(" + c.join(",") + "," + a + ")";
+function drawArt(id, force){
+  if (ART[id]) return ART[id];
+  if (artDefer && !force) return "";
+  const g = GAMES[id], W = 300, H = 450, S = innerWidth < 700 ? 1.5 : 2;
+  const cv = document.createElement("canvas"); cv.width = W * S; cv.height = H * S;
+  const x = cv.getContext("2d"); if (!x) return "";
+  x.scale(S, S);
+  const R = rng(hash(id)), c1 = hex(g.c[0]), c2 = hex(g.c[1]), ink = hex(g.ink), K = [5,6,9], WH = [255,255,255];
+  let gr = x.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, css(mix(c2, c1, .5))); gr.addColorStop(.5, css(c1)); gr.addColorStop(1, css(mix(c2, K, .35)));
+  x.fillStyle = gr; x.fillRect(0, 0, W, H);
+  const glow = (cx, cy, r, col, a) => { const rg = x.createRadialGradient(cx, cy, 0, cx, cy, r); rg.addColorStop(0, css(col, a)); rg.addColorStop(1, css(col, 0)); x.fillStyle = rg; x.fillRect(0, 0, W, H); };
+  const orb = (cx, cy, r, col, gl) => { glow(cx, cy, r * gl, col, .55); x.beginPath(); x.arc(cx, cy, r, 0, 6.2832); x.fillStyle = css(mix(col, WH, .4)); x.fill(); };
+  const rays = (cx, cy, col) => { x.save(); x.globalCompositeOperation = "lighter"; for (let i = 0; i < 7; i++){ const a = Math.PI / 2 + (R() - .5) * 1.7, w = .03 + R() * .06, L = 620; const lg = x.createLinearGradient(cx, cy, cx + Math.cos(a) * L, cy + Math.sin(a) * L); lg.addColorStop(0, css(col, .085)); lg.addColorStop(1, css(col, 0)); x.fillStyle = lg; x.beginPath(); x.moveTo(cx, cy); x.lineTo(cx + Math.cos(a - w) * L, cy + Math.sin(a - w) * L); x.lineTo(cx + Math.cos(a + w) * L, cy + Math.sin(a + w) * L); x.closePath(); x.fill(); } x.restore(); };
+  const stars = (n, top) => { for (let i = 0; i < n; i++){ const s = R() < .08 ? 1.8 : .9; x.fillStyle = "rgba(255,255,255," + (.25 + R() * .65).toFixed(2) + ")"; x.fillRect(R() * W, R() * H * top, s, s); } };
+  const ridge = (base, amp, jag, f) => { const p = [R() * 6.28, R() * 6.28, R() * 6.28], pts = []; for (let i = -5; i <= W + 5; i += 4){ const t = i / W; pts.push([i, base + amp * (.55 * Math.sin(t * f * 6.28 + p[0]) + .3 * Math.sin(t * f * 2.3 * 6.28 + p[1]) + .15 * Math.sin(t * f * 5.1 * 6.28 + p[2])) + jag * (R() - .5)]); } return pts; };
+  const fill = (pts, col) => { x.beginPath(); x.moveTo(-5, H); pts.forEach(q => x.lineTo(q[0], q[1])); x.lineTo(W + 5, H); x.closePath(); x.fillStyle = col; x.fill(); return pts; };
+  const fog = (y, h, col, a) => { const fg = x.createLinearGradient(0, y - h, 0, y + h); fg.addColorStop(0, css(col, 0)); fg.addColorStop(.5, css(col, a)); fg.addColorStop(1, css(col, 0)); x.fillStyle = fg; x.fillRect(0, y - h, W, h * 2); };
+  const yAt = (pts, px) => { const i = Math.max(0, Math.min(pts.length - 1, Math.round((px + 5) / 4))); return pts[i][1]; };
+  const figure = (pts, col) => { const px = W * (.28 + R() * .44), py = yAt(pts, px) + 1, s = 1.15;
+    x.fillStyle = col; x.beginPath(); x.arc(px, py - 17 * s, 2.7 * s, 0, 6.2832); x.fill();
+    x.beginPath(); x.moveTo(px - 3.4 * s, py - 14 * s); x.lineTo(px + 3.4 * s, py - 14 * s); x.lineTo(px + 4.6 * s, py - 4 * s); x.lineTo(px - 4.6 * s, py - 4 * s); x.closePath(); x.fill();
+    x.fillRect(px - 2.6 * s, py - 5 * s, 2 * s, 5 * s); x.fillRect(px + .6 * s, py - 5 * s, 2 * s, 5 * s); };
+  const far = mix(c1, c2, .45), haze = mix(c1, WH, .28), dark = css(mix(c2, K, .82));
+  const layer = k => css(mix(mix(c2, c1, .25), K, .1 + k * .25));
+  const m = g.m;
+  if (m === "space"){
+    for (let i = 0; i < 4; i++) glow(W * R(), H * R() * .7, 120 + R() * 140, i % 2 ? ink : mix(c1, WH, .2), .16);
+    stars(320, 1);
+    const pr = 80 + R() * 60, px = W * (.55 + R() * .35), py = H * (.18 + R() * .18);
+    glow(px, py, pr * 1.7, ink, .22);
+    const pg = x.createRadialGradient(px - pr * .4, py - pr * .4, pr * .1, px, py, pr);
+    pg.addColorStop(0, css(mix(c1, WH, .45))); pg.addColorStop(.7, css(mix(c1, c2, .5))); pg.addColorStop(1, css(mix(c2, K, .6)));
+    x.beginPath(); x.arc(px, py, pr, 0, 6.2832); x.fillStyle = pg; x.fill();
+    x.save(); x.beginPath(); x.arc(px, py, pr, 0, 6.2832); x.clip(); x.globalAlpha = .18; for (let b = 0; b < 6; b++){ x.fillStyle = b % 2 ? css(ink) : css(K); x.fillRect(px - pr, py - pr + b * pr / 3 + R() * 10, pr * 2, 3 + R() * 6); } x.restore();
+    if (R() > .35){ x.save(); x.translate(px, py); x.rotate(-.35); x.scale(1, .22); x.beginPath(); x.arc(0, 0, pr * 1.6, 0, 6.2832); x.lineWidth = 7; x.strokeStyle = css(ink, .6); x.shadowColor = css(ink); x.shadowBlur = 12; x.stroke(); x.restore(); }
+    orb(W * (.12 + R() * .25), H * (.12 + R() * .2), 8 + R() * 8, mix(ink, WH, .3), 3);
+    fill(ridge(H * .78, 14, 3, 1.4), layer(2));
+    const near = fill(ridge(H * .88, 8, 2, 2), dark);
+    for (let i = 0; i < 6; i++){ x.beginPath(); x.ellipse(R() * W, H * (.86 + R() * .1), 8 + R() * 18, 2 + R() * 4, 0, 0, 6.2832); x.fillStyle = "rgba(0,0,0,.28)"; x.fill(); }
+    figure(near, css(K));
+  } else if (m === "hell"){
+    const ox = W * (.3 + R() * .4), oy = H * (.3 + R() * .06);
+    glow(ox, oy, 260, mix(ink, c1, .2), .35);
+    orb(ox, oy, 30 + R() * 10, mix(ink, c1, .3), 3);
+    x.save(); x.beginPath(); x.arc(ox, oy, 62 + R() * 18, 0, 6.2832); x.lineWidth = 2.5; x.strokeStyle = css(ink, .75); x.shadowColor = css(ink); x.shadowBlur = 18; x.stroke(); x.restore();
+    rays(ox, oy, mix(ink, WH, .2));
+    fill(ridge(H * .5, 30, 46, 3), css(mix(far, K, .4)));
+    fog(H * .58, 40, mix(c1, ink, .35), .4);
+    fill(ridge(H * .66, 26, 40, 4), layer(1.8));
+    fill(ridge(H * .82, 18, 30, 5), dark);
+    for (let i = 0; i < 170; i++){ const ey = H * (.2 + R() * .75); x.fillStyle = css(mix(ink, WH, R() * .4), (.3 + R() * .6).toFixed(2)); const s = R() < .15 ? 2.2 : 1.1; x.fillRect(R() * W, ey, s, s * (1 + R() * 2)); }
+  } else if (m === "mountains"){
+    if (R() > .3) stars(90, .4);
+    const ox = W * (.22 + R() * .56), oy = H * (.17 + R() * .12);
+    orb(ox, oy, 18 + R() * 16, mix(ink, WH, .25), 5);
+    rays(ox, oy, mix(ink, WH, .35));
+    fill(ridge(H * .44, 46, 8, 1 + R()), css(mix(far, haze, .25)));
+    fog(H * .5, 32, haze, .38);
+    fill(ridge(H * .56, 40, 6, 1.4 + R()), layer(.6));
+    fog(H * .64, 26, haze, .24);
+    fill(ridge(H * .7, 30, 5, 1.8 + R()), layer(1.8));
+    const near = fill(ridge(H * .84, 16, 3, 1.6), dark);
+    figure(near, css(K));
+  } else if (m === "forest"){
+    stars(110, .45);
+    const ox = W * (.2 + R() * .6), oy = H * (.16 + R() * .1);
+    orb(ox, oy, 17 + R() * 12, mix(ink, WH, .45), 5);
+    rays(ox, oy, mix(ink, WH, .5));
+    fill(ridge(H * .5, 24, 4, 1.2), css(mix(far, haze, .2)));
+    fog(H * .55, 28, haze, .34);
+    [[.62, .45, .9], [.74, .7, 1.8], [.88, 1, 3.3]].forEach(([b, sc, k]) => {
+      const base = ridge(H * b, 10, 2, 1.6), col = k > 3 ? dark : layer(k);
+      fill(base, col); x.fillStyle = col;
+      for (let tx = -10; tx < W + 10; tx += 5 + R() * 9){ const y0 = yAt(base, tx) + 2, th = (24 + R() * 40) * sc, tw = th * (.26 + R() * .12); x.beginPath(); x.moveTo(tx, y0 - th); x.lineTo(tx - tw, y0); x.lineTo(tx + tw, y0); x.closePath(); x.fill(); }
+      fog(H * b - 10, 18, haze, .14);
+    });
+    glow(W * .5, H * .95, 160, ink, .12);
+  } else if (m === "city"){
+    stars(70, .35);
+    const ox = W * (.2 + R() * .6), oy = H * (.15 + R() * .1);
+    orb(ox, oy, 15 + R() * 12, mix(ink, WH, .35), 5);
+    glow(W * .5, H * .62, 220, mix(c1, ink, .3), .35);
+    [[.5, .6, .5], [.62, .8, 1.5], [.76, 1, 3.4]].forEach(([b, sc, k], li) => {
+      let bx = -4; const col = k > 3 ? dark : layer(k);
+      while (bx < W){ const bw = 14 + R() * 34, bh = H * (.06 + R() * .26) * sc, top = H * b - bh;
+        x.fillStyle = col; x.fillRect(bx, top, bw + 1, H - top);
+        if (R() > .7){ x.fillRect(bx + bw * .45, top - 16 * sc, 1.6, 16 * sc); x.fillStyle = css(ink, .9); x.fillRect(bx + bw * .45 - .5, top - 16 * sc, 2.6, 2.6); }
+        if (li > 0) for (let wy = top + 6; wy < H * .95; wy += 7) for (let wx = bx + 3; wx < bx + bw - 3; wx += 6) if (R() > .78){ x.fillStyle = css(R() > .85 ? WH : ink, (.25 + R() * .6).toFixed(2)); x.fillRect(wx, wy, 2, 3); }
+        if (li === 1 && R() > .72){ x.save(); x.strokeStyle = css(ink, .95); x.shadowColor = css(ink); x.shadowBlur = 10; x.lineWidth = 1.3; x.strokeRect(bx + 3, top + 10 + R() * 30, Math.max(8, bw - 6), 7); x.restore(); }
+        bx += bw + R() * 4; }
+      fog(H * b + 8, 16, mix(c1, ink, .2), .14);
+    });
+    x.save(); x.globalCompositeOperation = "lighter"; for (let i = 0; i < 14; i++){ const yy = H * (.9 + R() * .07), xx = R() * W, ww = 30 + R() * 90; const lg = x.createLinearGradient(xx, 0, xx + ww, 0); lg.addColorStop(0, css(i % 3 ? ink : [255, 70, 60], 0)); lg.addColorStop(1, css(i % 3 ? ink : [255, 70, 60], .55)); x.fillStyle = lg; x.fillRect(xx, yy, ww, 1.2); } x.restore();
+  } else if (m === "sea"){
+    const hz = H * .6;
+    stars(90, .4);
+    const sx = W * (.3 + R() * .4), sy = hz - 30 - R() * 50;
+    orb(sx, sy, 22 + R() * 12, mix(ink, WH, .25), 6);
+    rays(sx, sy, mix(ink, WH, .3));
+    if (R() > .3) fill(ridge(hz - 12, 26, 6, 1.2).map(q => [q[0], q[0] > W * .55 ? q[1] : hz + 1]), css(mix(far, K, .25)));
+    if (g.mono){ x.save(); x.shadowColor = css(ink); x.shadowBlur = 14; x.fillStyle = css(mix(c2, K, .5)); x.fillRect(W * .7, hz - 190, 10, 190); x.restore(); x.fillStyle = css(ink, .8); x.fillRect(W * .7 + 3, hz - 150, 2, 22); }
+    const wg = x.createLinearGradient(0, hz, 0, H); wg.addColorStop(0, css(mix(c1, c2, .4))); wg.addColorStop(1, css(mix(c2, K, .6)));
+    x.fillStyle = wg; x.fillRect(0, hz, W, H - hz);
+    for (let i = 0; i < 190; i++){ const yy = hz + Math.pow(R(), 1.6) * (H - hz), ww = 6 + R() * 26 * (1 + (yy - hz) / 150); x.fillStyle = css(mix(ink, WH, .3), (.08 + R() * .3).toFixed(2)); x.fillRect(sx - 40 + (R() - .5) * 90 * (1 + (yy - hz) / 120), yy, ww, 1); }
+    fog(hz, 14, haze, .4);
+  } else if (m === "desert"){
+    const ox = W * (.25 + R() * .5), oy = H * (.3 + R() * .1);
+    orb(ox, oy, 36 + R() * 20, mix(ink, WH, .15), 4);
+    rays(ox, oy, mix(ink, WH, .2));
+    fill(ridge(H * .52, 20, 10, 1.4), css(mix(far, haze, .18)));
+    fog(H * .58, 24, haze, .34);
+    let near;
+    [[.64, 18, .9], [.75, 22, 1.8], [.88, 14, 3.4]].forEach(([b, a, k]) => { near = fill(ridge(H * b, a, 0, .8 + R()), k > 3 ? dark : css(mix(mix(c1, c2, .35 + k * .12), K, .05 + k * .18))); });
+    figure(near, css(K));
+  }
+  const vg = x.createRadialGradient(W / 2, H * .45, H * .25, W / 2, H * .5, H * .78); vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, "rgba(0,0,0,.55)"); x.fillStyle = vg; x.fillRect(0, 0, W, H);
+  for (let i = 0; i < 5000; i++){ x.fillStyle = R() > .5 ? "rgba(255,255,255,.04)" : "rgba(0,0,0,.06)"; x.fillRect(R() * W, R() * H, .8, .8); }
+  if (g.gray){ const d = x.getImageData(0, 0, cv.width, cv.height), p = d.data; for (let i = 0; i < p.length; i += 4){ const v = p[i] * .3 + p[i + 1] * .59 + p[i + 2] * .11; p[i] = p[i + 1] = p[i + 2] = v; } x.putImageData(d, 0, 0); }
+  try { ART[id] = cv.toDataURL("image/jpeg", .84); } catch (e) { ART[id] = ""; }
+  return ART[id];
+}
+
+/* ---------- achievements ---------- */
+const doneAll = list => list.filter(i => st(i) === "done").length;
+const ACH = [
+  {k:"start", g:"▶", n:"Начало пути", d:"Отметить первую игру как «Играю».", f:c => [Math.min(c.play + c.done + c.drop, 1), 1]},
+  {k:"vet", g:"0", n:"Ветеран прошлого", d:"Все игры пролога отмечены пройденными.", f:c => [c.proDone, c.proAll]},
+  {k:"first", g:"1", n:"Первая кровь", d:"Пройти первую игру из плана.", f:c => [Math.min(c.done, 1), 1]},
+  {k:"act1", g:"I", n:"Луна и шкатулка", d:"Закрыть первый акт.", f:c => [c.acts[0] ? 1 : 0, 1]},
+  {k:"five", g:"5", n:"Честная пятёрка", d:"Пройти пять игр из плана — первая покупка заслужена.", f:c => [Math.min(c.done, 5), 5]},
+  {k:"finisher", g:"✓", n:"Добивающий удар", d:"Добить всё начатое: GTA IV, DOOM TDA, RE2 и RE7.", f:() => [doneAll(["gta4","doom-tda","re2","re7"]), 4]},
+  {k:"drop", g:"×", n:"Без сожалений", d:"Вычеркнуть игру, которая не зацепила.", f:c => [Math.min(c.drop, 1), 1]},
+  {k:"streak", g:"×5", n:"Пять подряд", d:"Пройти пять игр подряд, ни одной не бросив.", f:c => [Math.min(c.streak, 5), 5]},
+  {k:"witcher", g:"W", n:"Наконец-то, Геральт", d:"Пройти Ведьмака 3 с пятой попытки.", f:() => [doneAll(["witcher3"]), 1]},
+  {k:"doom", g:"D", n:"Рви и кромсай", d:"Пройти все три DOOM из плана.", f:() => [doneAll(["doom-tda","doom2016","eternal"]), 3]},
+  {k:"re", g:"RE", n:"Обитель зла", d:"Пройти все Resident Evil из плана.", f:() => [doneAll(["re2","re7","re4","village"]), 4]},
+  {k:"horror", g:"H", n:"Хоррор-марафон", d:"Пройти пять хорроров.", f:() => [Math.min(doneAll(["hellraiser","re2","re7","deadspace","callisto","untildawn","re4","village","bunny","hellisus"]), 5), 5]},
+  {k:"ds", g:"DS", n:"Связь установлена", d:"Пройти обе Death Stranding.", f:() => [doneAll(["ds","ds2"]), 2]},
+  {k:"kcd", g:"KC", n:"Король Богемии", d:"Пройти обе Kingdom Come.", f:() => [doneAll(["kcd","kcd2"]), 2]},
+  {k:"bo", g:"BO", n:"Числа, Мейсон", d:"Пройти трилогию Black Ops.", f:() => [doneAll(["bo1","bo2","bo3"]), 3]},
+  {k:"buy", g:"₽", n:"По правилам", d:"Купить первую игру из списка покупок.", f:c => [Math.min(c.bought, 1), 1]},
+  {k:"sale", g:"%", n:"Охотник за скидками", d:"Купить игру, которую берёшь только по скидке.", f:c => [Math.min(c.saleBought, 1), 1]},
+  {k:"coop", g:"×2", n:"Братья по оружию", d:"Пройти обе кооп-игры с братом.", f:() => [doneAll(["gears5","evilwest"]), 2]},
+  {k:"hours", g:"100", n:"Марафонец", d:"Пройти игры на 100 часов сюжета.", f:c => [Math.min(c.hours, 100), 100]},
+  {k:"half", g:"½", n:"Полпути", d:"Закрыть половину актов.", f:c => [Math.min(c.actsDone, Math.ceil(c.actsAll / 2)), Math.ceil(c.actsAll / 2)]},
+  {k:"path", g:"∞", n:"Путь пройден", d:"Закрыть все акты.", f:c => [c.actsDone, c.actsAll]},
+  {k:"ten", g:"10", n:"Двузначное число", d:"Пройти десять игр из плана.", f:c => [Math.min(c.done, 10), 10]},
+  {k:"quarter", g:"¼", n:"Четверть пути", d:"Закрыть четыре акта.", f:c => [Math.min(c.actsDone, 4), 4]},
+  {k:"threeq", g:"¾", n:"Три четверти", d:"Закрыть три четверти актов.", f:c => [Math.min(c.actsDone, Math.ceil(c.actsAll * .75)), Math.ceil(c.actsAll * .75)]},
+  {k:"blade", g:"PB", n:"Путь меча", d:"Пройти Phantom Blade Zero и Onimusha.", f:() => [doneAll(["pbz","onimusha"]), 2]},
+  {k:"space", g:"✦", n:"Покоритель космоса", d:"Пройти четыре игры про космос.", f:() => [Math.min(doneAll(["pragmata","deadspace","callisto","prey","hol","ratchet","gotg"]), 4), 4]},
+  {k:"arkane", g:"AK", n:"Почерк Arkane", d:"Пройти Prey и Dishonored 2.", f:() => [doneAll(["prey","dis2"]), 2]},
+  {k:"remedy", g:"R", n:"Вселенная Remedy", d:"Пройти Control Resonant.", f:() => [doneAll(["control-r"]), 1]},
+  {k:"wolf", g:"BJ", n:"Бласковиц", d:"Пройти обе части Wolfenstein.", f:() => [doneAll(["tno","wolf2"]), 2]},
+  {k:"stray", g:"М", n:"Мяу", d:"Пройти Stray.", f:() => [doneAll(["stray"]), 1]},
+  {k:"night", g:"☾", n:"Не спать", d:"Пройти Hellraiser, Until Dawn и Зайчика.", f:() => [doneAll(["hellraiser","untildawn","bunny"]), 3]},
+  {k:"allgiants", g:"G7", n:"Повелитель гигантов", d:"Пройти все семь гигантов.", f:() => [doneAll(["rdr2","witcher3","ds","kcd","ds2","kcd2","crimson"]), 7]},
+  {k:"gta", g:"GTA", n:"Король улиц", d:"Пройти марафон GTA: III, Vice City, San Andreas и IV.", f:() => [doneAll(["gta3","gtavc","gtasa","gta4"]), 4]},
+  {k:"giants", g:"G", n:"Покоритель гигантов", d:"Пройти три игры на 40+ часов.", f:() => [Math.min(doneAll(["witcher3","rdr2","ds","ds2","kcd","kcd2","crimson"]), 3), 3]},
+  {k:"shorts", g:"S", n:"Короткие перебежки", d:"Пройти восемь игр короче десяти часов.", f:c => [Math.min(c.shorts, 8), 8]},
+  {k:"drop3", g:"×3", n:"Чистильщик", d:"Вычеркнуть три игры, которые не зацепили.", f:c => [Math.min(c.drop, 3), 3]},
+  {k:"collector", g:"ALL", n:"Полный шкаф", d:"Купить все игры из списка покупок.", f:c => [c.boughtMain, c.buyAll]},
+  {k:"invest", g:"10K", n:"Инвестор", d:"Потратить на покупки из списка 10 000 ₽.", f:c => [Math.min(c.spent, 10000), 10000]},
+  {k:"saleall", g:"%%", n:"Терпение окупается", d:"Купить все три игры, которые берёшь только по скидке.", f:c => [c.saleBought, 3]},
+  {k:"h300", g:"300", n:"Ультрамарафонец", d:"Пройти игры на 300 часов сюжета.", f:c => [Math.min(c.hours, 300), 300]},
+  {k:"master", g:"M", n:"Мастер", d:"Дорасти до ранга «Мастер».", f:c => [Math.min(c.total, 40), 40]},
+  {k:"legend", g:"L", n:"Легенда", d:"Дорасти до ранга «Легенда».", f:c => [Math.min(c.total, 55), 55]}
+];
+let achPrev = null, achOpen = false;
+function achContext(){
+  const plan = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps);
+  const main = ACTS.filter(a => !a.side);
+  const acts = main.map(a => a.g.length > 0 && a.g.every(closed));
+  const order = plan.filter(closed).sort((a, b) => (rec(a).t || 0) - (rec(b).t || 0));
+  let run = 0, best = 0; order.forEach(i => { if (st(i) === "done"){ run++; best = Math.max(best, run); } else run = 0; });
+  return {done: plan.filter(i => st(i) === "done").length, drop: plan.filter(i => st(i) === "drop").length, acts, actsDone: acts.filter(Boolean).length, actsAll: acts.length, streak: best,
+    bought: plan.filter(i => GAMES[i].buy && rec(i).b).length, saleBought: plan.filter(i => GAMES[i].sale && rec(i).b).length,
+    hours: plan.filter(i => st(i) === "done").reduce((a, i) => a + (GAMES[i].h || 0), 0),
+    play: plan.filter(i => st(i) === "play").length,
+    proAll: Object.keys(GAMES).filter(i => GAMES[i].pro).length, proDone: Object.keys(GAMES).filter(i => GAMES[i].pro && st(i) === "done").length,
+    shorts: plan.filter(i => st(i) === "done" && GAMES[i].h != null && GAMES[i].h <= 10).length,
+    buyAll: plan.filter(i => GAMES[i].buy && GAMES[i].buy !== "DLC").length, boughtMain: plan.filter(i => GAMES[i].buy && GAMES[i].buy !== "DLC" && rec(i).b).length,
+    spent: plan.filter(i => GAMES[i].buy && rec(i).b).reduce((a, i) => a + (GAMES[i].price || 0), 0),
+    total: Object.keys(GAMES).filter(i => st(i) === "done").length};
+}
+let toastTimer = null;
+function notice(text){
+  const t = document.getElementById("toast");
+  t.innerHTML = '<span class="hex">!</span><span><small>Внимание</small>' + esc(text) + '</span>';
+  t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 6000);
+}
+function toast(a){
+  const t = document.getElementById("toast");
+  t.innerHTML = '<span class="hex">' + esc(a.g) + '</span><span><small>Достижение получено</small>' + esc(a.n) + '</span>';
+  t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 4200);
+}
+function renderAch(){
+  const c = achContext(), got = new Set(), ratio = [];
+  const html = ACH.map(a => { const [v, m] = a.f(c), ok = v >= m; if (ok) got.add(a.k); ratio.push(m ? v / m : 0);
+    return '<li class="' + (ok ? "got" : "") + '"><span class="hex" aria-hidden="true">' + esc(a.g) + '</span><div><div class="an">' + esc(a.n) + '</div><div class="ad">' + esc(a.d) + '</div>' +
+      (!ok && m > 1 ? '<div class="ap"><i><b style="width:' + Math.round(v / m * 100) + '%"></b></i>' + nf.format(v) + '/' + nf.format(m) + '</div>' : "") + '</div></li>'; });
+  const sorted = ACH.map((a, i) => [got.has(a.k) ? 0 : 1, -ratio[i], i]).sort((x, y) => x[0] - y[0] || x[1] - y[1] || x[2] - y[2]);
+  const shown = achOpen ? sorted : sorted.slice(0, Math.max(8, got.size + 4));
+  document.getElementById("ach").innerHTML = shown.map(x => html[x[2]]).join("");
+  const more = document.getElementById("ach-more");
+  more.hidden = shown.length >= sorted.length && !achOpen;
+  more.textContent = achOpen ? "Свернуть" : "Показать все " + ACH.length;
+  document.getElementById("ach-meta").textContent = got.size + " из " + ACH.length;
+  if (achPrev && dataReady){ const fresh = ACH.filter(a => got.has(a.k) && !achPrev.has(a.k)); if (fresh.length) toast(fresh[fresh.length - 1]); }
+  if (dataReady || !db) achPrev = got;
+}
+let dataReady = false;
+
+/* ---------- state ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const nf = new Intl.NumberFormat("ru-RU");
+function loadLocal(){ try{ const j = JSON.parse(localStorage.getItem(KEY) || "{}"); if (j.state) state = j.state; if (j.meta) meta = j.meta; }catch(e){} }
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify({state, meta})); }catch(e){} }
+const rec = id => state[id] || {s:null, b:false};
+const st = id => rec(id).s || null;
+const owned = id => !GAMES[id].buy || rec(id).b;
+const closed = id => st(id) === "done" || st(id) === "drop";
+function setNote(t){ document.getElementById("save-note").textContent = t; document.getElementById("cx-save-note").textContent = t; }
+function today(){ const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+const doneCount = () => Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps && st(i) === "done").length;
+const allDone = () => Object.keys(GAMES).filter(i => st(i) === "done").length;
+const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? b : c; };
+
+const ICON = {
+  play:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>',
+  done:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  drop:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  bought:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 5.5h10l-.8 8.5H3.8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M5.6 5.5V4.4a2.4 2.4 0 0 1 4.8 0v1.1" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.6 9.6l1.7 1.7 3.2-3.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  cart:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 2h2l1.6 8h7.4l1.5-5.5H4.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.3" cy="13" r="1.2" fill="currentColor"/><circle cx="11.6" cy="13" r="1.2" fill="currentColor"/></svg>'
+};
+
+function card(id){
+  const g = GAMES[id], s = st(id), have = owned(id), title = g.ct || g.t, wish = g.buy && !have;
+  const stamp = s === "done" ? '<span class="stamp">Пройдено</span>' : s === "drop" ? '<span class="stamp">Брошено</span>' : "";
+  const badge = wish ? '<span class="badge wish">КУПИТЬ</span>' : s === "play" ? '<span class="badge live">ИГРАЮ</span>' : "";
+  let role;
+  if (g.buy) role = '<span class="role r-buy">' + (g.buy === "DLC" ? "дополнение" : "покупка №" + g.buy) + '</span>';
+  else { const r = ROLE[g.role]; role = '<span class="role ' + r[1] + '">' + r[0] + '</span>'; }
+  const hrs = g.h == null ? "" : '<span>≈ ' + g.h + ' ч' + (g.role === "finish" ? " до финала" : "") + '</span>';
+  const price = g.price ? '<span>' + nf.format(g.price) + ' ₽' + (g.sale ? ' · по скидке' : '') + '</span>' : "";
+  const dis = readOnly ? " disabled" : "";
+  let ctrl;
+  if (wish) ctrl = '<div class="ctrl"><button class="ib cart" type="button" data-id="' + id + '" data-a="buy" aria-label="Купил: ' + esc(g.t) + '"' + dis + '>' + ICON.cart + 'Купил</button></div>';
+  else ctrl = '<div class="ctrl">' +
+      '<button class="ib play" type="button" data-id="' + id + '" data-s="play" aria-pressed="' + (s === "play") + '" aria-label="Играю: ' + esc(g.t) + '" title="Играю"' + dis + '>' + ICON.play + '</button>' +
+      '<button class="ib done" type="button" data-id="' + id + '" data-s="done" aria-pressed="' + (s === "done") + '" aria-label="Пройдено: ' + esc(g.t) + '" title="Пройдено"' + dis + '>' + ICON.done + '</button>' +
+      '<button class="ib drop" type="button" data-id="' + id + '" data-s="drop" aria-pressed="' + (s === "drop") + '" aria-label="Бросил: ' + esc(g.t) + '" title="Бросил"' + dis + '>' + ICON.drop + '</button></div>' +
+      (g.buy && !s ? '<button class="unbuy" type="button" data-id="' + id + '" data-a="unbuy"' + dis + '>Отменить покупку</button>' : "");
+  const art = drawArt(id);
+  return '<li class="card' + (wish ? " is-wish" : s ? " is-" + s : "") + '">' +
+    '<div class="cover" style="--ink:' + g.ink + '" role="img" aria-label="' + esc(g.t) + '">' +
+      (art ? '<img class="art" src="' + art + '" alt="">' : "") +
+      '<span class="yr">' + g.yr + '</span>' + badge + stamp +
+      '<span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : "") + '</span>' +
+    '</div>' +
+    '<div class="info"><div class="name">' + esc(g.t) + '</div>' +
+      '<div class="meta">' + role + hrs + price + '</div>' +
+      '<div class="note">' + esc(g.note) + '</div></div>' + ctrl + '</li>';
+}
+
+function render(){
+  const ids = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps), done = doneCount(), total = allDone();
+  const playing = ids.filter(i => st(i) === "play");
+  let left = 0, unknown = 0;
+  ids.forEach(i => { if (closed(i)) return; if (GAMES[i].h == null) unknown++; else left += GAMES[i].h; });
+  document.getElementById("s-done").textContent = done + " из " + ids.length;
+  document.getElementById("s-play").textContent = playing.length;
+  document.getElementById("s-left").textContent = "≈ " + nf.format(left) + " ч";
+  document.getElementById("s-left-cap").textContent = unknown ? "осталось, плюс " + unknown + " без оценки" : "осталось";
+
+  /* rank */
+  let ri = 0; RANKS.forEach((r, i) => { if (total >= r[0]) ri = i; });
+  const cur = RANKS[ri], nxt = RANKS[ri + 1];
+  document.getElementById("rank-name").textContent = cur[1];
+  if (nxt){ const need = nxt[0] - total; document.getElementById("rank-sub").textContent = total + " " + plural(total, "игра пройдена", "игры пройдено", "игр пройдено") + " · до ранга «" + nxt[1] + "» ещё " + need + " " + plural(need, "игра", "игры", "игр");
+    document.getElementById("xp").style.width = Math.round((total - cur[0]) / (nxt[0] - cur[0]) * 100) + "%"; }
+  else { document.getElementById("rank-sub").textContent = "Весь путь пройден."; document.getElementById("xp").style.width = "100%"; }
+
+  /* current act + hero */
+  const main = ACTS.filter(a => !a.side);
+  let curIdx = main.findIndex(a => a.g.some(i => !closed(i)));
+  if (curIdx < 0) curIdx = main.length - 1;
+  const heroId = playing.find(i => GAMES[i].role === "main") || playing[0] || main[curIdx].g[0];
+  const ha = drawArt(heroId, true); document.getElementById("hero-art").style.backgroundImage = ha ? "url(" + ha + ")" : "";
+  document.getElementById("backdrop").style.backgroundImage = ha ? "url(" + ha + ")" : "";
+  document.getElementById("now").innerHTML = playing.length
+    ? '<span class="lbl">Сейчас</span>' + playing.map(i => '<span><i style="background-image:url(' + drawArt(i) + ')"></i>' + esc(GAMES[i].t) + '</span>').join("")
+    : '<span class="lbl">Акт ' + main[curIdx].r + ' · ' + esc(main[curIdx].t) + '</span>';
+
+  document.getElementById("map").innerHTML = main.map((a, i) => '<li class="' + (i < curIdx ? "past" : i === curIdx ? "cur" : "") + '"><a href="#act-' + (i + 1) + '" title="Акт ' + a.r + ' · ' + esc(a.t) + '" aria-label="Акт ' + a.r + ': ' + esc(a.t) + '">' + a.r + '</a></li>').join("");
+
+  /* purchase meter */
+  const base = Math.min(meta.base || 0, done), since = Math.min(5, done - base);
+  let pips = ""; for (let k = 1; k <= 5; k++) pips += '<span class="pip' + (k <= since ? " on" : "") + '">' + k + '</span>';
+  document.getElementById("meter").innerHTML = pips;
+  const nextBuy = ids.filter(i => GAMES[i].buy && GAMES[i].buy !== "DLC" && !rec(i).b).sort((a, b) => GAMES[a].buy - GAMES[b].buy)[0];
+  const nextName = nextBuy ? GAMES[nextBuy].t : "новую игру";
+  document.getElementById("meter-cap").innerHTML = since >= 5
+    ? '<span class="ok">Пять игр пройдено — можно покупать ' + esc(nextName) + '.</span>'
+    : 'Пройдено <b>' + since + ' из 5</b>. Следующая покупка: ' + esc(nextName) + '.';
+  document.getElementById("buy-btn").disabled = readOnly;
+  const log = Array.isArray(meta.log) ? meta.log : [];
+  document.getElementById("buy-last").textContent = log.length
+    ? "Последняя покупка: " + new Date(log[log.length - 1] + "T12:00:00").toLocaleDateString("ru-RU", {day:"numeric", month:"long"})
+    : "Счётчик обнуляется при каждой покупке.";
+  const ord = g => g.buy === "DLC" ? 4.5 : g.buy;
+  document.getElementById("buys").innerHTML = ids.filter(i => GAMES[i].buy).sort((a, b) => ord(GAMES[a]) - ord(GAMES[b])).map(i => { const g = GAMES[i], got = rec(i).b;
+    return '<li class="' + (got ? 'got' : g.sale ? 'sale' : '') + '"><span class="bn">' + (g.buy === "DLC" ? "DLC" : String(g.buy).padStart(2, "0")) + '</span><span class="bi" style="background-image:url(' + drawArt(i) + ')"></span><span class="bt">' + esc(g.t) + '<small>' + (got ? "куплено" : "после " + esc(g.after)) + (g.sale && !got ? " · только по скидке" : "") + '</small></span><span class="bs">' + (g.price ? nf.format(g.price) + " ₽" : "цена —") + '</span></li>'; }).join("");
+
+  const bl = ids.filter(i => GAMES[i].buy), sum = f => bl.filter(f).reduce((a, i) => a + (GAMES[i].price || 0), 0);
+  const toBuy = sum(i => !rec(i).b), leftFull = sum(i => !rec(i).b && !GAMES[i].sale), spent = sum(i => rec(i).b);
+  const noPrice = bl.filter(i => !GAMES[i].price).map(i => GAMES[i].t);
+  document.getElementById("buy-total").innerHTML = '<span>Осталось купить: <b>' + nf.format(toBuy) + ' ₽</b></span>' +
+    '<span>Без игр «только по скидке»: <b>' + nf.format(leftFull) + ' ₽</b></span>' +
+    (spent ? '<span>Уже потрачено: <b>' + nf.format(spent) + ' ₽</b></span>' : '') +
+    (noPrice.length ? '<span class="small">Без цены: ' + esc(noPrice.join(", ")) + '</span>' : '');
+
+  const pro = Object.keys(GAMES).filter(i => GAMES[i].pro), proDone = pro.filter(i => st(i) === "done").length;
+  document.getElementById("pro-meta").textContent = proDone + " из " + pro.length;
+  document.getElementById("prologue").innerHTML = pro.map(i => { const g = GAMES[i], on = st(i) === "done", title = g.ct || g.t;
+    return '<li' + (on ? '' : ' class="off"') + '><button type="button" data-pro="' + i + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + (on ? ': пройдено' : ': не отмечено') + '"' + (readOnly ? ' disabled' : '') + '>' +
+      '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + drawArt(i) + '" alt=""><span class="yr">' + g.yr + '</span><span class="ok">' + ICON.done + '</span>' +
+      '<span class="ct' + ctCls(title) + '">' + esc(title) + '</span></div></button></li>'; }).join("");
+
+  renderAch();
+
+  /* acts */
+  let html = "";
+  ACTS.forEach((a, ai) => {
+    const n = a.g.length, d = a.g.filter(closed).length, mi = main.indexOf(a), isCur = mi === curIdx;
+    const fin = n > 0 && d === n, key = "a" + ai, idAttr = (mi >= 0 ? ' id="act-' + (mi + 1) + '"' : "") + ' style="--tint:' + GAMES[a.g[0]].c[0] + '"';
+    const un = a.unlock ? '<div class="unlock"><b>' + ([].concat(a.unlock).length > 1 ? 'Потом покупки' : 'Потом покупка') + '</b>' + esc([].concat(a.unlock).map(u => GAMES[u].t).join(" + ")) + '</div>' : "";
+    const head = '<div class="act-head"><span class="numeral" aria-hidden="true">' + a.r + '</span>' +
+        '<div class="act-kicker"><span class="eyebrow">' + esc(a.kicker || "Акт " + a.r) + '</span>' +
+        (fin ? '<span class="tag fin-tag">Пройден</span>' : isCur ? '<span class="tag">Сейчас</span>' : "") +
+        '<span class="act-meta">' + d + ' из ' + n + ' закрыто</span></div>' +
+        '<h3>' + esc(a.t) + '</h3></div>';
+    const body = '<p class="sub">' + esc(a.sub) + '</p><ul class="shelf">' + a.g.map(card).join("") + '</ul>' + un;
+    if (fin) {
+      const thumbs = '<span class="thumbs" aria-hidden="true">' + a.g.map(i => '<i style="background-image:url(' + drawArt(i) + ')"></i>').join("") + '</span>';
+      html += '<details class="act fin" data-k="' + key + '"' + idAttr + (openActs.has(key) ? " open" : "") + '><summary>' + head + thumbs + '<span class="fold">' + (openActs.has(key) ? "Свернуть" : "Показать") + '</span></summary>' + body + '</details>';
+    } else {
+      html += '<section class="act' + (isCur ? " cur" : "") + '"' + idAttr + '>' + head + body + '</section>';
+    }
+  });
+  document.getElementById("plan").innerHTML = html;
+  renderConsole();
+}
+
+/* ---------- console view ---------- */
+function ctCls(t){ const L = Math.max.apply(null, t.split(" ").map(w => w.length)); return L > 9 ? " xl" : L > 7 ? " long" : ""; }
+const TIER = {path:"platinum", allgiants:"gold", gta:"gold", witcher:"gold", ds:"gold", kcd:"gold", bo:"gold", giants:"gold", collector:"gold", h300:"gold", legend:"gold", threeq:"gold", half:"gold",
+  start:"bronze", vet:"bronze", first:"bronze", act1:"bronze", drop:"bronze", stray:"bronze", buy:"bronze", sale:"bronze"};
+const TIER_RU = {platinum:"платина", gold:"золото", silver:"серебро", bronze:"бронза"};
+const TIER_C = {platinum:["#e8f1ff","#8fa6c9"], gold:["#ffe7a8","#d99a2b"], silver:["#f2f4f7","#9aa3ae"], bronze:["#f3c39a","#a8622f"]};
+const cup = t => { const c = TIER_C[t]; return '<svg class="cup" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="g' + t + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></linearGradient></defs><path fill="url(#g' + t + ')" d="M7 3h10v3h3v2a5 5 0 0 1-4.6 5A5 5 0 0 1 13 15.9V18h3v3H8v-3h3v-2.1A5 5 0 0 1 8.6 13 5 5 0 0 1 4 8V6h3V3zm0 5H6a3 3 0 0 0 1.2 2.4A7 7 0 0 1 7 8zm10 0a7 7 0 0 1-.2 2.4A3 3 0 0 0 18 8h-1z"/></svg>'; };
+let cxTab = "path", cxSel = null, cxOpen = null;
+try { cxTab = localStorage.getItem("plan-cx-tab") || "path"; } catch (e) {}
+function cxDefaultSel(){
+  const plan = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps);
+  const playing = plan.filter(i => st(i) === "play");
+  if (playing.length) return playing.find(i => GAMES[i].role === "main") || playing[0];
+  const main = ACTS.filter(a => !a.side), cur = main.find(a => a.g.some(i => !closed(i)));
+  return cur ? cur.g.find(i => !closed(i)) : plan[0];
+}
+function actOf(id){ return ACTS.find(a => a.g.includes(id)); }
+function cxTile(id){
+  const g = GAMES[id], s = st(id), wish = g.buy && !owned(id), title = g.ct || g.t;
+  const chk = s === "drop" ? ICON.drop : s === "play" ? ICON.play : "";
+  const mark = s === "done" ? '<span class="okd" title="Пройдено">' + ICON.done + '</span>' : chk ? '<span class="chk">' + chk + '</span>' : wish ? '<span class="badge wish">КУПИТЬ</span>' : '';
+  return '<button class="cx-tile' + (wish ? " is-wish" : s ? " is-" + s : "") + '" type="button" data-sel="' + id + '" aria-current="' + (id === cxSel) + '" aria-label="' + esc(g.t) + '">' +
+    '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + drawArt(id) + '" alt="">' + mark +
+    '<span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : '') + '</span></div></button>';
+}
+function renderConsole(){
+  const root = document.getElementById("view-console"); if (root.hidden) return;
+  const total = allDone();
+  let ri = 0; RANKS.forEach((r, i) => { if (total >= r[0]) ri = i; });
+  const cur = RANKS[ri], nxt = RANKS[ri + 1];
+  document.getElementById("cx-rank").textContent = cur[1];
+  document.getElementById("cx-rank-sub").textContent = nxt ? "до «" + nxt[1] + "» ещё " + (nxt[0] - total) : "весь путь пройден";
+  const ring = document.getElementById("cx-ring"); ring.style.setProperty("--p", nxt ? Math.round((total - cur[0]) / (nxt[0] - cur[0]) * 100) : 100);
+  ring.querySelector("span").textContent = total;
+  document.querySelectorAll(".cx-tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === cxTab)));
+  ["path","store","trophies","prologue"].forEach(t => { document.getElementById("cx-" + t).hidden = t !== cxTab; });
+  if (!cxSel || !GAMES[cxSel] || GAMES[cxSel].pro) cxSel = cxDefaultSel();
+
+  if (cxTab === "path"){
+    const g = GAMES[cxSel], s = st(cxSel), a = actOf(cxSel), wish = g.buy && !owned(cxSel), dis = readOnly ? " disabled" : "";
+    let role; if (g.buy) role = g.buy === "DLC" ? "дополнение" : "покупка №" + g.buy; else role = ROLE[g.role][0];
+    const meta = ['<span class="hl">' + role + '</span>', '<span>' + g.yr + '</span>'];
+    if (g.h != null) meta.push('<span>≈ ' + g.h + ' ч' + (g.role === "finish" ? " до финала" : "") + '</span>');
+    if (g.price) meta.push('<span>' + nf.format(g.price) + ' ₽' + (g.sale ? " · по скидке" : "") + '</span>');
+    const btn = (k, label, icon) => '<button class="bb' + (s === k ? " on-" + k : "") + '" type="button" data-id="' + cxSel + '" data-s="' + k + '" aria-pressed="' + (s === k) + '"' + dis + '>' + icon + label + '</button>';
+    const actions = wish
+      ? '<button class="bb buy" type="button" data-id="' + cxSel + '" data-a="buy"' + dis + '>' + ICON.cart + 'Купил за ' + nf.format(g.price || 0) + ' ₽</button><span class="small" style="align-self:center">после ' + esc(g.after) + '</span>'
+      : btn("play", "Играю", ICON.play) + btn("done", "Пройдено", ICON.done) + btn("drop", "Бросил", ICON.drop);
+    const art = drawArt(cxSel, true);
+    document.getElementById("cx-spot").style.setProperty("--ink", g.ink);
+    document.getElementById("cx-spot-art").style.backgroundImage = "url(" + art + ")";
+    document.getElementById("cx-spot-in").innerHTML = '<div class="eyebrow">' + esc(a ? (a.kicker || "Акт " + a.r) + " · " + a.t : "") + '</div>' +
+      '<h2 class="cx-title">' + esc(g.t) + '</h2><div class="cx-meta">' + meta.join("") + '</div><p class="cx-note">' + esc(g.note || "") + '</p><div class="cx-actions">' + actions + '</div>';
+    const title = g.ct || g.t;
+    document.getElementById("cx-poster").innerHTML = '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + art + '" alt=""><span class="yr">' + g.yr + '</span><span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : "") + '</span></div>';
+    const plan = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps), playing = plan.filter(i => st(i) === "play");
+    let rows = playing.length ? '<section class="cx-row"><div class="cx-row-h"><span class="cx-num" style="color:var(--play)">▶</span><h3>Сейчас играю</h3></div><div class="cx-strip">' + playing.map(cxTile).join("") + '</div></section>' : "";
+    const main = ACTS.filter(x => !x.side), curIdx = main.findIndex(x => x.g.some(i => !closed(i)));
+    if (cxOpen === null) cxOpen = new Set([ACTS.indexOf(main[curIdx >= 0 ? curIdx : 0])]);
+    const G = ACTS.find(x => x.giant);
+    if (G){ const gd = G.g.filter(closed).length, gNext = G.g.find(i => !closed(i));
+      rows += '<section class="cx-row giants"><div class="cx-row-h"><span class="cx-num" style="color:var(--accent)">G</span><h3>Гиганты</h3><span class="act-meta">' + gd + ' из ' + G.g.length + (gNext ? ' · следующий: ' + esc(GAMES[gNext].ct || GAMES[gNext].t) : '') + '</span></div><p class="small" style="margin:6px 0 0;max-width:70ch">' + esc(G.sub) + '</p><div class="cx-strip">' + G.g.map(cxTile).join("") + '</div></section>'; }
+    rows += '<div class="cx-row-h" style="margin-top:34px"><span class="cx-num">✦</span><h3>Акты</h3><span class="act-meta">' + main.filter(x => x.g.every(closed)).length + ' из ' + main.length + ' пройдено</span></div><div class="acts-grid">';
+    ACTS.forEach((x, ai) => { if (x.giant) return; const n = x.g.length, d = x.g.filter(closed).length, fin = n > 0 && d === n, mi = main.indexOf(x), isCur = mi >= 0 && mi === curIdx, open = cxOpen.has(ai);
+      const g0 = GAMES[x.g[0]], tag = isCur ? '<span class="tag">Сейчас</span>' : fin ? '<span class="tag fin-tag">Пройден</span>' : "";
+      if (open){
+        const un = x.unlock ? '<div class="unlock"><b>' + ([].concat(x.unlock).length > 1 ? 'Потом покупки' : 'Потом покупка') + '</b>' + esc([].concat(x.unlock).map(u => GAMES[u].t).join(" + ")) + '</div>' : "";
+        rows += '<section class="ab-open" style="--tint:' + g0.c[0] + '"><div class="ab-oh"><span class="ab-num big">' + esc(x.r) + '</span><div class="ab-ot"><div class="act-kicker"><span class="eyebrow">' + esc(x.kicker || "Акт " + x.r) + '</span>' + tag + '<span class="act-meta">' + d + ' из ' + n + ' закрыто</span></div><h3>' + esc(x.t) + '</h3></div><button class="ab-x" type="button" data-act="' + ai + '" aria-label="Свернуть акт">Свернуть</button></div>' +
+          '<p class="sub">' + esc(x.sub) + '</p><div class="ab-grid">' + x.g.map(cxTile).join("") + '</div>' + un + '</section>';
+      } else {
+        const fan = x.g.slice(0, 3).map((i, k) => '<img src="' + drawArt(i) + '" alt="" style="--k:' + k + '">').join("");
+        rows += '<button class="ab' + (fin ? " fin" : "") + (isCur ? " cur" : "") + '" type="button" data-act="' + ai + '" style="--tint:' + g0.c[0] + '" aria-label="' + esc((x.kicker || "Акт " + x.r) + ": " + x.t + ", " + d + " из " + n) + '">' +
+          '<span class="ab-bg" style="background-image:url(' + drawArt(x.g[0]) + ')"></span><span class="ab-num">' + esc(x.r) + '</span>' + (fin ? '<span class="okd ab-ok">' + ICON.done + '</span>' : isCur ? '<span class="tag ab-tag">Сейчас</span>' : '') +
+          '<span class="ab-fan">' + fan + '</span><span class="ab-t">' + esc(x.t) + '</span><span class="ab-p"><i style="width:' + Math.round(d / n * 100) + '%"></i></span><span class="ab-m">' + d + ' из ' + n + '</span></button>';
+      }
+    });
+    rows += '</div>';
+    const box = document.getElementById("cx-rows"), keep = [...box.querySelectorAll(".cx-strip")].map(e => e.scrollLeft);
+    box.innerHTML = rows;
+    box.querySelectorAll(".cx-strip").forEach((e, k) => { if (keep[k]) e.scrollLeft = keep[k]; });
+  } else if (cxTab === "store"){
+    const ids = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps), done = doneCount();
+    const base = Math.min(meta.base || 0, done), since = Math.min(5, done - base);
+    let pips = ""; for (let k = 1; k <= 5; k++) pips += '<span class="pip' + (k <= since ? " on" : "") + '">' + k + '</span>';
+    document.getElementById("cx-meter").innerHTML = pips;
+    const nextBuy = ids.filter(i => GAMES[i].buy && GAMES[i].buy !== "DLC" && !rec(i).b).sort((p, q) => GAMES[p].buy - GAMES[q].buy)[0];
+    document.getElementById("cx-meter-cap").innerHTML = since >= 5 ? '<span class="ok" style="color:var(--done);font-weight:700">Пять игр пройдено — можно покупать ' + esc(nextBuy ? GAMES[nextBuy].t : "новую игру") + '.</span>' : 'Пройдено <b>' + since + ' из 5</b>. Следующая: ' + esc(nextBuy ? GAMES[nextBuy].t : "—") + '.';
+    document.getElementById("cx-total").innerHTML = document.getElementById("buy-total").innerHTML;
+    const ord = g => g.buy === "DLC" ? 4.5 : g.buy, dis = readOnly ? " disabled" : "";
+    document.getElementById("cx-store-list").innerHTML = ids.filter(i => GAMES[i].buy).sort((p, q) => ord(GAMES[p]) - ord(GAMES[q])).map(i => { const g = GAMES[i], got = rec(i).b, title = g.ct || g.t, locked = got && st(i);
+      return '<li class="st' + (got ? " got" : "") + (g.sale ? " sale" : "") + '"><button type="button" data-buyt="' + i + '"' + dis + (locked ? ' disabled' : '') + ' aria-pressed="' + got + '" aria-label="' + esc(g.t) + (got ? ": куплено, нажми, чтобы отменить" : ": отметить купленным") + '">' +
+        '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + drawArt(i) + '" alt=""><span class="st-n">' + (g.buy === "DLC" ? "DLC" : "№" + g.buy) + '</span>' +
+        (got ? '<span class="okb" title="Куплено">' + ICON.bought + '</span>' : '') + '<span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : '') + '</span></div></button>' +
+        '<div class="st-i"><span class="st-a">' + (got ? "куплено" : "после " + esc(g.after)) + '</span><span class="st-p">' + (g.price ? nf.format(g.price) + ' ₽' : '—') + (g.sale ? '<small>по скидке</small>' : '') + '</span></div></li>'; }).join("");
+  } else if (cxTab === "trophies"){
+    const c = achContext(); let got = 0; const cnt = {platinum:0, gold:0, silver:0, bronze:0};
+    const items = ACH.map(a => { const [v, m] = a.f(c), ok = v >= m, t = TIER[a.k] || "silver"; if (ok){ got++; cnt[t]++; } return {a, v, m, ok, t}; })
+      .sort((p, q) => (q.ok - p.ok) || (q.v / q.m - p.v / p.m));
+    document.getElementById("cx-tro-sum").innerHTML = '<span class="tro-c"><b style="font-family:var(--f-display);font-size:22px">' + got + '</b>&nbsp;из ' + ACH.length + '</span>' +
+      ["platinum","gold","silver","bronze"].map(t => '<span class="tro-c">' + cup(t) + cnt[t] + '</span>').join("");
+    document.getElementById("cx-tro").innerHTML = items.map(x => '<li class="' + (x.ok ? "got" : "") + '">' + cup(x.t) + '<div><div class="an">' + esc(x.a.n) + '</div><div class="ad">' + esc(x.a.d) + '</div>' + (!x.ok && x.m > 1 ? '<div class="pr">' + nf.format(x.v) + ' / ' + nf.format(x.m) + '</div>' : '') + '</div><span class="tier">' + TIER_RU[x.t] + '</span></li>').join("");
+  } else if (cxTab === "prologue"){
+    document.getElementById("cx-pro").innerHTML = document.getElementById("prologue").innerHTML;
+    document.getElementById("cx-pro-meta").textContent = document.getElementById("pro-meta").textContent;
+  }
+}
+let VIEW = "console";
+try { VIEW = localStorage.getItem("plan-view") || "console"; } catch (e) {}
+function applyView(){
+  document.getElementById("view-console").hidden = VIEW !== "console";
+  document.getElementById("view-classic").hidden = VIEW !== "classic";
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.view === VIEW)));
+}
+function undoPurchase(id){
+  if (GAMES[id].buy === "DLC" || !meta.prev || meta.prev.id !== id) return;
+  const log = (meta.log || []).slice(); log.pop(); meta = {base: meta.prev.base, log, prev: null}; persistMeta();
+}
+function toggleBuy(id){
+  if (readOnly) return;
+  const r = Object.assign({s:null, b:false}, rec(id)), g = GAMES[id];
+  if (r.b){ if (r.s) return; delete state[id]; undoPurchase(id); }
+  else { r.b = true; r.t = Date.now(); state[id] = r; if (g.buy !== "DLC") recordPurchase(id); }
+  render(); persist(id);
+}
+function doAction(b){
+  if (readOnly) return;
+  if (b.dataset.pro){ const id = b.dataset.pro; if (st(id) === "done") delete state[id]; else state[id] = {s:"done", b:false, t:Date.now()}; render(); persist(id); return; }
+  const id = b.dataset.id, r = Object.assign({s:null, b:false}, rec(id));
+  if (b.dataset.a === "buy"){ r.b = true; r.t = Date.now(); state[id] = r; if (GAMES[id].buy !== "DLC") recordPurchase(id); }
+  else if (b.dataset.a === "unbuy"){ delete state[id]; undoPurchase(id); }
+  else { r.s = r.s === b.dataset.s ? null : b.dataset.s; r.t = Date.now(); if (r.s || r.b) state[id] = r; else delete state[id]; }
+  render(); persist(id);
+}
+document.getElementById("view-console").addEventListener("click", e => {
+  const tab = e.target.closest("[data-tab]"); if (tab){ cxTab = tab.dataset.tab; try { localStorage.setItem("plan-cx-tab", cxTab); } catch (er) {} renderConsole(); return; }
+  const sel = e.target.closest("[data-sel]"); if (sel){ cxSel = sel.dataset.sel; renderConsole(); document.getElementById("cx-spot").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"}); return; }
+  const ab = e.target.closest("[data-act]"); if (ab){ const k = Number(ab.dataset.act); if (cxOpen.has(k)) cxOpen.delete(k); else cxOpen.add(k); renderConsole(); return; }
+  const bt = e.target.closest("button[data-buyt]"); if (bt){ toggleBuy(bt.dataset.buyt); return; }
+  const b = e.target.closest("button[data-id], button[data-pro]"); if (b) doAction(b);
+  if (e.target.closest("#cx-buy-btn") && !readOnly){ recordPurchase(); render(); }
+});
+document.querySelector(".seg").addEventListener("click", e => { const b = e.target.closest("button[data-view]"); if (!b) return; VIEW = b.dataset.view; try { localStorage.setItem("plan-view", VIEW); } catch (er) {} applyView(); render(); });
+
+/* ---------- persistence ---------- */
+const cloudCall = (fn, ...args) => new Promise((res, rej) => cloud[fn](...args, (e, v) => e ? rej(e) : res(v)));
+function persist(id){
+  saveLocal();
+  if (!cloud) return;
+  const r = rec(id), prev = pending[id] || Promise.resolve();
+  pending[id] = prev.then(() => (r.s || r.b) ? cloudCall("setItem", "p_" + id, JSON.stringify({s: r.s || null, b: !!r.b, t: r.t || Date.now()})) : cloudCall("removeItem", "p_" + id)).catch(onWriteError);
+}
+function persistMeta(){
+  saveLocal();
+  if (!cloud) return;
+  const prev = pending.__meta || Promise.resolve();
+  pending.__meta = prev.then(() => cloudCall("setItem", "meta", JSON.stringify({base: meta.base, log: (meta.log || []).slice(), prev: meta.prev || null}))).catch(onWriteError);
+}
+function onWriteError(){
+  setNote("Отметка не сохранилась в Telegram. Попробуй нажать ещё раз чуть позже."); notice("Отметка не сохранилась: нет связи.");
+}
+function recordPurchase(id){ meta = {base: doneCount(), log: (Array.isArray(meta.log) ? meta.log : []).concat(today()), prev: id ? {id: id, base: meta.base || 0} : null}; persistMeta(); }
+
+document.getElementById("plan").addEventListener("click", e => {
+  const b = e.target.closest("button[data-id]");
+  if (b) doAction(b);
+});
+document.getElementById("plan").addEventListener("toggle", e => {
+  const d = e.target;
+  if (!d.matches || !d.matches("details.act")) return;
+  if (d.open) openActs.add(d.dataset.k); else openActs.delete(d.dataset.k);
+  const f = d.querySelector(".fold"); if (f) f.textContent = d.open ? "Свернуть" : "Показать";
+}, true);
+document.getElementById("ach-more").addEventListener("click", () => { achOpen = !achOpen; renderAch(); });
+document.getElementById("prologue").addEventListener("click", e => {
+  const b = e.target.closest("button[data-pro]");
+  if (b) doAction(b);
+});
+document.getElementById("buy-btn").addEventListener("click", () => { if (readOnly) return; recordPurchase(); render(); });
+
+function statusText(){
+  const plan = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps), playing = plan.filter(i => st(i) === "play");
+  const main = ACTS.filter(a => !a.side), a = main.find(x => x.g.some(i => !closed(i)));
+  const total = allDone(); let rank = RANKS[0][1]; RANKS.forEach(r => { if (total >= r[0]) rank = r[1]; });
+  const done = doneCount(), since = Math.min(5, done - Math.min(meta.base || 0, done));
+  const next = plan.filter(i => GAMES[i].buy && GAMES[i].buy !== "DLC" && !rec(i).b).sort((p, q) => GAMES[p].buy - GAMES[q].buy)[0];
+  const left = plan.filter(i => !closed(i)).reduce((n, i) => n + (GAMES[i].h || 0), 0);
+  return ["SnebaStar: " + rank + ", " + total + " " + plural(total, "игра пройдена", "игры пройдено", "игр пройдено"),
+    "Сейчас: " + (playing.length ? playing.map(i => GAMES[i].t).join(", ") : "ничего не начато"),
+    a ? "Акт " + a.r + " «" + a.t + "»: " + a.g.filter(closed).length + " из " + a.g.length : "Все акты закрыты",
+    "План: " + done + " из " + plan.length + ", осталось ≈ " + nf.format(left) + " ч",
+    next ? "До покупки: " + since + " из 5, следующая " + GAMES[next].t : "Все покупки сделаны"].join("\n");
+}
+document.getElementById("share-btn").addEventListener("click", e => {
+  const box = document.getElementById("share"), open = box.hidden;
+  box.hidden = !open; e.currentTarget.setAttribute("aria-expanded", String(open));
+  if (open){ document.getElementById("share-text").value = statusText(); document.getElementById("share-note").textContent = "Вставь текст в Telegram."; }
+});
+document.getElementById("share-copy").addEventListener("click", async () => {
+  const ta = document.getElementById("share-text"), note = document.getElementById("share-note");
+  let ok = false;
+  try { await navigator.clipboard.writeText(ta.value); ok = true; }
+  catch (e) { ta.focus(); ta.select(); try { ok = document.execCommand("copy"); } catch (er) {} }
+  note.textContent = ok ? "Скопировано. Вставь в Telegram." : "Не вышло скопировать: текст выделен, скопируй его вручную.";
+});
+function bootArt(){
+  const main = ACTS.filter(a => !a.side), cur = main.find(a => a.g.some(i => !closed(i))) || main[0], G = ACTS.find(a => a.giant);
+  cur.g.concat(G.g, cxDefaultSel()).forEach(i => drawArt(i));
+  artDefer = true;
+  render();
+  const rest = Object.keys(GAMES).filter(i => !ART[i]);
+  const step = () => {
+    const end = performance.now() + 12;
+    while (rest.length && performance.now() < end) drawArt(rest.shift(), true);
+    if (rest.length) setTimeout(step, 0);
+    else { artDefer = false; render(); }
+  };
+  setTimeout(step, 0);
+}
+loadLocal(); applyView(); bootArt();
+async function loadCloud(){
+  const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k.startsWith("p_"));
+  if (!keys.length) return;
+  const items = {};
+  for (let i = 0; i < keys.length; i += 20) Object.assign(items, await cloudCall("getItems", keys.slice(i, i + 20)));
+  const s = {};
+  keys.forEach(k => { if (!k.startsWith("p_") || !items[k]) return; const id = k.slice(2); try { const v = JSON.parse(items[k]); if (GAMES[id] && (v.s || v.b)) s[id] = {s: v.s || null, b: !!v.b, t: Number(v.t) || 0}; } catch (e) {} });
+  state = s;
+  if (items.meta) try { const v = JSON.parse(items.meta); meta = {base: Number(v.base) || 0, log: Array.isArray(v.log) ? v.log : [], prev: v.prev || null}; } catch (e) {}
+  saveLocal();
+}
+async function connectTelegram(){
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (!tg || !tg.initData) { dataReady = true; return; }
+  tg.ready(); tg.expand();
+  if (tg.isVersionAtLeast("6.1")) { tg.setHeaderColor("#06070b"); tg.setBackgroundColor("#06070b"); }
+  if (tg.isVersionAtLeast("7.7")) tg.disableVerticalSwipes();
+  if (!tg.isVersionAtLeast("6.9")) { dataReady = true; setNote("Telegram устарел: отметки сохраняются только на этом устройстве. Обнови приложение."); return; }
+  cloud = tg.CloudStorage;
+  readOnly = true; render();
+  try { await loadCloud(); setNote("Отметки сохраняются в Telegram, их видно на всех твоих устройствах."); }
+  catch (e) { setNote("Не удалось загрузить отметки из Telegram. Закрой и открой приложение."); notice("Не удалось загрузить отметки."); }
+  readOnly = false; achPrev = null; render(); dataReady = true; renderAch();
+}
+(() => {
+  const sdk = document.createElement("script");
+  const fail = () => { if (!dataReady && !cloud) dataReady = true; };
+  sdk.src = "https://telegram.org/js/telegram-web-app.js";
+  sdk.onload = connectTelegram; sdk.onerror = fail;
+  document.head.appendChild(sdk);
+})();
+
+/* ---------- transfer code ---------- */
+function exportCode(){
+  const by = f => Object.keys(state).filter(f);
+  return btoa(JSON.stringify({d: by(i => state[i].s === "done"), p: by(i => state[i].s === "play"), x: by(i => state[i].s === "drop"), b: by(i => state[i].b), m: meta}));
+}
+function importCode(code){
+  const v = JSON.parse(atob(code.trim()));
+  const put = (list, f) => (Array.isArray(list) ? list : []).forEach(i => { if (GAMES[i]) { state[i] = Object.assign({s: null, b: false, t: Date.now()}, state[i]); f(state[i]); touched.add(i); } });
+  const touched = new Set();
+  put(v.d, r => { r.s = "done"; }); put(v.p, r => { r.s = "play"; }); put(v.x, r => { r.s = "drop"; }); put(v.b, r => { r.b = true; });
+  if (!touched.size) throw new Error("empty");
+  if (v.m && typeof v.m === "object") { meta = {base: Number(v.m.base) || 0, log: Array.isArray(v.m.log) ? v.m.log : [], prev: v.m.prev || null}; persistMeta(); }
+  render(); touched.forEach(persist);
+  return touched.size;
+}
+document.getElementById("xfer-load").addEventListener("click", () => {
+  const note = document.getElementById("xfer-note"), ta = document.getElementById("xfer-text");
+  if (readOnly) { note.textContent = "Отметки ещё загружаются, подожди секунду."; return; }
+  try { const n = importCode(ta.value); ta.value = ""; note.textContent = "Загружено отметок: " + n + "."; }
+  catch (e) { note.textContent = "Код не подошёл. Проверь, что он скопирован целиком."; }
+});
+document.getElementById("xfer-show").addEventListener("click", () => {
+  const ta = document.getElementById("xfer-text"); ta.value = exportCode(); ta.focus(); ta.select();
+  document.getElementById("xfer-note").textContent = "Это твой код, скопируй и сохрани его.";
+});
+</script>
+
+</body></html>
