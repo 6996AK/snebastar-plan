@@ -384,6 +384,8 @@ button:disabled{opacity:.45;cursor:default}
 .pool-make:not(:disabled){background:var(--accent);border-color:var(--accent);color:#1c1204}
 .pool-tile[aria-pressed="true"] .cover{box-shadow:0 0 0 3px var(--accent)}
 .pool-t{display:block;margin-top:6px;font-size:12px;line-height:1.25;color:var(--mute);overflow-wrap:anywhere}
+.hook{margin-top:12px;padding:10px 12px;border-radius:12px;border:1px solid rgba(243,185,77,.6);background:rgba(243,185,77,.12);font-size:14px}
+.hook .buy-row{margin-top:8px}
 /* ---------- status for Telegram ---------- */
 .viewbar .share-btn{margin-right:auto;padding:6px 14px;font-size:12.5px}
 .share{position:relative;z-index:2;box-sizing:border-box;max-width:1000px;margin:10px auto 0;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
@@ -552,7 +554,7 @@ const GAMES = {
   "deadspace":  {t:"Dead Space", ct:"Dead Space", yr:2023, h:12, role:"main", m:"space", c:["#7a7a4a","#0c0d08"], ink:"#ffb84a", note:"Ремейк классики космического хоррора."},
   "callisto":   {t:"The Callisto Protocol", ct:"Callisto", sub:"Protocol", yr:2022, h:12, role:"main", m:"space", c:["#3a6a9a","#06090d"], ink:"#9fd8ff", note:"От создателей Dead Space — специально далеко от него, чтобы не приелось."},
   "untildawn":  {t:"Until Dawn", ct:"Until Dawn", yr:2024, h:9, price:1700, buy:3, after:"акта V", m:"forest", c:["#4a6890","#07090d"], ink:"#d8e8ff", note:"Интерактивный хоррор в заснеженных горах."},
-  "re4":        {t:"Resident Evil 4", ct:"Resident Evil 4", yr:2023, h:16, role:"main", m:"forest", c:["#a07a3a","#140f08"], ink:"#ffd890", note:"Заново, с начала. Третье исключение из правила."},
+  "re4":        {t:"Resident Evil 4", ct:"Resident Evil 4", yr:2023, h:16, role:"main", m:"forest", c:["#a07a3a","#140f08"], ink:"#ffd890", note:"Заново, с начала: в прошлый раз только начал."},
   "village":    {t:"Resident Evil Village", ct:"Village", sub:"Resident Evil", yr:2021, h:10, role:"short", m:"mountains", c:["#8a96a8","#0c0e12"], ink:"#e8ddc8", note:"Продолжение истории Итана после RE7."},
   "prey":       {t:"Prey", yr:2017, h:17, role:"main", m:"space", c:["#c9d4e0","#2d3a4a"], ink:"#ffffff", note:"Станция «Талос-1», иммерсив-сим от Arkane."},
   "dis2":       {t:"Dishonored 2", ct:"Dishonored 2", yr:2016, h:14, role:"main", m:"sea", c:["#f0b860","#3a2414"], ink:"#ffe2a8", note:"Тоже Arkane, тот же стиль, через акт после Prey."},
@@ -933,7 +935,7 @@ function card(id){
   let role;
   if (g.buy) role = '<span class="role r-buy">' + (g.buy === "DLC" ? "дополнение" : "покупка №" + g.buy) + '</span>';
   else { const r = ROLE[g.role]; role = '<span class="role ' + r[1] + '">' + r[0] + '</span>'; }
-  const hrs = g.h == null ? "" : '<span>≈ ' + g.h + ' ч' + (g.role === "finish" ? " до финала" : "") + '</span>';
+  const hrs = (g.h == null ? "" : '<span>≈ ' + g.h + ' ч' + (g.role === "finish" ? " до финала" : "") + '</span>') + playLabel(id);
   const price = g.price ? '<span>' + nf.format(g.price) + ' ₽' + (g.sale ? ' · по скидке' : '') + '</span>' : "";
   const dis = readOnly ? " disabled" : "";
   let ctrl;
@@ -1070,6 +1072,31 @@ function cxTile(id){
     '<span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : '') + '</span></div></button>';
 }
 const ACT_MAX = 3;
+const STEAM_APP = {"pragmata":3357650,"hellraiser":1551980,"doom-tda":3017860,"re2":883710,"gta3":1546970,"gtavc":1546990,"gtasa":1547000,"gta4":12210,"re7":418370,"pbz":4115450,"indika":1373960,"control-r":3669870,"inscryption":1092790,"titanfall2":1237970,"rdr2":1174180,"stray":1332010,"witcher3":292030,"doom2016":379720,"eternal":782330,"deadspace":1693980,"callisto":1544020,"untildawn":2172010,"re4":2050650,"village":1196590,"prey":480490,"dis2":403640,"hol":1583230,"e33":1903340,"tno":201810,"ds":1850570,"wolf2":612880,"ratchet":1895880,"se5":1029690,"bunny":1421250,"gotg":1088850,"hellisus":1620730,"wd2":447040,"kcd":379430,"kcd2":1771300,"crimson":3321460,"gears5":1097840,"evilwest":1065310,"galactic":4078430,"onimusha":2638890,"bo1":42700,"re4sw":2109300,"roboquest":692890,"hol2":2069250,"ds2":3280350,"mouse":2416450,"bo2":202970,"wwii":476600,"bo3":311210};
+const STEAM_FILE = new URLSearchParams(location.search).has("steamtest") ? "steam-test.json" : "steam.json";
+const HOOK_SKIP = ["pragmata"];
+const hookLimit = id => id === "witcher3" ? 300 : 180;
+let steamPlay = null, hookOk = [];
+function playMin(id){
+  if (!steamPlay) return null;
+  const app = STEAM_APP[id] || (/^s\d+$/.test(id) ? id.slice(1) : null);
+  if (!app || steamPlay.p[app] == null) return null;
+  return Math.max(0, steamPlay.p[app] - (steamPlay.b[app] || 0));
+}
+const fmtMin = m => m < 60 ? m + " мин" : Math.floor(m / 60) + " ч" + (m % 60 ? " " + (m % 60) + " мин" : "");
+const hookApplies = id => !closed(id) && GAMES[id].role !== "finish" && !HOOK_SKIP.includes(id) && !hookOk.includes(id);
+const hookDue = id => { const m = playMin(id); return m != null && GAMES[id] && !GAMES[id].pro && !GAMES[id].ps && hookApplies(id) && m >= hookLimit(id); };
+function playLabel(id){
+  const m = playMin(id);
+  if (!m) return "";
+  return '<span>' + fmtMin(m) + (hookApplies(id) ? ' из ' + hookLimit(id) / 60 + ' ч' : ' в игре') + '</span>';
+}
+function persistHook(){
+  try { localStorage.setItem("plan-hook", JSON.stringify(hookOk)); } catch (e) {}
+  if (!cloud) return;
+  const prev = pending.__hook || Promise.resolve();
+  pending.__hook = prev.then(() => cloudCall("setItem", "hook", JSON.stringify(hookOk))).catch(onWriteError);
+}
 /* last tile of the acts grid: build a new act from the Steam collection */
 function poolHtml(){
   const ids = Object.keys(POOL), n = ids.length;
@@ -1101,6 +1128,8 @@ function renderConsole(){
     const meta = ['<span class="hl">' + role + '</span>', '<span>' + g.yr + '</span>'];
     if (g.h != null) meta.push('<span>≈ ' + g.h + ' ч' + (g.role === "finish" ? " до финала" : "") + '</span>');
     if (g.price) meta.push('<span>' + nf.format(g.price) + ' ₽' + (g.sale ? " · по скидке" : "") + '</span>');
+    const pl = playLabel(cxSel); if (pl) meta.push(pl);
+    const hook = hookDue(cxSel) ? '<div class="hook"><b>' + fmtMin(playMin(cxSel)) + ' позади. Зацепила?</b><div class="buy-row"><button class="btn" type="button" data-hook-ok="' + cxSel + '">Да, играю дальше</button><button class="btn" type="button" data-hook-drop="' + cxSel + '">Нет, вычёркиваю</button></div></div>' : "";
     const btn = (k, label, icon) => '<button class="bb' + (s === k ? " on-" + k : "") + '" type="button" data-id="' + cxSel + '" data-s="' + k + '" aria-pressed="' + (s === k) + '"' + dis + '>' + icon + label + '</button>';
     const actions = wish
       ? '<button class="bb buy" type="button" data-id="' + cxSel + '" data-a="buy"' + dis + '>' + ICON.cart + 'Купил за ' + nf.format(g.price || 0) + ' ₽</button><span class="small" style="align-self:center">после ' + esc(g.after) + '</span>'
@@ -1109,7 +1138,7 @@ function renderConsole(){
     document.getElementById("cx-spot").style.setProperty("--ink", g.ink);
     document.getElementById("cx-spot-art").style.backgroundImage = "url(" + art + ")";
     document.getElementById("cx-spot-in").innerHTML = '<div class="eyebrow">' + esc(a ? (a.kicker || "Акт " + a.r) + " · " + a.t : "") + '</div>' +
-      '<h2 class="cx-title">' + esc(g.t) + '</h2><div class="cx-meta">' + meta.join("") + '</div><p class="cx-note">' + esc(g.note || "") + '</p><div class="cx-actions">' + actions + '</div>';
+      '<h2 class="cx-title">' + esc(g.t) + '</h2><div class="cx-meta">' + meta.join("") + '</div><p class="cx-note">' + esc(g.note || "") + '</p>' + hook + '<div class="cx-actions">' + actions + '</div>';
     const title = g.ct || g.t;
     document.getElementById("cx-poster").innerHTML = '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + art + '" alt=""><span class="yr">' + g.yr + '</span><span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : "") + '</span></div>';
     const plan = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps), playing = plan.filter(i => st(i) === "play");
@@ -1192,6 +1221,10 @@ function doAction(b){
 }
 document.getElementById("view-console").addEventListener("click", e => {
   const tab = e.target.closest("[data-tab]"); if (tab){ cxTab = tab.dataset.tab; try { localStorage.setItem("plan-cx-tab", cxTab); } catch (er) {} renderConsole(); return; }
+  const hk = e.target.closest("[data-hook-ok]");
+  if (hk){ if (!readOnly){ hookOk = hookOk.concat(hk.dataset.hookOk); persistHook(); renderConsole(); } return; }
+  const hd = e.target.closest("[data-hook-drop]");
+  if (hd){ if (!readOnly){ const id = hd.dataset.hookDrop; state[id] = Object.assign({b: false}, rec(id), {s: "drop", t: Date.now()}); render(); persist(id); } return; }
   if (e.target.closest("[data-pool-toggle]")){ poolOpen = !poolOpen; renderConsole(); return; }
   const pick = e.target.closest("[data-pick]");
   if (pick){ const id = pick.dataset.pick; if (poolPick.has(id)) poolPick.delete(id); else if (poolPick.size < ACT_MAX) poolPick.add(id); renderConsole(); return; }
@@ -1313,9 +1346,14 @@ let cloudFailed = false;
 async function applySteam(){
   if (cloudFailed) return;
   let data;
-  try { const r = await fetch("https://raw.githubusercontent.com/6996ak/snebastar-plan/main/steam.json", {cache: "no-store"}); if (!r.ok) return; data = await r.json(); } catch (e) { return; }
+  try { const r = await fetch("https://raw.githubusercontent.com/6996ak/snebastar-plan/main/" + STEAM_FILE, {cache: "no-store"}); if (!r.ok) return; data = await r.json(); } catch (e) { return; }
   const when = data.updated ? new Date(data.updated * 1000).toLocaleString("ru-RU", {day: "numeric", month: "long", hour: "2-digit", minute: "2-digit"}) : "";
-  if (when) document.getElementById("cx-steam-note").textContent = "Steam проверен: " + when + ".";
+  if (when) document.getElementById("cx-steam-note").textContent = (STEAM_FILE === "steam.json" ? "" : "ТЕСТ. ") + "Steam проверен: " + when + ".";
+  steamPlay = {p: data.playtime || {}, b: data.baseline || {}};
+  try { const h = JSON.parse((cloud ? await cloudCall("getItem", "hook") : localStorage.getItem("plan-hook")) || "[]"); if (Array.isArray(h)) hookOk = h; } catch (e) {}
+  const due = Object.keys(GAMES).find(hookDue);
+  if (due){ cxSel = due; notice(fmtMin(playMin(due)) + " в " + (GAMES[due].ct || GAMES[due].t) + ". Зацепила?", "Правило трёх часов"); }
+  render();
   let seen = [];
   try { seen = JSON.parse((cloud ? await cloudCall("getItem", "steam") : localStorage.getItem("plan-steam-seen")) || "[]"); } catch (e) { return; }
   const fresh = Object.keys(data.finished || {}).filter(i => GAMES[i] && !seen.includes(i));
