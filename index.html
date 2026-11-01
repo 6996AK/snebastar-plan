@@ -372,6 +372,25 @@ button:disabled{opacity:.45;cursor:default}
 /* Steam covers carry their own title */
 .cover:has(img.art[src*="steamstatic"]) > .ct,.cover:has(img.art[src*="steamstatic"]) > .yr{display:none}
 .cover:has(img.art[src*="steamstatic"])::after{background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,transparent 22%)}
+/* common list and act editing */
+.list-q{display:block;box-sizing:border-box;width:100%;margin-top:12px;font:inherit;font-size:16px;color:var(--fg);background:var(--panel);border:1px solid var(--line-2);border-radius:999px;padding:8px 16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chip{font:inherit;font-size:12.5px;font-weight:600;color:var(--mute);background:var(--panel);border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip small{font-family:var(--f-mono);font-size:11px;opacity:.8}
+.chip[aria-pressed="true"]{background:var(--fg);border-color:var(--fg);color:#0b0d12}
+#list-target{flex:1 1 150px;min-width:0;box-sizing:border-box;font:inherit;font-size:14px;color:var(--fg);background:#1a1d26;border:1px solid var(--line-2);border-radius:999px;padding:6px 12px}
+.btn.pro-btn:not(:disabled){border-color:var(--done);color:var(--done)}
+.btn.danger:not(:disabled){border-color:var(--drop);color:#ffb3bb}
+.list-count{flex:1 1 100%}
+.pool-a{display:block;margin-top:2px;font-family:var(--f-mono);font-size:10.5px;color:var(--mute);opacity:.75}
+.pool-a.in{color:var(--accent);opacity:1}
+.edit-tile{position:relative;min-width:0}
+.edit-tile .cx-tile{display:block;width:100%}
+.tile-x{position:absolute;z-index:6;right:-6px;top:-6px;width:30px;height:30px;border-radius:50%;border:2px solid #0e1016;background:var(--drop);color:#2a0508;font:inherit;font-size:18px;font-weight:700;line-height:1;cursor:pointer}
+.add-tile{aspect-ratio:2/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1.5px dashed rgba(243,185,77,.6);border-radius:12px;background:rgba(243,185,77,.06);color:var(--accent);font:inherit;cursor:pointer}
+.add-tile span{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1}
+.add-tile small{font-size:12px;font-weight:600}
+@media (max-width:520px){.cx-tabs{width:100%;overflow-x:auto;scrollbar-width:none}.cx-tabs::-webkit-scrollbar{display:none}.cx-tabs button{flex:none;font-size:10.5px;padding:8px 6px}}
 /* pool of games for new acts */
 .ab.create{border-style:dashed;border-color:rgba(243,185,77,.6);background:rgba(243,185,77,.06);align-items:center;justify-content:center;text-align:center;gap:6px}
 .ab.create::after{display:none}
@@ -409,6 +428,7 @@ button:disabled{opacity:.45;cursor:default}
     <div class="cx-brand">Sneba<b>Star</b></div>
     <nav class="cx-tabs" role="tablist" aria-label="Разделы">
       <button type="button" role="tab" data-tab="path" aria-selected="true">Путь</button>
+      <button type="button" role="tab" data-tab="list" aria-selected="false">Игры</button>
       <button type="button" role="tab" data-tab="store" aria-selected="false">Магазин</button>
       <button type="button" role="tab" data-tab="trophies" aria-selected="false">Трофеи</button>
       <button type="button" role="tab" data-tab="prologue" aria-selected="false">Пролог</button>
@@ -419,6 +439,14 @@ button:disabled{opacity:.45;cursor:default}
   <section id="cx-path">
     <div class="cx-spot" id="cx-spot"><div class="cx-spot-art" id="cx-spot-art"></div><div class="cx-spot-in" id="cx-spot-in"></div><div class="cx-poster" id="cx-poster"></div></div>
     <div id="cx-rows"></div>
+  </section>
+
+  <section id="cx-list" hidden>
+    <div class="cx-sec-h"><h2>Игры</h2><span class="act-meta">всё, что не отмечено в Прологе</span></div>
+    <input id="list-q" class="list-q" type="search" placeholder="Найти игру" aria-label="Найти игру" autocomplete="off">
+    <div class="chips" id="list-chips"></div>
+    <div class="pool-bar" id="list-bar"></div>
+    <div class="ab-grid" id="list-grid"></div>
   </section>
 
   <section id="cx-store" hidden>
@@ -637,8 +665,11 @@ const ACTS = [
   {r:"PS",    t:"Ждёт PS5 Pro", kicker:"После пути", sub:"То, что не выходит на ПК или не пошло на нём. Всё это дождётся PS5 Pro после пути и в правило не входит.", g:["gta6","yotei","gowl","pbz","infamous","order1886"], side:true}
 ];
 const POOL = {"s108710":{"t":"Alan Wake","yr":2012,"h":null,"role":"main","m":"forest","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"108710/library_600x900.jpg?t=1769717716"},"s752590":{"t":"A Plague Tale: Innocence","yr":2019,"h":null,"role":"main","m":"mountains","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"752590/library_600x900.jpg?t=1784712345"},"s1182900":{"t":"A Plague Tale: Requiem","yr":2022,"h":null,"role":"main","m":"city","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1182900/library_600x900.jpg?t=1784712272"},"s33230":{"t":"Assassin's Creed 2","yr":2010,"h":null,"role":"main","m":"space","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"33230/library_600x900.jpg?t=1786611094"},"s48190":{"t":"Assassin’s Creed Brotherhood","yr":2011,"h":null,"role":"main","m":"desert","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"48190/library_600x900.jpg?t=1786611524"},"s911400":{"t":"Assassin's Creed III Remastered","yr":2019,"h":null,"role":"main","m":"sea","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"911400/portrait.png?t=1786631735"},"s242050":{"t":"Assassin’s Creed IV Black Flag","yr":2013,"h":null,"role":"main","m":"forest","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"242050/library_600x900.jpg?t=1777052740"},"s3035570":{"t":"Assassin's Creed Mirage","yr":2024,"h":null,"role":"main","m":"sea","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"3035570/60f638c4278782727586f112f9ef2e927c1463f2/library_600x900.jpg?t=1792777978"},"s812140":{"t":"Assassin's Creed Odyssey","yr":2018,"h":null,"role":"main","m":"space","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"812140/library_600x900.jpg?t=1792778552"},"s582160":{"t":"Assassin's Creed Origins","yr":2017,"h":null,"role":"main","m":"city","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"582160/library_600x900.jpg?t=1792778037"},"s201870":{"t":"Assassin's Creed Revelations","yr":2011,"h":null,"role":"main","m":"city","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"201870/portrait.png?t=1739176298"},"s3159330":{"t":"Assassin’s Creed Shadows","yr":2025,"h":null,"role":"main","m":"mountains","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"3159330/bdab6ed673aea5877d76e8c99c696ced92cf0d12/library_capsule.jpg?t=1792778493"},"s368500":{"t":"Assassin's Creed Syndicate","yr":2015,"h":null,"role":"main","m":"city","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"368500/library_600x900.jpg?t=1786632690"},"s289650":{"t":"Assassin's Creed Unity","yr":2014,"h":null,"role":"main","m":"forest","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"289650/library_600x900.jpg?t=1786632648"},"s2208920":{"t":"Assassin's Creed Valhalla","yr":2022,"h":null,"role":"main","m":"sea","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2208920/library_600x900.jpg?t=1792777686"},"s668580":{"t":"Atomic Heart","yr":2023,"h":null,"role":"main","m":"space","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"668580/library_600x900.jpg?t=1786632138"},"s1493640":{"t":"Banishers: Ghosts of New Eden","yr":2024,"h":null,"role":"main","m":"desert","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1493640/library_600x900.jpg?t=1763044792"},"s200260":{"t":"Batman: Arkham City - Game of the Year Edition","yr":2012,"h":null,"role":"main","m":"sea","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"200260/library_600x900.jpg?t=1745964057"},"s208650":{"t":"Batman: Arkham Knight","yr":2015,"h":null,"role":"main","m":"desert","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"208650/library_600x900.jpg?t=1745534372"},"s209000":{"t":"Batman: Arkham Origins","yr":2013,"h":null,"role":"main","m":"city","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"209000/library_600x900.jpg?t=1746562474"},"s1238840":{"t":"Battlefield 1","yr":2020,"h":null,"role":"main","m":"mountains","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1238840/library_600x900.jpg?t=1777324289"},"s1238860":{"t":"Battlefield 4","yr":2020,"h":null,"role":"main","m":"mountains","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1238860/library_600x900.jpg?t=1777391884"},"s1238810":{"t":"Battlefield V","yr":2020,"h":null,"role":"main","m":"city","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1238810/library_600x900.jpg?t=1772707365"},"s960990":{"t":"Beyond: Two Souls","yr":2020,"h":null,"role":"main","m":"city","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"960990/library_600x900.jpg?t=1667468566"},"s612470":{"t":"Bio Inc. Redemption","yr":2018,"h":null,"role":"main","m":"desert","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"612470/library_600x900.jpg?t=1790968800"},"s7670":{"t":"BioShock","yr":2007,"h":null,"role":"main","m":"desert","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"7670/library_600x900.jpg?t=1730172622"},"s8850":{"t":"BioShock 2","yr":2010,"h":null,"role":"main","m":"desert","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"8850/library_600x900.jpg?t=1730174099"},"s409720":{"t":"BioShock 2 Remastered","yr":2016,"h":null,"role":"main","m":"space","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"409720/library_600x900.jpg?t=1740443705"},"s409710":{"t":"BioShock Remastered","yr":2016,"h":null,"role":"main","m":"desert","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"409710/library_600x900.jpg?t=1740443728"},"s2358720":{"t":"Black Myth: Wukong","yr":2024,"h":null,"role":"main","m":"forest","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2358720/library_600x900.jpg?t=1760601605"},"s4384550":{"t":"Call of Duty: Black Ops 6","yr":2024,"h":null,"role":"main","m":"forest","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"4384550/e88de53b958760b68c081ec3e2ee1ddea2b5ceb7/library_capsule.jpg?t=1783699904"},"s2000950":{"t":"Call of Duty: Modern Warfare","yr":2023,"h":null,"role":"main","m":"desert","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2000950/library_600x900.jpg?t=1778886798"},"s3595230":{"t":"Call of Duty: Modern Warfare II","yr":2022,"h":null,"role":"main","m":"forest","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"3595230/89267cd5928eebbb7ec07562e912717eba09ebc2/library_capsule.jpg?t=1778886532"},"s3595270":{"t":"Call of Duty: Modern Warfare III","yr":2023,"h":null,"role":"main","m":"mountains","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"3595270/a3070fe258d1e2a0232aad783d34f927629dbd21/library_capsule.jpg?t=1778886604"},"s204450":{"t":"Call of Juarez: Gunslinger","yr":2013,"h":null,"role":"main","m":"desert","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"204450/library_600x900.jpg?t=1728907994"},"s2248760":{"t":"Car For Sale Simulator","yr":2024,"h":null,"role":"main","m":"forest","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2248760/d2406fffc348946851b2f61873feaaf15e8fc5aa/library_capsule.jpg?t=1790082844"},"s1190000":{"t":"Car Mechanic Simulator 2021","yr":2021,"h":null,"role":"main","m":"desert","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1190000/library_600x900.jpg?t=1792592913"},"s493490":{"t":"City Car Driving","yr":2016,"h":null,"role":"main","m":"desert","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"493490/library_600x900.jpg?t=1698810885"},"s2096600":{"t":"Crysis 2 Remastered","yr":2022,"h":null,"role":"main","m":"mountains","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2096600/836165e10b8a5601f213d5b59bb708868f49eef9/library_capsule.jpg?t=1783414847"},"s2096610":{"t":"Crysis 3 Remastered","yr":2022,"h":null,"role":"main","m":"forest","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"2096610/82f7addabc9b40b88d9ebb62bda9effd8d5e6320/library_capsule.jpg?t=1783415156"},"s934700":{"t":"Dead Island 2","yr":2024,"h":null,"role":"main","m":"space","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"934700/library_600x900.jpg?t=1790170542"},"s601150":{"t":"Devil May Cry 5","yr":2019,"h":null,"role":"main","m":"space","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"601150/library_600x900.jpg?t=1790215341"},"s2255370":{"t":"Directive 8020","yr":2026,"h":null,"role":"main","m":"space","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2255370/ba679aa4ee7eca3dc0a3908a29e985979ca97101/library_capsule.jpg?t=1792418136"},"s205100":{"t":"Dishonored","yr":2012,"h":null,"role":"main","m":"mountains","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"205100/library_600x900.jpg?t=1789050056"},"s2054970":{"t":"Dragon's Dogma 2","yr":2024,"h":null,"role":"main","m":"mountains","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2054970/library_600x900.jpg?t=1791504871"},"s239140":{"t":"Dying Light","yr":2015,"h":null,"role":"main","m":"space","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"239140/b962a5213054357b157b0fe45bf9db41b5739886/library_600x900.jpg?t=1782913513"},"s534380":{"t":"Dying Light 2 Stay Human: Reloaded Edition","yr":2022,"h":null,"role":"main","m":"forest","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"534380/5b75126ece6e937bda12bf5f802647c30d7a2801/library_600x900.jpg?t=1788258144"},"s3008130":{"t":"Dying Light: The Beast","yr":2025,"h":null,"role":"main","m":"city","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"3008130/66ecd6b5e71e85cd3e339ba9233979a23c5f0ec0/library_capsule.jpg?t=1789646537"},"s1245620":{"t":"ELDEN RING","yr":2022,"h":null,"role":"main","m":"desert","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"1245620/library_600x900.jpg?t=1790290043"},"s2477340":{"t":"Expeditions: A MudRunner Game","yr":2024,"h":null,"role":"main","m":"city","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"2477340/library_600x900.jpg?t=1768485049"},"s377160":{"t":"Fallout 4","yr":2015,"h":null,"role":"main","m":"mountains","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"377160/library_600x900.jpg?t=1786648137"},"s2369390":{"t":"Far Cry 6","yr":2023,"h":null,"role":"main","m":"city","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2369390/library_600x900.jpg?t=1793372616"},"s2440510":{"t":"Forza Motorsport","yr":2023,"h":null,"role":"main","m":"city","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2440510/library_600x900.jpg?t=1747073895"},"s1139900":{"t":"Ghostrunner","yr":2020,"h":null,"role":"main","m":"sea","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1139900/library_600x900.jpg?t=1793370755"},"s2144740":{"t":"Ghostrunner 2","yr":2023,"h":null,"role":"main","m":"desert","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2144740/library_600x900.jpg?t=1793370527"},"s1496790":{"t":"Gotham Knights","yr":2022,"h":null,"role":"main","m":"space","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1496790/library_600x900.jpg?t=1772146079"},"s1307710":{"t":"GRID Legends","yr":2022,"h":null,"role":"main","m":"city","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1307710/library_600x900.jpg?t=1777395535"},"s1145360":{"t":"Hades","yr":2020,"h":null,"role":"main","m":"mountains","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1145360/library_600x900.jpg?t=1758127023"},"s960910":{"t":"Heavy Rain","yr":2020,"h":null,"role":"main","m":"sea","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"960910/library_600x900.jpg?t=1675271942"},"s2461850":{"t":"Hellblade II: Senua’s Saga","yr":2024,"h":null,"role":"main","m":"space","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"2461850/4108735f0ba6db0145038557fe63689c5bd89997/library_capsule.jpg?t=1780854772"},"s414340":{"t":"Hellblade: Senua's Sacrifice","yr":2017,"h":null,"role":"main","m":"desert","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"414340/library_600x900.jpg?t=1776350290"},"s747350":{"t":"Hellblade: Senua's Sacrifice VR Edition","yr":2018,"h":null,"role":"main","m":"space","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"747350/portrait.png?t=1707499243"},"s1659040":{"t":"HITMAN World of Assassination","yr":2022,"h":null,"role":"main","m":"desert","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1659040/893b14fe999e64777ad2660cf88c52f1f403053f/library_capsule.jpg?t=1793287448"},"s990080":{"t":"Hogwarts Legacy","yr":2023,"h":null,"role":"main","m":"space","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"990080/dca9bb926befe37ff9754e3336cd9fe4c969c1e9/library_capsule.jpg?t=1790708992"},"s367520":{"t":"Hollow Knight","yr":2017,"h":null,"role":"main","m":"sea","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"367520/1eebc7e077ee345f126df35cd99c124273c4e4e3/library_capsule.jpg?t=1776125684"},"s2420110":{"t":"Horizon Forbidden West Complete Edition","yr":2024,"h":null,"role":"main","m":"forest","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2420110/library_600x900.jpg?t=1789585745"},"s2561580":{"t":"Horizon Zero Dawn Remastered","yr":2024,"h":null,"role":"main","m":"space","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2561580/ae8e7f8cc7f0e494e6dfda3ee51161881b49acb7/library_600x900.jpg?t=1750952943"},"s219150":{"t":"Hotline Miami","yr":2012,"h":null,"role":"main","m":"forest","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"219150/library_600x900.jpg?t=1785434922"},"s274170":{"t":"Hotline Miami 2: Wrong Number","yr":2015,"h":null,"role":"main","m":"sea","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"274170/library_600x900.jpg?t=1782406411"},"s627270":{"t":"Injustice 2","yr":2017,"h":null,"role":"main","m":"city","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"627270/library_600x900.jpg?t=1745536404"},"s1627720":{"t":"Lies of P","yr":2023,"h":null,"role":"main","m":"mountains","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1627720/library_600x900.jpg?t=1764565054"},"s532210":{"t":"Life is Strange 2","yr":2018,"h":null,"role":"main","m":"sea","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"532210/library_600x900.jpg?t=1771868183"},"s2058190":{"t":"Lost Judgment","yr":2022,"h":null,"role":"main","m":"space","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"2058190/library_600x900.jpg?t=1781263270"},"s4018950":{"t":"Lost Wiki: Kozlovka","yr":2026,"h":null,"role":"main","m":"city","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"4018950/407c31019db15d9b1e14fafa52f58987d3ac4baa/library_capsule.jpg?t=1789111752"},"s234140":{"t":"Mad Max","yr":2015,"h":null,"role":"main","m":"desert","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"234140/library_600x900.jpg?t=1780595138"},"s629820":{"t":"Maneater","yr":2021,"h":null,"role":"main","m":"city","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"629820/library_600x900.jpg?t=1789673023"},"s1328670":{"t":"Mass Effect Legendary Edition","yr":2021,"h":null,"role":"main","m":"space","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"1328670/library_600x900.jpg?t=1777395134"},"s287700":{"t":"METAL GEAR SOLID V: THE PHANTOM PAIN","yr":2015,"h":null,"role":"main","m":"desert","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"287700/library_600x900.jpg?t=1778872866"},"s286690":{"t":"METRO 2033 Redux","yr":2014,"h":null,"role":"main","m":"forest","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"286690/7c276efe09b88ba437ab80331c5ca3095e6f936d/library_capsule.jpg?t=1792681167"},"s412020":{"t":"Metro Exodus","yr":2020,"h":null,"role":"main","m":"desert","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"412020/library_600x900.jpg?t=1750772804"},"s356190":{"t":"Middle-earth: Shadow of War","yr":2017,"h":null,"role":"main","m":"mountains","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"356190/library_600x900.jpg?t=1780594801"},"s1262540":{"t":"Need for Speed","yr":2020,"h":null,"role":"main","m":"mountains","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1262540/library_600x900.jpg?t=1777394657"},"s1222680":{"t":"Need for Speed Heat","yr":2020,"h":null,"role":"main","m":"mountains","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1222680/library_600x900.jpg?t=1777414224"},"s1328660":{"t":"Need for Speed Hot Pursuit Remastered","yr":2020,"h":null,"role":"main","m":"desert","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"1328660/library_600x900.jpg?t=1779987591"},"s524220":{"t":"NieR:Automata","yr":2017,"h":null,"role":"main","m":"space","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"524220/library_600x900.jpg?t=1785182957"},"s1939970":{"t":"Nobody Wants to Die","yr":2024,"h":null,"role":"main","m":"forest","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1939970/library_600x900.jpg?t=1780926708"},"s275850":{"t":"No Man's Sky","yr":2016,"h":null,"role":"main","m":"space","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"275850/2012c0098b08cdff7665a6a808e218b1ab1c6399/library_capsule.jpg?t=1793196605"},"s261570":{"t":"Ori and the Blind Forest","yr":2015,"h":null,"role":"main","m":"space","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"261570/library_600x900.jpg?t=1667504148"},"s387290":{"t":"Ori and the Blind Forest: Definitive Edition","yr":2016,"h":null,"role":"main","m":"space","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"387290/library_600x900.jpg?t=1701967651"},"s1057090":{"t":"Ori and the Will of the Wisps","yr":2020,"h":null,"role":"main","m":"city","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1057090/library_600x900.jpg?t=1759530749"},"s238320":{"t":"Outlast","yr":2013,"h":null,"role":"main","m":"desert","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"238320/library_600x900.jpg?t=1666817106"},"s414700":{"t":"Outlast 2","yr":2017,"h":null,"role":"main","m":"mountains","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"414700/library_600x900.jpg?t=1618944453"},"s620":{"t":"Portal 2","yr":2011,"h":null,"role":"main","m":"forest","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"620/library_600x900.jpg?t=1790187113"},"s2751000":{"t":"Prince of Persia The Lost Crown","yr":2024,"h":null,"role":"main","m":"desert","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2751000/library_600x900.jpg?t=1777993930"},"s474960":{"t":"Quantum Break","yr":2016,"h":null,"role":"main","m":"forest","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"474960/library_600x900.jpg?t=1773351175"},"s548570":{"t":"RAGE 2","yr":2019,"h":null,"role":"main","m":"forest","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"548570/library_600x900.jpg?t=1761681586"},"s617290":{"t":"Remnant: From the Ashes","yr":2019,"h":null,"role":"main","m":"forest","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"617290/library_600x900.jpg?t=1764657526"},"s1282100":{"t":"REMNANT II","yr":2023,"h":null,"role":"main","m":"forest","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1282100/library_600x900.jpg?t=1764659459"},"s952060":{"t":"Resident Evil 3","yr":2020,"h":null,"role":"main","m":"city","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"952060/library_600x900.jpg?t=1790215956"},"s952070":{"t":"RESIDENT EVIL RESISTANCE","yr":2020,"h":null,"role":"main","m":"desert","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"952070/library_600x900.jpg?t=1770602603"},"s391220":{"t":"Rise of the Tomb Raider","yr":2016,"h":null,"role":"main","m":"mountains","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"391220/library_600x900.jpg?t=1792675385"},"s978300":{"t":"Saints Row: The Third Remastered","yr":2021,"h":null,"role":"main","m":"space","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"978300/library_600x900.jpg?t=1764671001"},"s750920":{"t":"Shadow of the Tomb Raider: Definitive Edition","yr":2018,"h":null,"role":"main","m":"space","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"750920/library_600x900.jpg?t=1792675045"},"s2169200":{"t":"Sniper Elite: Resistance","yr":2025,"h":null,"role":"main","m":"forest","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2169200/library_600x900.jpg?t=1765448187"},"s1338770":{"t":"Sniper Ghost Warrior Contracts 2","yr":2021,"h":null,"role":"main","m":"mountains","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1338770/library_600x900.jpg?t=1747413239"},"s1465360":{"t":"SnowRunner","yr":2021,"h":null,"role":"main","m":"forest","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1465360/library_600x900.jpg?t=1792504894"},"s1172380":{"t":"STAR WARS Jedi: Fallen Order","yr":2019,"h":null,"role":"main","m":"city","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1172380/library_600x900.jpg?t=1788256986"},"s1774580":{"t":"STAR WARS Jedi: Survivor","yr":2023,"h":null,"role":"main","m":"desert","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"1774580/library_600x900.jpg?t=1788257050"},"s1612420":{"t":"Suit for Hire","yr":2025,"h":null,"role":"main","m":"forest","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1612420/5571e0b1f789dba3c3db83a68690c61311093649/library_600x900.jpg?t=1750440927"},"s847370":{"t":"Sunset Overdrive","yr":2018,"h":null,"role":"main","m":"mountains","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"847370/library_600x900.jpg?t=1667851405"},"s1249970":{"t":"Test Drive Unlimited Solar Crown","yr":2024,"h":null,"role":"main","m":"forest","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"1249970/49ba0996340d6e95d6f32d68f9bba916e59e8b89/library_capsule.jpg?t=1788364521"},"s2698940":{"t":"The Crew Motorfest","yr":2024,"h":null,"role":"main","m":"forest","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2698940/library_600x900.jpg?t=1791551745"},"s489830":{"t":"The Elder Scrolls V: Skyrim Special Edition","yr":2016,"h":null,"role":"main","m":"space","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"489830/library_600x900.jpg?t=1786648247"},"s1577120":{"t":"The Quarry","yr":2022,"h":null,"role":"main","m":"desert","c":["#a0523a","#1a0c08"],"ink":"#ffc48a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1577120/library_600x900.jpg?t=1730303267"},"s1449690":{"t":"The Walking Dead: The Telltale Definitive Series","yr":2020,"h":null,"role":"main","m":"space","c":["#7a8aa0","#10141c"],"ink":"#ffd98a","note":"Из коллекции Steam «Обязательно пройду».","cv":"1449690/library_600x900.jpg?t=1760651835"},"s2231380":{"t":"Tom Clancy's Ghost Recon Breakpoint","yr":2023,"h":null,"role":"main","m":"forest","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2231380/library_600x900.jpg?t=1790683796"},"s460930":{"t":"Tom Clancy's Ghost Recon Wildlands","yr":2017,"h":null,"role":"main","m":"sea","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"460930/library_600x900.jpg?t=1790268185"},"s1097200":{"t":"Twelve Minutes","yr":2021,"h":null,"role":"main","m":"desert","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"1097200/library_600x900.jpg?t=1763720997"},"s2239550":{"t":"Watch Dogs: Legion","yr":2023,"h":null,"role":"main","m":"city","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"2239550/library_600x900.jpg?t=1788548571"},"s350080":{"t":"Wolfenstein: The Old Blood","yr":2015,"h":null,"role":"main","m":"forest","c":["#9a8a5a","#14120a"],"ink":"#ffe6a8","note":"Из коллекции Steam «Обязательно пройду».","cv":"350080/library_600x900.jpg?t=1750784023"},"s228380":{"t":"Wreckfest","yr":2018,"h":null,"role":"main","m":"mountains","c":["#4a7a6a","#0a1412"],"ink":"#b6f0c8","note":"Из коллекции Steam «Обязательно пройду».","cv":"228380/library_600x900.jpg?t=1742490584"},"s272860":{"t":"Wreckfest Sneak Peek 2.0","yr":2014,"h":null,"role":"main","m":"mountains","c":["#6a5a9a","#100c1c"],"ink":"#d8c8ff","note":"Из коллекции Steam «Обязательно пройду».","cv":"272860/portrait.png?t=1732206140"}};
-let customActs = [], poolOpen = false, poolName = "";
+let customActs = [], layout = {edit: {}, del: []}, poolName = "", listQ = "", listF = "all", listTarget = "", cxEdit = null;
 const poolPick = new Set();
+const ALL_GAMES = Object.assign({}, GAMES, POOL);
+Object.values(ALL_GAMES).forEach(g => { g.basePro = !!g.pro; });
+const BASE_ACTS = ACTS.map(a => Object.assign({}, a, {g: a.g.slice()}));
 const RANKS = [[0,"Новичок"],[5,"Искатель"],[15,"Охотник"],[25,"Ветеран"],[40,"Мастер"],[55,"Легенда"],[75,"Прошедший путь"]];
 const ROLE = {main:["основная",""], side:["параллельно",""], short:["короткая",""], finish:["добить","r-finish"], coop:["кооп","r-coop"]};
 const KEY = "plan-snebastar-v1";
@@ -886,29 +917,51 @@ let dataReady = false;
 /* ---------- state ---------- */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const nf = new Intl.NumberFormat("ru-RU");
-function loadLocal(){ try{ const j = JSON.parse(localStorage.getItem(KEY) || "{}"); if (j.state) state = j.state; if (j.meta) meta = j.meta; if (Array.isArray(j.acts)) { customActs = j.acts; applyCustomActs(); } }catch(e){} }
-function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify({state, meta, acts: customActs})); }catch(e){} }
+function loadLocal(){ try{ const j = JSON.parse(localStorage.getItem(KEY) || "{}"); if (j.state) state = j.state; if (j.meta) meta = j.meta; if (Array.isArray(j.acts)) customActs = j.acts; if (j.layout && typeof j.layout === "object") layout = j.layout; }catch(e){} }
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify({state, meta, acts: customActs, layout})); }catch(e){} }
 function roman(n){ return [[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].reduce((o, [v, r]) => { while (n >= v) { o += r; n -= v; } return o; }, ""); }
-/* acts built from the pool: their games move from POOL into GAMES and join the main path */
+/* the act layout: edits of built-in acts, custom acts and games deleted from the common list.
+   A game in an act lives in GAMES and counts; a game outside acts moves to POOL and stops counting. */
 function applyCustomActs(){
-  for (let i = ACTS.length - 1; i >= 0; i--) if (ACTS[i].custom) { ACTS[i].g.forEach(id => { POOL[id] = GAMES[id]; delete GAMES[id]; }); ACTS.splice(i, 1); }
-  const at = ACTS.findIndex(a => a.side);
-  let n = at;
+  const open = cxOpen ? [...cxOpen].map(i => ACTS[i] && ACTS[i].r) : null;
+  const del = new Set(layout.del || []), pro = new Set(layout.pro || []), used = new Set(), edit = layout.edit || {};
+  const take = list => (Array.isArray(list) ? list : []).filter(id => { if (!ALL_GAMES[id] || del.has(id) || used.has(id)) return false; used.add(id); return true; });
+  const base = BASE_ACTS.map(a => Object.assign({}, a, {g: take(edit[a.r] || a.g)})).filter(a => a.g.length);
   customActs = customActs.filter(a => a && Array.isArray(a.g));
-  customActs.forEach(a => {
-    const g = a.g.filter(id => POOL[id]).slice(0, ACT_MAX);
-    if (!g.length) return;
-    g.forEach(id => { GAMES[id] = POOL[id]; delete POOL[id]; });
-    ACTS.splice(n, 0, {r: roman(n + 1), t: String(a.t || "Новый акт"), sub: "Собран из коллекции Steam «Обязательно пройду».", g, custom: true});
-    n++;
+  const customs = [];
+  customActs.forEach((a, ci) => { const g = take(a.g); if (g.length) customs.push({r: roman(16 + customs.length), t: String(a.t || "Новый акт"), sub: "Акт, собранный тобой.", g, custom: true, ci}); });
+  const at = base.findIndex(a => a.side), cutAt = at < 0 ? base.length : at;
+  ACTS.length = 0;
+  ACTS.push(...base.slice(0, cutAt), ...customs, ...base.slice(cutAt));
+  const where = {};
+  ACTS.forEach(a => a.g.forEach(id => { where[id] = a; }));
+  [GAMES, POOL].forEach(o => Object.keys(o).forEach(k => delete o[k]));
+  Object.keys(ALL_GAMES).forEach(id => {
+    const g = ALL_GAMES[id], a = where[id];
+    g.ps = !!a && a.r === "PS";
+    g.pro = !a && (g.basePro || pro.has(id));
+    g.role = g.role || "main";
+    g.note = g.note || "";
+    (a || g.pro ? GAMES : POOL)[id] = g;
   });
-  cxOpen = null;
+  cxOpen = open ? new Set(open.map(r => ACTS.findIndex(a => a.r === r)).filter(i => i >= 0)) : null;
 }
+const actRoom = a => a.side ? Infinity : ACT_MAX - a.g.length;
+const actKeyLabel = a => (a.kicker || "Акт " + a.r) + " «" + a.t + "»";
+function setActGames(a, g){
+  if (a.custom) customActs[a.ci].g = g;
+  else { layout.edit = layout.edit || {}; layout.edit[a.r] = g; }
+}
+function removeFromActs(ids){
+  const out = new Set(ids);
+  ACTS.forEach(a => { if (a.g.some(i => out.has(i))) setActGames(a, a.g.filter(i => !out.has(i))); });
+}
+function saveLayout(){ customActs = customActs.filter(a => a.g.length); applyCustomActs(); persistActs(); render(); }
 function persistActs(){
   saveLocal();
   if (!cloud) return;
   const prev = pending.__acts || Promise.resolve();
-  pending.__acts = prev.then(() => cloudCall("setItem", "acts", JSON.stringify(customActs))).catch(onWriteError);
+  pending.__acts = prev.then(() => cloudCall("setItem", "acts", JSON.stringify(customActs))).then(() => cloudCall("setItem", "layout", JSON.stringify(layout))).catch(onWriteError);
 }
 const rec = id => state[id] || {s:null, b:false};
 const st = id => rec(id).s || null;
@@ -1028,7 +1081,7 @@ function render(){
   ACTS.forEach((a, ai) => {
     const n = a.g.length, d = a.g.filter(closed).length, mi = main.indexOf(a), isCur = mi === curIdx;
     const fin = n > 0 && d === n, key = "a" + ai, idAttr = (mi >= 0 ? ' id="act-' + (mi + 1) + '"' : "") + ' style="--tint:' + GAMES[a.g[0]].c[0] + '"';
-    const un = a.unlock ? '<div class="unlock"><b>' + ([].concat(a.unlock).length > 1 ? 'Потом покупки' : 'Потом покупка') + '</b>' + esc([].concat(a.unlock).map(u => GAMES[u].t).join(" + ")) + '</div>' : "";
+    const unl = [].concat(a.unlock || []).filter(u => GAMES[u]), un = unl.length ? '<div class="unlock"><b>' + (unl.length > 1 ? 'Потом покупки' : 'Потом покупка') + '</b>' + esc(unl.map(u => GAMES[u].t).join(" + ")) + '</div>' : "";
     const head = '<div class="act-head"><span class="numeral" aria-hidden="true">' + a.r + '</span>' +
         '<div class="act-kicker"><span class="eyebrow">' + esc(a.kicker || "Акт " + a.r) + '</span>' +
         (fin ? '<span class="tag fin-tag">Пройден</span>' : isCur ? '<span class="tag">Сейчас</span>' : "") +
@@ -1097,17 +1150,42 @@ function persistHook(){
   const prev = pending.__hook || Promise.resolve();
   pending.__hook = prev.then(() => cloudCall("setItem", "hook", JSON.stringify(hookOk))).catch(onWriteError);
 }
-/* last tile of the acts grid: build a new act from the Steam collection */
+/* last tile of the acts grid: opens the common list */
 function poolHtml(){
-  const ids = Object.keys(POOL), n = ids.length;
-  if (!n) return "";
-  if (!poolOpen) return '<button class="ab create" type="button" data-pool-toggle aria-expanded="false" style="--tint:#f3b94d"><span class="create-plus" aria-hidden="true">+</span><span class="ab-t">Создать</span><span class="ab-m">новый акт из ' + n + ' ' + plural(n, "игры", "игр", "игр") + '</span></button>';
-  const full = poolPick.size >= ACT_MAX, dis = readOnly || !poolPick.size ? " disabled" : "";
-  return '<section class="ab-open" style="--tint:#f3b94d"><div class="ab-oh"><span class="ab-num big">+</span><div class="ab-ot"><div class="act-kicker"><span class="eyebrow">Новый акт</span><span class="act-meta">выбрано ' + poolPick.size + ' из ' + ACT_MAX + '</span></div><h3>Собери акт</h3></div><button class="ab-x" type="button" data-pool-toggle aria-expanded="true">Свернуть</button></div>' +
-    '<p class="sub">Игры из коллекции Steam «Обязательно пройду», не больше ' + ACT_MAX + ' в одном акте.</p>' +
-    '<div class="pool-bar"><input id="pool-name" type="text" maxlength="40" placeholder="Название акта" aria-label="Название нового акта" value="' + esc(poolName) + '"><button class="btn pool-make" type="button" data-pool-make' + dis + '>Создать акт</button></div>' +
-    '<div class="ab-grid">' + ids.map(id => { const g = POOL[id], on = poolPick.has(id), art = drawArt(id, true);
-      return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"' + (full && !on ? ' disabled' : '') + '><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + art + '" alt=""><span class="ct' + ctCls(g.t) + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + '</div><span class="pool-t">' + esc(g.t) + '</span></button>'; }).join("") + '</div></section>';
+  const n = listIds().filter(i => !actOf(i)).length;
+  return '<button class="ab create" type="button" data-go-list style="--tint:#f3b94d"><span class="create-plus" aria-hidden="true">+</span><span class="ab-t">Создать</span><span class="ab-m">' + n + ' ' + plural(n, "игра", "игры", "игр") + ' без акта</span></button>';
+}
+/* everything except games marked as finished in the prologue; deleted games only in their own filter */
+function listIds(){
+  const del = new Set(layout.del || []);
+  return Object.keys(ALL_GAMES).filter(id => !del.has(id) && !(ALL_GAMES[id].pro && st(id) === "done"));
+}
+function renderList(){
+  const del = layout.del || [], q = listQ.trim().toLowerCase(), byName = (p, r) => ALL_GAMES[p].t.localeCompare(ALL_GAMES[r].t, "ru");
+  const all = listIds();
+  const pools = {all, free: all.filter(i => !actOf(i)), acts: all.filter(i => actOf(i)), del: del.filter(i => ALL_GAMES[i])};
+  [...poolPick].forEach(i => { if (!pools[listF].includes(i)) poolPick.delete(i); });
+  const ids = pools[listF].filter(i => !q || ALL_GAMES[i].t.toLowerCase().includes(q)).sort(byName);
+  const label = {all: "Все", free: "Без акта", acts: "В актах", del: "Удалённые"};
+  document.getElementById("list-chips").innerHTML = Object.keys(label).map(k => '<button class="chip" type="button" data-list-f="' + k + '" aria-pressed="' + (listF === k) + '">' + label[k] + ' <small>' + pools[k].length + '</small></button>').join("");
+  const n = poolPick.size, ro = readOnly ? " disabled" : "";
+  let bar;
+  if (listF === "del") bar = '<button class="btn pool-make" type="button" data-list-restore' + (n ? ro : " disabled") + '>Вернуть' + (n ? ' (' + n + ')' : '') + '</button><span class="small">Вернутся в общий список, без акта.</span>';
+  else {
+    if (!ACTS.some(a => a.r === listTarget)) listTarget = "";
+    const t = ACTS.find(a => a.r === listTarget), selfCount = t ? t.g.filter(i => poolPick.has(i)).length : 0, fits = t && n && n - selfCount <= actRoom(t) && n > selfCount;
+    bar = '<input id="pool-name" type="text" maxlength="40" placeholder="Название нового акта" aria-label="Название нового акта" value="' + esc(poolName) + '">' +
+      '<button class="btn pool-make" type="button" data-pool-make' + (n >= 1 && n <= ACT_MAX ? ro : " disabled") + '>Создать акт</button>' +
+      '<select id="list-target" aria-label="Акт для добавления"><option value="">Выбрать акт…</option>' + ACTS.map(a => '<option value="' + esc(a.r) + '"' + (a.r === listTarget ? " selected" : "") + (actRoom(a) <= 0 ? " disabled" : "") + '>' + esc(a.r + ". " + a.t) + (a.side ? "" : " (" + a.g.length + "/" + ACT_MAX + ")") + '</option>').join("") + '</select>' +
+      '<button class="btn" type="button" data-list-move' + (fits ? ro : " disabled") + '>В этот акт</button>' +
+      '<button class="btn pro-btn" type="button" data-list-pro' + (n ? ro : " disabled") + '>Уже пройдено' + (n ? ' (' + n + ')' : '') + '</button>' +
+      '<button class="btn danger" type="button" data-list-del' + (n ? ro : " disabled") + '>Удалить' + (n ? ' (' + n + ')' : '') + '</button>' +
+      '<span class="small list-count">' + (n ? 'Выбрано: ' + n + (n > ACT_MAX ? '. В один акт можно не больше ' + ACT_MAX : '') : 'Нажми на обложки, чтобы выбрать игры') + '</span>';
+  }
+  document.getElementById("list-bar").innerHTML = bar;
+  document.getElementById("list-grid").innerHTML = ids.map(id => { const g = ALL_GAMES[id], on = poolPick.has(id), a = actOf(id), s = st(id), art = drawArt(id, true);
+    const tag = a ? (a.custom || !a.side ? "Акт " + a.r : a.t) : "без акта";
+    return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + art + '" alt=""><span class="ct' + ctCls(g.t) + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span></button>'; }).join("") || '<p class="small">Ничего не найдено.</p>';
 }
 function renderConsole(){
   const root = document.getElementById("view-console"); if (root.hidden) return;
@@ -1119,7 +1197,7 @@ function renderConsole(){
   const ring = document.getElementById("cx-ring"); ring.style.setProperty("--p", nxt ? Math.round((total - cur[0]) / (nxt[0] - cur[0]) * 100) : 100);
   ring.querySelector("span").textContent = total;
   document.querySelectorAll(".cx-tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === cxTab)));
-  ["path","store","trophies","prologue"].forEach(t => { document.getElementById("cx-" + t).hidden = t !== cxTab; });
+  ["path","list","store","trophies","prologue"].forEach(t => { document.getElementById("cx-" + t).hidden = t !== cxTab; });
   if (!cxSel || !GAMES[cxSel] || GAMES[cxSel].pro) cxSel = cxDefaultSel();
 
   if (cxTab === "path"){
@@ -1152,9 +1230,11 @@ function renderConsole(){
     ACTS.forEach((x, ai) => { if (x.giant) return; const n = x.g.length, d = x.g.filter(closed).length, fin = n > 0 && d === n, mi = main.indexOf(x), isCur = mi >= 0 && mi === curIdx, open = cxOpen.has(ai);
       const g0 = GAMES[x.g[0]], tag = isCur ? '<span class="tag">Сейчас</span>' : fin ? '<span class="tag fin-tag">Пройден</span>' : "";
       if (open){
-        const un = x.unlock ? '<div class="unlock"><b>' + ([].concat(x.unlock).length > 1 ? 'Потом покупки' : 'Потом покупка') + '</b>' + esc([].concat(x.unlock).map(u => GAMES[u].t).join(" + ")) + '</div>' : "";
+        const unl = [].concat(x.unlock || []).filter(u => GAMES[u]), un = unl.length ? '<div class="unlock"><b>' + (unl.length > 1 ? 'Потом покупки' : 'Потом покупка') + '</b>' + esc(unl.map(u => GAMES[u].t).join(" + ")) + '</div>' : "";
         rows += '<section class="ab-open" style="--tint:' + g0.c[0] + '"><div class="ab-oh"><span class="ab-num big">' + esc(x.r) + '</span><div class="ab-ot"><div class="act-kicker"><span class="eyebrow">' + esc(x.kicker || "Акт " + x.r) + '</span>' + tag + '<span class="act-meta">' + d + ' из ' + n + ' закрыто</span></div><h3>' + esc(x.t) + '</h3></div><button class="ab-x" type="button" data-act="' + ai + '" aria-label="Свернуть акт">Свернуть</button></div>' +
-          '<p class="sub">' + esc(x.sub) + '</p><div class="ab-grid">' + x.g.map(cxTile).join("") + '</div>' + un + (x.custom ? '<div class="buy-row"><button class="btn" type="button" data-del-act="' + customActs.findIndex(c => c.g.includes(x.g[0])) + '"' + (x.g.some(st) || readOnly ? ' disabled' : '') + '>Вернуть игры в запас</button>' + (x.g.some(st) ? '<span class="small">Сначала сними отметки с игр этого акта.</span>' : '') + '</div>' : '') + '</section>';
+          '<p class="sub">' + esc(x.sub) + '</p><div class="ab-grid">' + x.g.map(id => cxEdit === x.r ? '<div class="edit-tile">' + cxTile(id) + '<button class="tile-x" type="button" data-act-remove="' + id + '" aria-label="Убрать из акта: ' + esc(GAMES[id].t) + '">×</button></div>' : cxTile(id)).join("") +
+            (cxEdit === x.r && actRoom(x) > 0 ? '<button class="add-tile" type="button" data-act-add="' + esc(x.r) + '" aria-label="Добавить игру в акт"><span>+</span><small>Добавить</small></button>' : '') + '</div>' + un +
+            '<div class="buy-row"><button class="btn" type="button" data-edit-act="' + esc(x.r) + '"' + (readOnly ? ' disabled' : '') + '>' + (cxEdit === x.r ? 'Готово' : 'Изменить') + '</button>' + (cxEdit === x.r ? '<span class="small">' + (x.side ? 'Без ограничения по числу игр.' : 'Не больше ' + ACT_MAX + ' игр в акте.') + ' Убранные игры вернутся в общий список.</span>' : '') + '</div></section>';
       } else {
         const fan = x.g.slice(0, 3).map((i, k) => '<img src="' + drawArt(i) + '" alt="" style="--k:' + k + '">').join("");
         rows += '<button class="ab' + (fin ? " fin" : "") + (isCur ? " cur" : "") + '" type="button" data-act="' + ai + '" style="--tint:' + g0.c[0] + '" aria-label="' + esc((x.kicker || "Акт " + x.r) + ": " + x.t + ", " + d + " из " + n) + '">' +
@@ -1187,6 +1267,8 @@ function renderConsole(){
     document.getElementById("cx-tro-sum").innerHTML = '<span class="tro-c"><b style="font-family:var(--f-display);font-size:22px">' + got + '</b>&nbsp;из ' + ACH.length + '</span>' +
       ["platinum","gold","silver","bronze"].map(t => '<span class="tro-c">' + cup(t) + cnt[t] + '</span>').join("");
     document.getElementById("cx-tro").innerHTML = items.map(x => '<li class="' + (x.ok ? "got" : "") + '">' + cup(x.t) + '<div><div class="an">' + esc(x.a.n) + '</div><div class="ad">' + esc(x.a.d) + '</div>' + (!x.ok && x.m > 1 ? '<div class="pr">' + nf.format(x.v) + ' / ' + nf.format(x.m) + '</div>' : '') + '</div><span class="tier">' + TIER_RU[x.t] + '</span></li>').join("");
+  } else if (cxTab === "list"){
+    renderList();
   } else if (cxTab === "prologue"){
     document.getElementById("cx-pro").innerHTML = document.getElementById("prologue").innerHTML;
     document.getElementById("cx-pro-meta").textContent = document.getElementById("pro-meta").textContent;
@@ -1212,7 +1294,10 @@ function toggleBuy(id){
 }
 function doAction(b){
   if (readOnly) return;
-  if (b.dataset.pro){ const id = b.dataset.pro; if (st(id) === "done") delete state[id]; else state[id] = {s:"done", b:false, t:Date.now()}; render(); persist(id); return; }
+  if (b.dataset.pro){ const id = b.dataset.pro; const back = st(id) === "done" && (layout.pro || []).includes(id);
+    if (st(id) === "done") delete state[id]; else state[id] = {s:"done", b:false, t:Date.now()};
+    if (back) { layout.pro = layout.pro.filter(i => i !== id); saveLayout(); } else render();
+    persist(id); return; }
   const id = b.dataset.id, r = Object.assign({s:null, b:false}, rec(id));
   if (b.dataset.a === "buy"){ r.b = true; r.t = Date.now(); state[id] = r; if (GAMES[id].buy !== "DLC") recordPurchase(id); }
   else if (b.dataset.a === "unbuy"){ delete state[id]; undoPurchase(id); }
@@ -1225,32 +1310,93 @@ document.getElementById("view-console").addEventListener("click", e => {
   if (hk){ if (!readOnly){ hookOk = hookOk.concat(hk.dataset.hookOk); persistHook(); renderConsole(); } return; }
   const hd = e.target.closest("[data-hook-drop]");
   if (hd){ if (!readOnly){ const id = hd.dataset.hookDrop; state[id] = Object.assign({b: false}, rec(id), {s: "drop", t: Date.now()}); render(); persist(id); } return; }
-  if (e.target.closest("[data-pool-toggle]")){ poolOpen = !poolOpen; renderConsole(); return; }
+  const fchip = e.target.closest("[data-list-f]");
+  if (fchip){ listF = fchip.dataset.listF; poolPick.clear(); renderList(); return; }
+  if (e.target.closest("[data-go-list]")){ cxTab = "list"; listF = "free"; poolPick.clear(); listTarget = ""; renderConsole(); scrollTo(0, 0); return; }
   const pick = e.target.closest("[data-pick]");
-  if (pick){ const id = pick.dataset.pick; if (poolPick.has(id)) poolPick.delete(id); else if (poolPick.size < ACT_MAX) poolPick.add(id); renderConsole(); return; }
+  if (pick){ const id = pick.dataset.pick; if (poolPick.has(id)) poolPick.delete(id); else poolPick.add(id); renderList(); return; }
   if (e.target.closest("[data-pool-make]")){
+    if (readOnly || !poolPick.size || poolPick.size > ACT_MAX) return;
+    const g = [...poolPick], t = poolName.trim() || "Новый акт";
+    removeFromActs(g);
+    customActs = customActs.concat({t, g});
+    poolPick.clear(); poolName = "";
+    cxOpen = null; saveLayout();
+    cxTab = "path"; cxOpen = new Set([ACTS.findIndex(a => a.custom && a.t === t && a.g.includes(g[0]))]); renderConsole();
+    return;
+  }
+  if (e.target.closest("[data-list-move]")){
+    const t = ACTS.find(a => a.r === listTarget);
+    if (readOnly || !t || !poolPick.size) return;
+    const g = [...poolPick], fresh = g.filter(i => !t.g.includes(i));
+    if (fresh.length > actRoom(t)) return;
+    const r = t.r, keep = t.g.concat(fresh);
+    removeFromActs(fresh);
+    setActGames(t, keep);
+    poolPick.clear();
+    saveLayout();
+    cxTab = "path"; const i = ACTS.findIndex(a => a.r === r); if (i >= 0) { cxOpen = cxOpen || new Set(); cxOpen.add(i); } renderConsole();
+    return;
+  }
+  if (e.target.closest("[data-list-pro]")){
     if (readOnly || !poolPick.size) return;
     const g = [...poolPick];
-    customActs = customActs.concat({t: poolName.trim() || "Новый акт", g});
-    poolPick.clear(); poolName = ""; poolOpen = false;
-    applyCustomActs(); persistActs(); render();
-    cxOpen = new Set([ACTS.findIndex(a => a.custom && a.g[0] === g[0])]); renderConsole();
+    if (!ACTS.some(a => !a.side && a.g.some(i => !poolPick.has(i)))) { notice("Нужен хотя бы один акт с игрой."); return; }
+    removeFromActs(g);
+    layout.pro = [...new Set((layout.pro || []).concat(g))];
+    g.forEach(id => { state[id] = Object.assign({b: false}, rec(id), {s: "done", t: Date.now()}); });
+    poolPick.clear();
+    saveLayout();
+    g.forEach(persist);
+    notice(g.length === 1 ? ALL_GAMES[g[0]].t + " теперь в Прологе." : "Игр в Прологе теперь больше на " + g.length + ".", "Уже пройдено");
     return;
   }
-  const del = e.target.closest("[data-del-act]");
-  if (del){
+  if (e.target.closest("[data-list-del]")){
+    if (readOnly || !poolPick.size) return;
+    const g = [...poolPick], left = ACTS.filter(a => !a.side && a.g.some(i => !poolPick.has(i)));
+    if (!left.length) { notice("Нужен хотя бы один акт с игрой."); return; }
+    const marked = g.some(st);
+    removeFromActs(g);
+    layout.del = (layout.del || []).concat(g);
+    poolPick.clear();
+    saveLayout();
+    if (marked) notice("Отметки этих игр сохранены: вернёшь игру, и они появятся снова.", "Удалено");
+    return;
+  }
+  if (e.target.closest("[data-list-restore]")){
+    if (readOnly || !poolPick.size) return;
+    layout.del = (layout.del || []).filter(i => !poolPick.has(i));
+    poolPick.clear();
+    saveLayout();
+    return;
+  }
+  const ed = e.target.closest("[data-edit-act]");
+  if (ed){ cxEdit = cxEdit === ed.dataset.editAct ? null : ed.dataset.editAct; renderConsole(); return; }
+  const rm = e.target.closest("[data-act-remove]");
+  if (rm){
     if (readOnly) return;
-    customActs = customActs.filter((a, i) => i !== Number(del.dataset.delAct));
-    applyCustomActs(); persistActs(); render();
+    const id = rm.dataset.actRemove, a = actOf(id);
+    if (!a) return;
+    if (!a.side && a.g.length === 1 && ACTS.filter(x => !x.side).length === 1) { notice("Нужен хотя бы один акт с игрой."); return; }
+    const marked = !!st(id);
+    setActGames(a, a.g.filter(i => i !== id));
+    saveLayout();
+    if (marked) notice("Отметка игры сохранена. Пока игра вне актов, она не идёт в счётчики.", "Убрано из акта");
     return;
   }
+  const add = e.target.closest("[data-act-add]");
+  if (add){ listTarget = add.dataset.actAdd; listF = "free"; poolPick.clear(); cxTab = "list"; renderConsole(); scrollTo(0, 0); return; }
   const sel = e.target.closest("[data-sel]"); if (sel){ cxSel = sel.dataset.sel; renderConsole(); document.getElementById("cx-spot").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"}); return; }
   const ab = e.target.closest("[data-act]"); if (ab){ const k = Number(ab.dataset.act); if (cxOpen.has(k)) cxOpen.delete(k); else cxOpen.add(k); renderConsole(); return; }
   const bt = e.target.closest("button[data-buyt]"); if (bt){ toggleBuy(bt.dataset.buyt); return; }
   const b = e.target.closest("button[data-id], button[data-pro]"); if (b) doAction(b);
   if (e.target.closest("#cx-buy-btn") && !readOnly){ recordPurchase(); render(); }
 });
-document.getElementById("view-console").addEventListener("input", e => { if (e.target.id === "pool-name") poolName = e.target.value; });
+document.getElementById("view-console").addEventListener("input", e => {
+  if (e.target.id === "pool-name") poolName = e.target.value;
+  if (e.target.id === "list-q") { listQ = e.target.value; renderList(); }
+});
+document.getElementById("view-console").addEventListener("change", e => { if (e.target.id === "list-target") { listTarget = e.target.value; renderList(); } });
 document.querySelector(".seg").addEventListener("click", e => { const b = e.target.closest("button[data-view]"); if (!b) return; VIEW = b.dataset.view; try { localStorage.setItem("plan-view", VIEW); } catch (er) {} applyView(); render(); });
 
 /* ---------- persistence ---------- */
@@ -1316,7 +1462,7 @@ document.getElementById("share-copy").addEventListener("click", async () => {
 });
 function bootArt(){
   const main = ACTS.filter(a => !a.side), cur = main.find(a => a.g.some(i => !closed(i))) || main[0], G = ACTS.find(a => a.giant);
-  cur.g.concat(G.g, cxDefaultSel()).forEach(i => drawArt(i));
+  cur.g.concat(G ? G.g : [], cxDefaultSel()).forEach(i => drawArt(i));
   artDefer = true;
   render();
   const rest = Object.keys(GAMES).filter(i => !ART[i] && !steamCover(i));
@@ -1328,15 +1474,17 @@ function bootArt(){
   };
   setTimeout(step, 0);
 }
-loadLocal(); applyView(); bootArt();
+loadLocal(); applyCustomActs(); applyView(); bootArt();
 async function loadCloud(){
-  const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k === "acts" || k.startsWith("p_"));
+  const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k === "acts" || k === "layout" || k.startsWith("p_"));
   if (!keys.length) return;
   const items = {};
   for (let i = 0; i < keys.length; i += 20) Object.assign(items, await cloudCall("getItems", keys.slice(i, i + 20)));
-  if (items.acts) try { const a = JSON.parse(items.acts); if (Array.isArray(a)) { customActs = a; applyCustomActs(); } } catch (e) {}
+  if (items.acts) try { const a = JSON.parse(items.acts); if (Array.isArray(a)) customActs = a; } catch (e) {}
+  if (items.layout) try { const l = JSON.parse(items.layout); if (l && typeof l === "object") layout = l; } catch (e) {}
+  applyCustomActs();
   const s = {};
-  keys.forEach(k => { if (!k.startsWith("p_") || !items[k]) return; const id = k.slice(2); try { const v = JSON.parse(items[k]); if (GAMES[id] && (v.s || v.b)) s[id] = {s: v.s || null, b: !!v.b, t: Number(v.t) || 0}; } catch (e) {} });
+  keys.forEach(k => { if (!k.startsWith("p_") || !items[k]) return; const id = k.slice(2); try { const v = JSON.parse(items[k]); if (ALL_GAMES[id] && (v.s || v.b)) s[id] = {s: v.s || null, b: !!v.b, t: Number(v.t) || 0}; } catch (e) {} });
   state = s;
   if (items.meta) try { const v = JSON.parse(items.meta); meta = {base: Number(v.base) || 0, log: Array.isArray(v.log) ? v.log : [], prev: v.prev || null}; } catch (e) {}
   saveLocal();
@@ -1392,12 +1540,14 @@ async function connectTelegram(){
 /* ---------- transfer code ---------- */
 function exportCode(){
   const by = f => Object.keys(state).filter(f);
-  return btoa(unescape(encodeURIComponent(JSON.stringify({d: by(i => state[i].s === "done"), p: by(i => state[i].s === "play"), x: by(i => state[i].s === "drop"), b: by(i => state[i].b), m: meta, a: customActs}))));
+  return btoa(unescape(encodeURIComponent(JSON.stringify({d: by(i => state[i].s === "done"), p: by(i => state[i].s === "play"), x: by(i => state[i].s === "drop"), b: by(i => state[i].b), m: meta, a: customActs, l: layout}))));
 }
 function importCode(code){
   const v = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
-  if (Array.isArray(v.a)) { customActs = v.a; applyCustomActs(); persistActs(); }
-  const put = (list, f) => (Array.isArray(list) ? list : []).forEach(i => { if (GAMES[i]) { state[i] = Object.assign({s: null, b: false, t: Date.now()}, state[i]); f(state[i]); touched.add(i); } });
+  if (Array.isArray(v.a)) customActs = v.a;
+  if (v.l && typeof v.l === "object") layout = v.l;
+  if (Array.isArray(v.a) || v.l) { applyCustomActs(); persistActs(); }
+  const put = (list, f) => (Array.isArray(list) ? list : []).forEach(i => { if (ALL_GAMES[i]) { state[i] = Object.assign({s: null, b: false, t: Date.now()}, state[i]); f(state[i]); touched.add(i); } });
   const touched = new Set();
   put(v.d, r => { r.s = "done"; }); put(v.p, r => { r.s = "play"; }); put(v.x, r => { r.s = "drop"; }); put(v.b, r => { r.b = true; });
   if (!touched.size) throw new Error("empty");
