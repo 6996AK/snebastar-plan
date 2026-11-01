@@ -79,7 +79,8 @@ jobs:
           # minutes per game; a failed call keeps the last known values
           playtime = old.get("playtime", {})
           wanted = set(json.loads(os.environ["PLAY_APPS"]))
-          qs = urllib.parse.urlencode({"key": KEY, "steamid": STEAM_ID, "include_played_free_games": 1})
+          qs = urllib.parse.urlencode({"key": KEY, "steamid": STEAM_ID, "include_played_free_games": 1, "include_appinfo": 1})
+          games = None
           try:
               with urllib.request.urlopen("https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?" + qs, timeout=30) as r:
                   games = (json.load(r).get("response") or {}).get("games")
@@ -96,6 +97,7 @@ jobs:
 
           if TEST:
               out = {"finished": finished, "unavailable": sorted(unavailable), "hidden": sorted(hidden), "errors": errors, "playtime": playtime, "baseline": baseline, "updated": int(time.time())}
+              out["library"] = [[g["appid"], g.get("name", ""), g.get("playtime_forever", 0)] for g in (games or [])]
               json.dump(out, open("steam-test.json", "w"), indent=0, sort_keys=True)
               print(f"TEST finished={len(finished)} playtime={len(playtime)}")
               sys.exit(0)
