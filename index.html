@@ -320,7 +320,6 @@ button:disabled{opacity:.45;cursor:default}
 .cx-num{font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--accent);min-width:2.2em}
 .cx-row-h h3{font-family:var(--f-display);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.03em;margin:0}
 .cx-row-h .act-meta{margin-left:auto}
-.cx-row.giants{margin-top:30px;padding:16px 18px 6px;border-radius:20px;border:1px solid rgba(243,185,77,.35);background:linear-gradient(135deg,rgba(243,185,77,.1),rgba(14,16,22,.7) 60%);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .cx-row.done .cx-row-h h3{color:var(--mute)}
 .cx-row.done .cx-num{color:var(--done)}
 .cx-strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-left:10px;padding:14px 10px 16px;margin:2px -10px 0;scrollbar-width:thin}
@@ -387,6 +386,11 @@ button:disabled{opacity:.45;cursor:default}
 .edit-tile{position:relative;min-width:0}
 .edit-tile .cx-tile{display:block;width:100%}
 .tile-x{position:absolute;z-index:6;right:-6px;top:-6px;width:30px;height:30px;border-radius:50%;border:2px solid #0e1016;background:var(--drop);color:#2a0508;font:inherit;font-size:18px;font-weight:700;line-height:1;cursor:pointer}
+.tile-mv{position:absolute;z-index:6;left:6px;right:6px;bottom:6px;display:flex;justify-content:space-between;pointer-events:none}
+.tile-mv button{pointer-events:auto;width:36px;height:36px;border-radius:50%;border:1px solid rgba(243,185,77,.6);background:rgba(14,16,22,.88);color:var(--accent);font:inherit;font-size:22px;font-weight:700;line-height:1;cursor:pointer}
+.tile-mv button:disabled{opacity:.3;cursor:default}
+.act-move{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.act-warn{color:var(--accent);font-weight:600}
 .add-tile{aspect-ratio:2/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:1.5px dashed rgba(243,185,77,.6);border-radius:12px;background:rgba(243,185,77,.06);color:var(--accent);font:inherit;cursor:pointer}
 .add-tile span{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1}
 .add-tile small{font-size:12px;font-weight:600}
@@ -455,10 +459,10 @@ button:disabled{opacity:.45;cursor:default}
       <div class="panel"><h2>До следующей покупки</h2><div class="meter" id="cx-meter"></div><div class="meter-cap" id="cx-meter-cap"></div><div class="total" id="cx-total"></div><div class="buy-row"><button class="btn" id="cx-buy-btn" type="button">Купил игру не из списка</button></div></div>
       <div class="panel"><h2>Правила</h2><ol class="rules">
         <li><b>Пять пройденных — одна новая.</b> Считаются только титры.</li>
-        <li>Одновременно максимум две: один гигант и одна игра из акта.</li>
+        <li>Одновременно максимум две игры.</li>
         <li>Уже пройденное заново не проходишь. Единственное исключение — Mafia II на 100%, и то после всего пути.</li>
         <li>Не зацепила за 3 часа — вычёркиваешь. Ведьмаку даётся 5 часов.</li>
-        <li>Гиганты идут отдельной дорожкой: по одному, вперемешку с короткими играми.</li>
+        <li>Гиганты отложены: они ждут конца пути.</li>
         <li>Кооп с братом идёт вне очереди.</li></ol></div>
     </div>
     <ul class="store" id="cx-store-list"></ul>
@@ -517,10 +521,10 @@ button:disabled{opacity:.45;cursor:default}
       <h2 id="rules-h">Правила</h2>
       <ol class="rules">
         <li><b>Пять пройденных — одна новая.</b> Считаются только титры.</li>
-        <li>Одновременно максимум две: один гигант и одна игра из акта.</li>
+        <li>Одновременно максимум две игры.</li>
         <li>Уже пройденное заново не проходишь. Единственное исключение — Mafia II на 100%, и то после всего пути.</li>
         <li>Не зацепила за 3 часа — вычёркиваешь. Ведьмаку даётся 5 часов, и это последняя попытка.</li>
-        <li>Гиганты идут отдельной дорожкой: по одному, вперемешку с короткими играми.</li>
+        <li>Гиганты отложены: они ждут конца пути.</li>
         <li>Кооп с братом идёт вне очереди и в лимит не входит.</li>
       </ol>
     </section>
@@ -660,7 +664,7 @@ const ACTS = [
   {r:"XIII",  t:"Город теней", sub:"Hell is Us, Watch Dogs 2 и Inscryption.", g:["hellisus","wd2","inscryption"]},
   {r:"XIV",   t:"Деревня и галактика", sub:"Resident Evil Village, Стражи Галактики и Black Ops II.", g:["village","gotg","bo2"], unlock:["bo3","wwii"]},
   {r:"XV",    t:"Последний рубеж", sub:"Финал пути: Black Ops III и WWII.", g:["bo3","wwii"]},
-  {r:"G",     t:"Гиганты", kicker:"Отдельная дорожка", giant:true, side:true, sub:"Большие игры идут не в актах, а параллельно с ними: один гигант за раз, вперемешку с короткими играми из актов. Порядок — сверху вниз.", g:["rdr2","witcher3","ds","kcd","ds2","kcd2","crimson"]},
+  {r:"G",     t:"Гиганты", kicker:"После пути", giant:true, side:true, sub:"Большие игры отложены до конца пути. Порядок — сверху вниз.", g:["rdr2","witcher3","ds","kcd","ds2","kcd2","crimson"]},
   {r:"×2",    t:"Братья по оружию", kicker:"Кооп вне очереди", sub:"С братом, параллельно основному пути. В лимит двух игр не входит.", g:["gears5","evilwest"], side:true},
   {r:"PS",    t:"Ждёт PS5 Pro", kicker:"После пути", sub:"То, что не выходит на ПК или не пошло на нём. Всё это дождётся PS5 Pro после пути и в правило не входит.", g:["gta6","yotei","gowl","pbz","infamous","order1886"], side:true}
 ];
@@ -923,38 +927,68 @@ function roman(n){ return [[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].reduce((o
 /* the act layout: edits of built-in acts, custom acts and games deleted from the common list.
    A game in an act lives in GAMES and counts; a game outside acts moves to POOL and stops counting. */
 function applyCustomActs(){
-  const open = cxOpen ? [...cxOpen].map(i => ACTS[i] && ACTS[i].r) : null;
+  const open = cxOpen ? [...cxOpen].map(i => ACTS[i] && ACTS[i].key) : null;
   const del = new Set(layout.del || []), pro = new Set(layout.pro || []), used = new Set(), edit = layout.edit || {};
   const take = list => (Array.isArray(list) ? list : []).filter(id => { if (!ALL_GAMES[id] || del.has(id) || used.has(id)) return false; used.add(id); return true; });
-  const base = BASE_ACTS.map(a => Object.assign({}, a, {g: take(edit[a.r] || a.g)})).filter(a => a.g.length);
+  const base = BASE_ACTS.map(a => Object.assign({}, a, {key: a.r, g: take(edit[a.r] || a.g)})).filter(a => a.g.length);
   customActs = customActs.filter(a => a && Array.isArray(a.g));
   const customs = [];
-  customActs.forEach((a, ci) => { const g = take(a.g); if (g.length) customs.push({r: roman(16 + customs.length), t: String(a.t || "Новый акт"), sub: "Акт, собранный тобой.", g, custom: true, ci}); });
+  customActs.forEach((a, ci) => { if (!a.id) a.id = "c" + Date.now().toString(36) + ci; const g = take(a.g); if (g.length) customs.push({key: a.id, r: "", t: String(a.t || "Новый акт"), sub: "Акт, собранный тобой.", g, custom: true, ci}); });
   const at = base.findIndex(a => a.side), cutAt = at < 0 ? base.length : at;
+  const plain = [...base.slice(0, cutAt), ...customs, ...base.slice(cutAt)], giants = plain.filter(a => a.giant);
+  const free = plain.filter(a => !a.giant), byKey = new Map(free.map(a => [a.key, a]));
+  const seen = new Set(), ordered = (Array.isArray(layout.order) ? layout.order : []).map(k => byKey.get(k)).filter(a => a && !seen.has(a.key) && seen.add(a.key));
+  free.filter(a => !seen.has(a.key)).forEach(a => {
+    if (a.side) { ordered.push(a); return; }
+    let i = ordered.length; while (i > 0 && ordered[i - 1].side) i--;
+    ordered.splice(i, 0, a);
+  });
+  let num = 0;
+  ordered.forEach(a => { if (!a.side) a.r = roman(++num); });
   ACTS.length = 0;
-  ACTS.push(...base.slice(0, cutAt), ...customs, ...base.slice(cutAt));
+  ACTS.push(...ordered, ...giants);
+  Object.values(ALL_GAMES).forEach(g => { if (!g.after) return; g.after0 = g.after0 || g.after; const was = ACTS.find(a => "акта " + a.key === g.after0); g.after = was ? "акта " + was.r : g.after0; });
   const where = {};
   ACTS.forEach(a => a.g.forEach(id => { where[id] = a; }));
   [GAMES, POOL].forEach(o => Object.keys(o).forEach(k => delete o[k]));
   Object.keys(ALL_GAMES).forEach(id => {
     const g = ALL_GAMES[id], a = where[id];
-    g.ps = !!a && a.r === "PS";
+    g.ps = !!a && a.key === "PS";
     g.pro = !a && (g.basePro || pro.has(id));
     g.role = g.role || "main";
     g.note = g.note || "";
     (a || g.pro ? GAMES : POOL)[id] = g;
   });
-  cxOpen = open ? new Set(open.map(r => ACTS.findIndex(a => a.r === r)).filter(i => i >= 0)) : null;
+  cxOpen = open ? new Set(open.map(k => ACTS.findIndex(a => a.key === k)).filter(i => i >= 0)) : null;
 }
-const actRoom = a => a.side ? Infinity : ACT_MAX - a.g.length;
+const actLimit = a => a.side ? Infinity : a.custom ? CUSTOM_MAX : ACT_MAX;
+const actRoom = a => actLimit(a) - a.g.length;
 const actKeyLabel = a => (a.kicker || "Акт " + a.r) + " «" + a.t + "»";
 function setActGames(a, g){
   if (a.custom) customActs[a.ci].g = g;
-  else { layout.edit = layout.edit || {}; layout.edit[a.r] = g; }
+  else { layout.edit = layout.edit || {}; layout.edit[a.key] = g; }
 }
 function removeFromActs(ids){
   const out = new Set(ids);
   ACTS.forEach(a => { if (a.g.some(i => out.has(i))) setActGames(a, a.g.filter(i => !out.has(i))); });
+}
+function moveAct(key, how){
+  const list = ACTS.filter(a => !a.giant).map(a => a.key), i = list.indexOf(key);
+  if (i < 0) return;
+  list.splice(i, 1);
+  const to = how === "first" ? 0 : how === "last" ? list.length : i + Number(how);
+  list.splice(Math.max(0, Math.min(list.length, to)), 0, key);
+  layout.order = list;
+  saveLayout();
+}
+function moveGame(id, step){
+  const a = actOf(id);
+  if (!a) return;
+  const g = a.g.slice(), i = g.indexOf(id), to = i + step;
+  if (to < 0 || to >= g.length) return;
+  g.splice(i, 1); g.splice(to, 0, id);
+  setActGames(a, g);
+  saveLayout();
 }
 function saveLayout(){ customActs = customActs.filter(a => a.g.length); applyCustomActs(); persistActs(); render(); }
 function persistActs(){
@@ -1124,7 +1158,8 @@ function cxTile(id){
     '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + drawArt(id) + '" alt="">' + mark +
     '<span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : '') + '</span></div></button>';
 }
-const ACT_MAX = 3;
+const ACT_MAX = 3, CUSTOM_MAX = 8;
+const longActNote = n => "В акте " + n + " " + plural(n, "игра", "игры", "игр") + ": он будет идти дольше обычного, а следующие акты подождут.";
 const STEAM_APP = {"pragmata":3357650,"hellraiser":1551980,"doom-tda":3017860,"re2":883710,"gta3":1546970,"gtavc":1546990,"gtasa":1547000,"gta4":12210,"re7":418370,"pbz":4115450,"indika":1373960,"control-r":3669870,"inscryption":1092790,"titanfall2":1237970,"rdr2":1174180,"stray":1332010,"witcher3":292030,"doom2016":379720,"eternal":782330,"deadspace":1693980,"callisto":1544020,"untildawn":2172010,"re4":2050650,"village":1196590,"prey":480490,"dis2":403640,"hol":1583230,"e33":1903340,"tno":201810,"ds":1850570,"wolf2":612880,"ratchet":1895880,"se5":1029690,"bunny":1421250,"gotg":1088850,"hellisus":1620730,"wd2":447040,"kcd":379430,"kcd2":1771300,"crimson":3321460,"gears5":1097840,"evilwest":1065310,"galactic":4078430,"onimusha":2638890,"bo1":42700,"re4sw":2109300,"roboquest":692890,"hol2":2069250,"ds2":3280350,"mouse":2416450,"bo2":202970,"wwii":476600,"bo3":311210};
 const STEAM_FILE = new URLSearchParams(location.search).has("steamtest") ? "steam-test.json" : "steam.json";
 const HOOK_SKIP = ["pragmata"];
@@ -1172,15 +1207,15 @@ function renderList(){
   let bar;
   if (listF === "del") bar = '<button class="btn pool-make" type="button" data-list-restore' + (n ? ro : " disabled") + '>Вернуть' + (n ? ' (' + n + ')' : '') + '</button><span class="small">Вернутся в общий список, без акта.</span>';
   else {
-    if (!ACTS.some(a => a.r === listTarget)) listTarget = "";
-    const t = ACTS.find(a => a.r === listTarget), selfCount = t ? t.g.filter(i => poolPick.has(i)).length : 0, fits = t && n && n - selfCount <= actRoom(t) && n > selfCount;
+    if (!ACTS.some(a => a.key === listTarget)) listTarget = "";
+    const t = ACTS.find(a => a.key === listTarget), selfCount = t ? t.g.filter(i => poolPick.has(i)).length : 0, fits = t && n && n - selfCount <= actRoom(t) && n > selfCount;
     bar = '<input id="pool-name" type="text" maxlength="40" placeholder="Название нового акта" aria-label="Название нового акта" value="' + esc(poolName) + '">' +
-      '<button class="btn pool-make" type="button" data-pool-make' + (n >= 1 && n <= ACT_MAX ? ro : " disabled") + '>Создать акт</button>' +
-      '<select id="list-target" aria-label="Акт для добавления"><option value="">Выбрать акт…</option>' + ACTS.map(a => '<option value="' + esc(a.r) + '"' + (a.r === listTarget ? " selected" : "") + (actRoom(a) <= 0 ? " disabled" : "") + '>' + esc(a.r + ". " + a.t) + (a.side ? "" : " (" + a.g.length + "/" + ACT_MAX + ")") + '</option>').join("") + '</select>' +
+      '<button class="btn pool-make" type="button" data-pool-make' + (n >= 1 && n <= CUSTOM_MAX ? ro : " disabled") + '>Создать акт</button>' +
+      '<select id="list-target" aria-label="Акт для добавления"><option value="">Выбрать акт…</option>' + ACTS.map(a => '<option value="' + esc(a.key) + '"' + (a.key === listTarget ? " selected" : "") + (actRoom(a) <= 0 ? " disabled" : "") + '>' + esc(a.r + ". " + a.t) + (a.side ? "" : " (" + a.g.length + "/" + actLimit(a) + ")") + '</option>').join("") + '</select>' +
       '<button class="btn" type="button" data-list-move' + (fits ? ro : " disabled") + '>В этот акт</button>' +
       '<button class="btn pro-btn" type="button" data-list-pro' + (n ? ro : " disabled") + '>Уже пройдено' + (n ? ' (' + n + ')' : '') + '</button>' +
       '<button class="btn danger" type="button" data-list-del' + (n ? ro : " disabled") + '>Удалить' + (n ? ' (' + n + ')' : '') + '</button>' +
-      '<span class="small list-count">' + (n ? 'Выбрано: ' + n + (n > ACT_MAX ? '. В один акт можно не больше ' + ACT_MAX : '') : 'Нажми на обложки, чтобы выбрать игры') + '</span>';
+      '<span class="small list-count">' + (n ? 'Выбрано: ' + n + (n > CUSTOM_MAX ? '. В один акт можно не больше ' + CUSTOM_MAX : n > ACT_MAX ? '. Больше ' + ACT_MAX + ' игр: акт получится длинным' : '') : 'Нажми на обложки, чтобы выбрать игры') + '</span>';
   }
   document.getElementById("list-bar").innerHTML = bar;
   document.getElementById("list-grid").innerHTML = ids.map(id => { const g = ALL_GAMES[id], on = poolPick.has(id), a = actOf(id), s = st(id), art = drawArt(id, true);
@@ -1223,26 +1258,31 @@ function renderConsole(){
     let rows = playing.length ? '<section class="cx-row"><div class="cx-row-h"><span class="cx-num" style="color:var(--play)">▶</span><h3>Сейчас играю</h3></div><div class="cx-strip">' + playing.map(cxTile).join("") + '</div></section>' : "";
     const main = ACTS.filter(x => !x.side), curIdx = main.findIndex(x => x.g.some(i => !closed(i)));
     if (cxOpen === null) cxOpen = new Set([ACTS.indexOf(main[curIdx >= 0 ? curIdx : 0])]);
-    const G = ACTS.find(x => x.giant);
-    if (G){ const gd = G.g.filter(closed).length, gNext = G.g.find(i => !closed(i));
-      rows += '<section class="cx-row giants"><div class="cx-row-h"><span class="cx-num" style="color:var(--accent)">G</span><h3>Гиганты</h3><span class="act-meta">' + gd + ' из ' + G.g.length + (gNext ? ' · следующий: ' + esc(GAMES[gNext].ct || GAMES[gNext].t) : '') + '</span></div><p class="small" style="margin:6px 0 0;max-width:70ch">' + esc(G.sub) + '</p><div class="cx-strip">' + G.g.map(cxTile).join("") + '</div></section>'; }
     rows += '<div class="cx-row-h" style="margin-top:34px"><span class="cx-num">✦</span><h3>Акты</h3><span class="act-meta">' + main.filter(x => x.g.every(closed)).length + ' из ' + main.length + ' пройдено</span></div><div class="acts-grid">';
-    ACTS.forEach((x, ai) => { if (x.giant) return; const n = x.g.length, d = x.g.filter(closed).length, fin = n > 0 && d === n, mi = main.indexOf(x), isCur = mi >= 0 && mi === curIdx, open = cxOpen.has(ai);
+    const actCard = (x, ai) => { let rows = ""; const n = x.g.length, d = x.g.filter(closed).length, fin = n > 0 && d === n, mi = main.indexOf(x), isCur = mi >= 0 && mi === curIdx, open = cxOpen.has(ai);
       const g0 = GAMES[x.g[0]], tag = isCur ? '<span class="tag">Сейчас</span>' : fin ? '<span class="tag fin-tag">Пройден</span>' : "";
       if (open){
         const unl = [].concat(x.unlock || []).filter(u => GAMES[u]), un = unl.length ? '<div class="unlock"><b>' + (unl.length > 1 ? 'Потом покупки' : 'Потом покупка') + '</b>' + esc(unl.map(u => GAMES[u].t).join(" + ")) + '</div>' : "";
-        rows += '<section class="ab-open" style="--tint:' + g0.c[0] + '"><div class="ab-oh"><span class="ab-num big">' + esc(x.r) + '</span><div class="ab-ot"><div class="act-kicker"><span class="eyebrow">' + esc(x.kicker || "Акт " + x.r) + '</span>' + tag + '<span class="act-meta">' + d + ' из ' + n + ' закрыто</span></div><h3>' + esc(x.t) + '</h3></div><button class="ab-x" type="button" data-act="' + ai + '" aria-label="Свернуть акт">Свернуть</button></div>' +
-          '<p class="sub">' + esc(x.sub) + '</p><div class="ab-grid">' + x.g.map(id => cxEdit === x.r ? '<div class="edit-tile">' + cxTile(id) + '<button class="tile-x" type="button" data-act-remove="' + id + '" aria-label="Убрать из акта: ' + esc(GAMES[id].t) + '">×</button></div>' : cxTile(id)).join("") +
-            (cxEdit === x.r && actRoom(x) > 0 ? '<button class="add-tile" type="button" data-act-add="' + esc(x.r) + '" aria-label="Добавить игру в акт"><span>+</span><small>Добавить</small></button>' : '') + '</div>' + un +
-            '<div class="buy-row"><button class="btn" type="button" data-edit-act="' + esc(x.r) + '"' + (readOnly ? ' disabled' : '') + '>' + (cxEdit === x.r ? 'Готово' : 'Изменить') + '</button>' + (cxEdit === x.r ? '<span class="small">' + (x.side ? 'Без ограничения по числу игр.' : 'Не больше ' + ACT_MAX + ' игр в акте.') + ' Убранные игры вернутся в общий список.</span>' : '') + '</div></section>';
+        const editing = cxEdit === x.key, free = ACTS.filter(q => !q.giant), fi = free.indexOf(x), lim = x.g.length;
+        const editNote = x.side ? 'Без ограничения по числу игр.' : !x.custom ? 'Не больше ' + ACT_MAX + ' игр в акте.' : lim > ACT_MAX ? '<span class="act-warn">' + esc(longActNote(lim)) + '</span> Максимум ' + CUSTOM_MAX + '.' : 'В личном акте до ' + CUSTOM_MAX + ' игр, но больше ' + ACT_MAX + ' лучше не брать.';
+        const mvBtn = (how, label, aria, off) => '<button class="btn act-mv" type="button" data-act-move="' + how + '" data-act-key="' + esc(x.key) + '" aria-label="' + aria + '"' + (off ? ' disabled' : '') + '>' + label + '</button>';
+        const mover = editing && !x.giant ? '<div class="act-move"><span class="small">Место акта:</span>' + mvBtn("first", "В начало", "Переместить акт в начало", fi === 0) + mvBtn("-1", "↑ Раньше", "Переместить акт раньше", fi === 0) + mvBtn("1", "↓ Позже", "Переместить акт позже", fi === free.length - 1) + mvBtn("last", "В конец", "Переместить акт в конец", fi === free.length - 1) + '</div>' : '';
+        rows += '<section class="ab-open' + (editing ? ' is-edit' : '') + '" style="--tint:' + g0.c[0] + '"><div class="ab-oh"><span class="ab-num big">' + esc(x.r) + '</span><div class="ab-ot"><div class="act-kicker"><span class="eyebrow">' + esc(x.kicker || "Акт " + x.r) + '</span>' + tag + '<span class="act-meta">' + d + ' из ' + n + ' закрыто</span></div><h3>' + esc(x.t) + '</h3></div><button class="ab-x" type="button" data-act="' + ai + '" aria-label="Свернуть акт">Свернуть</button></div>' +
+          '<p class="sub">' + esc(x.sub) + '</p><div class="ab-grid">' + x.g.map((id, gi) => editing ? '<div class="edit-tile">' + cxTile(id) + '<button class="tile-x" type="button" data-act-remove="' + id + '" aria-label="Убрать из акта: ' + esc(GAMES[id].t) + '">×</button><div class="tile-mv"><button type="button" data-game-move="' + id + '" data-step="-1" aria-label="Раньше в акте: ' + esc(GAMES[id].t) + '"' + (gi === 0 ? ' disabled' : '') + '>‹</button><button type="button" data-game-move="' + id + '" data-step="1" aria-label="Позже в акте: ' + esc(GAMES[id].t) + '"' + (gi === x.g.length - 1 ? ' disabled' : '') + '>›</button></div></div>' : cxTile(id)).join("") +
+            (editing && actRoom(x) > 0 ? '<button class="add-tile" type="button" data-act-add="' + esc(x.key) + '" aria-label="Добавить игру в акт"><span>+</span><small>Добавить</small></button>' : '') + '</div>' + un +
+            '<div class="buy-row"><button class="btn" type="button" data-edit-act="' + esc(x.key) + '"' + (readOnly ? ' disabled' : '') + '>' + (editing ? 'Готово' : 'Изменить') + '</button>' + (editing ? '<span class="small">' + editNote + ' Убранные игры вернутся в общий список.</span>' : '') + '</div>' + mover + '</section>';
       } else {
         const fan = x.g.slice(0, 3).map((i, k) => '<img src="' + drawArt(i) + '" alt="" style="--k:' + k + '">').join("");
         rows += '<button class="ab' + (fin ? " fin" : "") + (isCur ? " cur" : "") + '" type="button" data-act="' + ai + '" style="--tint:' + g0.c[0] + '" aria-label="' + esc((x.kicker || "Акт " + x.r) + ": " + x.t + ", " + d + " из " + n) + '">' +
           '<span class="ab-bg" style="background-image:url(' + drawArt(x.g[0]) + ')"></span><span class="ab-num">' + esc(x.r) + '</span>' + (fin ? '<span class="okd ab-ok">' + ICON.done + '</span>' : isCur ? '<span class="tag ab-tag">Сейчас</span>' : '') +
           '<span class="ab-fan">' + fan + '</span><span class="ab-t">' + esc(x.t) + '</span><span class="ab-p"><i style="width:' + Math.round(d / n * 100) + '%"></i></span><span class="ab-m">' + d + ' из ' + n + '</span></button>';
       }
-    });
+      return rows;
+    };
+    ACTS.forEach((x, ai) => { if (!x.giant) rows += actCard(x, ai); });
     rows += poolHtml() + '</div>';
+    const giantAt = ACTS.findIndex(x => x.giant);
+    if (giantAt >= 0) rows += '<div class="cx-row-h" style="margin-top:34px"><span class="cx-num">☾</span><h3>После пути</h3></div><div class="acts-grid">' + actCard(ACTS[giantAt], giantAt) + '</div>';
     const box = document.getElementById("cx-rows"), keep = [...box.querySelectorAll(".cx-strip")].map(e => e.scrollLeft);
     box.innerHTML = rows;
     box.querySelectorAll(".cx-strip").forEach((e, k) => { if (keep[k]) e.scrollLeft = keep[k]; });
@@ -1316,26 +1356,28 @@ document.getElementById("view-console").addEventListener("click", e => {
   const pick = e.target.closest("[data-pick]");
   if (pick){ const id = pick.dataset.pick; if (poolPick.has(id)) poolPick.delete(id); else poolPick.add(id); renderList(); return; }
   if (e.target.closest("[data-pool-make]")){
-    if (readOnly || !poolPick.size || poolPick.size > ACT_MAX) return;
+    if (readOnly || !poolPick.size || poolPick.size > CUSTOM_MAX) return;
     const g = [...poolPick], t = poolName.trim() || "Новый акт";
     removeFromActs(g);
     customActs = customActs.concat({t, g});
     poolPick.clear(); poolName = "";
     cxOpen = null; saveLayout();
     cxTab = "path"; cxOpen = new Set([ACTS.findIndex(a => a.custom && a.t === t && a.g.includes(g[0]))]); renderConsole();
+    if (g.length > ACT_MAX) notice(longActNote(g.length), "Длинный акт");
     return;
   }
   if (e.target.closest("[data-list-move]")){
-    const t = ACTS.find(a => a.r === listTarget);
+    const t = ACTS.find(a => a.key === listTarget);
     if (readOnly || !t || !poolPick.size) return;
     const g = [...poolPick], fresh = g.filter(i => !t.g.includes(i));
     if (fresh.length > actRoom(t)) return;
-    const r = t.r, keep = t.g.concat(fresh);
+    const key = t.key, keep = t.g.concat(fresh), long = t.custom && keep.length > ACT_MAX;
     removeFromActs(fresh);
     setActGames(t, keep);
     poolPick.clear();
     saveLayout();
-    cxTab = "path"; const i = ACTS.findIndex(a => a.r === r); if (i >= 0) { cxOpen = cxOpen || new Set(); cxOpen.add(i); } renderConsole();
+    cxTab = "path"; const i = ACTS.findIndex(a => a.key === key); if (i >= 0) { cxOpen = cxOpen || new Set(); cxOpen.add(i); } renderConsole();
+    if (long) notice(longActNote(keep.length), "Длинный акт");
     return;
   }
   if (e.target.closest("[data-list-pro]")){
@@ -1372,6 +1414,16 @@ document.getElementById("view-console").addEventListener("click", e => {
   }
   const ed = e.target.closest("[data-edit-act]");
   if (ed){ cxEdit = cxEdit === ed.dataset.editAct ? null : ed.dataset.editAct; renderConsole(); return; }
+  const gm = e.target.closest("[data-game-move]");
+  if (gm){ if (!readOnly) moveGame(gm.dataset.gameMove, Number(gm.dataset.step)); return; }
+  const am = e.target.closest("[data-act-move]");
+  if (am){
+    if (readOnly) return;
+    moveAct(am.dataset.actKey, am.dataset.actMove);
+    const card = document.querySelector("#cx-rows .ab-open.is-edit");
+    if (card) card.scrollIntoView({block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+    return;
+  }
   const rm = e.target.closest("[data-act-remove]");
   if (rm){
     if (readOnly) return;
