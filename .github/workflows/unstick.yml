@@ -1,0 +1,23 @@
+name: Unstick Pages
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Commit of the stuck Pages deployment"
+        default: "03a97af941a1520ce9ea6c20d59e70295a3ef970"
+permissions:
+  pages: write
+  contents: read
+jobs:
+  unstick:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SHA: ${{ inputs.sha }}
+    steps:
+      - name: Cancel the stuck deployment
+        run: gh api -X POST "repos/$GITHUB_REPOSITORY/pages/deployments/$SHA/cancel" -i || echo "cancel was refused"
+      - name: Wait for the cancel to settle
+        run: sleep 30
+      - name: Build the latest commit
+        run: gh api -X POST "repos/$GITHUB_REPOSITORY/pages/builds"
