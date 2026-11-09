@@ -607,6 +607,7 @@ const ACTS = [
   {key:"S-APT",   r:"PT",  t:"A Plague Tale", kicker:"Серия", series:true, side:true, sub:"Innocence и Requiem — история Амиции и Гуго.", g:["s752590","s1182900"]},
   {key:"S-HB",    r:"H",   t:"Hellblade", kicker:"Серия", series:true, side:true, sub:"Две части про Сенуа. Обе короткие, обе лучше в наушниках.", g:["s414340","s2461850"]},
   {key:"S-ORI",   r:"O",   t:"Ori", kicker:"Серия", series:true, side:true, sub:"Blind Forest в полной версии и Will of the Wisps.", g:["s387290","s1057090"]},
+  {key:"S-NFS",   r:"NFS", t:"Need for Speed", kicker:"Серия", series:true, side:true, sub:"Все части из твоей библиотеки по порядку выхода: Hot Pursuit, Most Wanted, Rivals, NFS 2015, Payback, Heat и Unbound. Гонки для разрядки между тяжёлыми играми.", g:["s1328660","s1262560","s1262600","s1262540","s1262580","s1222680","s1846380"]},
   {key:"S-AC",    r:"AC",  t:"Assassin's Creed", kicker:"Серия", series:true, side:true, sub:"Трилогия Эцио, затем III, Unity и Mirage.", g:["s33230","s48190","s201870","s911400","s289650","s3035570"]},
   {r:"G",     t:"Гиганты", kicker:"После пути", giant:true, side:true, sub:"Большие игры отложены до конца пути. Порядок — сверху вниз.", g:["rdr2","witcher3","ds","kcd","ds2","kcd2","crimson"]},
   {r:"×2",    t:"Братья по оружию", kicker:"Кооп вне очереди", sub:"С братом, параллельно основному пути. В лимит двух игр не входит.", g:["gears5","evilwest"], side:true},
@@ -616,6 +617,8 @@ const POOL = {"s410110":{"t":"12 is Better Than 6","yr":2015,"h":null,"role":"ma
 Object.assign(POOL, {
   "s35140": {t:"Batman: Arkham Asylum GOTY Edition", yr:2009, h:null, role:"main", m:"city", c:["#3a4a5a","#0a0c10"], ink:"#d8e0ff", note:"", cv:"35140/library_600x900.jpg?t=1745966724"},
   "s203160": {t:"Tomb Raider", yr:2013, h:null, role:"main", m:"mountains", c:["#8a7a5a","#14100a"], ink:"#ffe0a0", note:"", cv:"203160/6cf7bf60b8dbbbcf693f0456819bbdcfe6187c8c/library_capsule.jpg?t=1792674634"},
+  "s1262600": {t:"Need for Speed Rivals", yr:2013, h:null, role:"main", m:"forest", c:["#3a5a8a","#080c14"], ink:"#ffd06a", note:"", cv:"1262600/library_600x900.jpg"},
+  "s1262580": {t:"Need for Speed Payback", yr:2017, h:null, role:"main", m:"desert", c:["#d07a3a","#140a06"], ink:"#ffe0a0", note:"", cv:"1262580/library_600x900.jpg"},
   "s1715130": {t:"Crysis Remastered", yr:2021, h:null, role:"main", m:"forest", c:["#4a7a6a","#0a1412"], ink:"#b6f0c8", note:"", cv:"1715130/b9a1599059a595d6aca543aaefc3ca88408efe63/library_capsule.jpg?t=1785838535"}
 });
 /* series parts: story length and a short note */
@@ -648,7 +651,14 @@ const SERIES_INFO = {
   "s201870": {h:15, ct:"Revelations", sub:"Assassin's Creed", note:"Эцио в Константинополе, финал его трилогии."},
   "s911400": {h:22, ct:"Assassin's Creed III", sub:"Remastered", note:"Американская революция и новый герой."},
   "s289650": {h:18, ct:"Unity", sub:"Assassin's Creed", note:"Париж времён революции, 1789 год."},
-  "s3035570": {h:15, ct:"Mirage", sub:"Assassin's Creed", note:"Багдад IX века. Короткая, в духе первых частей."}
+  "s3035570": {h:15, ct:"Mirage", sub:"Assassin's Creed", note:"Багдад IX века. Короткая, в духе первых частей."},
+  "s1328660": {h:7, yr:2010, ct:"Hot Pursuit", sub:"Need for Speed", note:"Погони гонщиков и полиции, ремастер 2020 года. Карьеру можно проходить за обе стороны."},
+  "s1262560": {h:8, yr:2012, ct:"Most Wanted", sub:"Need for Speed", note:"Открытый город Фэйрхейвен и список самых разыскиваемых. В Steam отмечена «Пройдено»: если так и есть, просто отметь."},
+  "s1262600": {h:9, ct:"Rivals", sub:"Need for Speed", note:"Гонщики против полиции в открытом мире округа Редвью."},
+  "s1262540": {h:12, yr:2015, ct:"Need for Speed", sub:"2015", note:"Ночной Вентура-Бэй, тюнинг и сюжет в роликах с живыми актёрами."},
+  "s1262580": {h:15, ct:"Payback", sub:"Need for Speed", note:"Пустынный Фортуна-Вэлли, месть и ограбления на колёсах."},
+  "s1222680": {h:15, yr:2019, ct:"Heat", sub:"Need for Speed", note:"Палм-Сити: днём легальные гонки, ночью — уличные и полиция."},
+  "s1846380": {h:14, ct:"Unbound", sub:"Need for Speed", note:"Лейкшор и мультяшные эффекты поверх реальных машин. В Steam отмечена «Пройдено»: если так и есть, просто отметь."}
 };
 let customActs = [], layout = {edit: {}, del: []}, poolName = "", listQ = "", listF = "all", listTarget = "", cxEdit = null;
 const poolPick = new Set();
@@ -868,6 +878,7 @@ const ACH = [
   {k:"hb", g:"HB", n:"Голоса в голове", d:"Пройти обе Hellblade.", f:() => serDone("S-HB")},
   {k:"ori", g:"ORI", n:"Свет духов", d:"Пройти обе Ori.", f:() => serDone("S-ORI")},
   {k:"ezio", g:"EZ", n:"Трилогия Эцио", d:"Пройти Assassin's Creed II, Brotherhood и Revelations.", f:() => [doneAll(["s33230","s48190","s201870"]), 3]},
+  {k:"nfs", g:"NFS", n:"Самый разыскиваемый", d:"Пройти всю серию Need for Speed.", f:() => serDone("S-NFS")},
   {k:"ac", g:"AC", n:"Ничто не истинно", d:"Пройти всю серию Assassin's Creed.", f:() => serDone("S-AC")}
 ];
 function serDone(key){ const a = ACTS.find(x => x.key === key); return a ? [doneAll(a.g), a.g.length] : [0, 1]; }
