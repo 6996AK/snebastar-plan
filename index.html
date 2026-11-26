@@ -425,30 +425,20 @@ button:disabled{opacity:.45;cursor:default}
 </style>
 
 <div class="backdrop" id="backdrop" aria-hidden="true"></div>
-<div class="viewbar"><button class="btn share-btn" id="share-btn" type="button" aria-expanded="false" aria-controls="share">Статус и перенос</button></div>
-<div class="share" id="share" hidden><textarea id="share-text" rows="6" readonly aria-label="Статус для Telegram"></textarea><div class="buy-row"><button class="btn" id="share-copy" type="button">Скопировать</button><span class="small" id="share-note" aria-live="polite">Вставь текст в чат.</span></div><details class="xfer"><summary>Перенос отметок</summary><p class="small">Вставь код переноса и нажми «Загрузить». Отметки из кода добавятся к текущим. Кнопка «Показать мой код» даёт резервную копию.</p><textarea id="xfer-text" rows="4" aria-label="Код переноса" autocomplete="off" spellcheck="false"></textarea><div class="buy-row"><button class="btn" id="xfer-load" type="button">Загрузить</button><button class="btn" id="xfer-show" type="button">Показать мой код</button><span class="small" id="xfer-note" aria-live="polite"></span></div></details></div>
 <div class="wrap cx" id="view-console">
   <header class="cx-top">
     <div class="cx-brand">Sneba<b>Star</b></div>
-    <nav class="cx-tabs" role="tablist" aria-label="Разделы">
-      <button type="button" role="tab" data-tab="home" aria-selected="false">Главная</button>
-      <button type="button" role="tab" data-tab="path" aria-selected="true">Путь</button>
-      <button type="button" role="tab" data-tab="series" aria-selected="false">Серии</button>
-      <button type="button" role="tab" data-tab="list" aria-selected="false">Библиотека</button>
-      <button type="button" role="tab" data-tab="store" aria-selected="false">Магазин</button>
-      <button type="button" role="tab" data-tab="trophies" aria-selected="false">Трофеи</button>
-      <button type="button" role="tab" data-tab="prologue" aria-selected="false">Пролог</button>
-    </nav>
+<nav class="cx-tabs hub-nav" role="tablist" aria-label="Разделы"><button type="button" role="tab" data-tab="home" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10 12 3l9 7v11h-6v-7H9v7H3z"/></svg><span>Главная</span></button><button type="button" role="tab" data-tab="list" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Игры</span></button><button type="button" role="tab" data-tab="path" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h9a4 4 0 0 1 0 8H8a3 3 0 0 0 0 6h9"/></svg><span>Путь</span></button><button type="button" role="tab" data-tab="store" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l1 13H3L4 8zM8 8V6a4 4 0 0 1 8 0v2"/></svg><span>Магазин</span></button><button type="button" role="tab" data-tab="trophies" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2z"/></svg><span>Профиль</span></button></nav>
     <div class="cx-lvl"><div class="ring" id="cx-ring"><span>0</span></div><div class="t"><b id="cx-rank">Новичок</b><span id="cx-rank-sub"></span></div></div>
   </header>
 
-  <section id="cx-home" hidden><div class="ps-home-label">ТВОИ ИГРЫ</div><div class="cx-strip ps-strip" id="ps-strip"></div></section>
+  <section id="cx-home" hidden><div class="hub-home-head"><span>Игры</span><button class="btn" data-tab="list">Вся библиотека →</button></div><div class="cx-strip ps-strip" id="ps-strip"></div></section>
   <div class="cx-spot" id="cx-spot"><div class="cx-spot-art" id="cx-spot-art"></div><div class="cx-spot-in" id="cx-spot-in"></div><div class="cx-poster" id="cx-poster"></div></div>
-  <section id="cx-path">
+  <section id="cx-path"><div class="hub-subnav"><button class="btn active" data-tab="path">Акты</button><button class="btn" data-tab="series">Серии</button></div>
     <div id="cx-rows"></div>
   </section>
 
-  <section id="cx-series" hidden>
+  <section id="cx-series" hidden><div class="hub-subnav"><button class="btn" data-tab="path">Акты</button><button class="btn active" data-tab="series">Серии</button></div>
     <div class="cx-row-h" style="margin-top:34px"><span class="cx-num">◈</span><h3>Серии</h3><span class="act-meta" id="cx-ser-meta"></span></div>
     <p class="small" style="max-width:70ch;margin:6px 0 0">Идут параллельно актам. Части внутри серии — по порядку, серии — сверху вниз. Нажми на серию, чтобы открыть её, и на обложку, чтобы отметить игру.</p>
     <div class="acts-grid" id="cx-ser-grid"></div>
@@ -458,13 +448,13 @@ button:disabled{opacity:.45;cursor:default}
     <div class="cx-sec-h"><h2>Игры</h2><span class="act-meta">всё, что не отмечено в Прологе</span></div>
     <input id="list-q" class="list-q" type="search" placeholder="Найти игру" aria-label="Найти игру" autocomplete="off">
     <div class="chips" id="list-chips"></div>
-    <div class="pool-bar" id="list-bar"></div>
+    <div class="hub-library-tools"><button type="button" class="btn" id="hub-manage" aria-pressed="false">Управление коллекцией</button><span id="hub-library-count" class="small"></span></div><div class="pool-bar" id="list-bar" hidden></div>
     <div class="ab-grid" id="list-grid"></div>
   </section>
 
   <section id="cx-store" hidden>
     <div class="cx-sec-h"><h2>Магазин</h2><span class="act-meta">нажми на обложку, чтобы отметить покупку</span></div>
-    <div class="cx-panel-grid">
+    <div id="hub-store-hero" class="hub-store-hero" hidden></div><div class="cx-panel-grid">
       <div class="panel"><h2>До следующей покупки</h2><div class="meter" id="cx-meter"></div><div class="meter-cap" id="cx-meter-cap"></div><div class="total" id="cx-total"></div><div class="buy-row"><button class="btn" id="cx-buy-btn" type="button">Купил игру не из списка</button></div></div>
       <div class="panel"><h2>Правила</h2><ol class="rules">
         <li><b>Пять пройденных — одна новая.</b> Считаются только титры.</li>
@@ -478,13 +468,15 @@ button:disabled{opacity:.45;cursor:default}
     <ul class="store" id="cx-store-list"></ul>
   </section>
 
-  <section id="cx-trophies" hidden>
-    <div class="cx-sec-h"><h2>Трофеи</h2></div>
+  <section id="cx-trophies" hidden><div class="hub-profile"><div class="hub-avatar">S</div><div><h2>SnebaStar</h2><p id="hub-profile-rank"></p></div></div><div class="hub-profile-stats" id="hub-profile-stats"></div><div class="hub-subnav"><button class="btn active" data-tab="trophies">Трофеи</button><button class="btn" data-tab="prologue">Пролог</button><button class="btn" id="hub-share">Статус и перенос</button></div>
+    <div class="viewbar"><button class="btn share-btn" id="share-btn" type="button" aria-expanded="false" aria-controls="share">Статус и перенос</button></div>
+<div class="share" id="share" hidden><textarea id="share-text" rows="6" readonly aria-label="Статус для Telegram"></textarea><div class="buy-row"><button class="btn" id="share-copy" type="button">Скопировать</button><span class="small" id="share-note" aria-live="polite">Вставь текст в чат.</span></div><details class="xfer"><summary>Перенос отметок</summary><p class="small">Вставь код переноса и нажми «Загрузить». Отметки из кода добавятся к текущим. Кнопка «Показать мой код» даёт резервную копию.</p><textarea id="xfer-text" rows="4" aria-label="Код переноса" autocomplete="off" spellcheck="false"></textarea><div class="buy-row"><button class="btn" id="xfer-load" type="button">Загрузить</button><button class="btn" id="xfer-show" type="button">Показать мой код</button><span class="small" id="xfer-note" aria-live="polite"></span></div></details></div>
+<div class="cx-sec-h"><h2>Трофеи</h2></div>
     <div class="panel" style="margin-top:14px"><div class="tro-sum" id="cx-tro-sum"></div></div>
     <ul class="tro" id="cx-tro"></ul>
   </section>
 
-  <section id="cx-prologue" hidden>
+  <section id="cx-prologue" hidden><div class="hub-subnav"><button class="btn" data-tab="trophies">Профиль</button><button class="btn active" data-tab="prologue">Пролог</button></div>
     <div class="cx-sec-h"><h2>Пролог</h2><span class="act-meta" id="cx-pro-meta"></span></div>
     <p class="small" style="max-width:70ch">Всё, что пройдено до этого плана. Считается в ранг, но не в пятёрку до покупки. Нажми на обложку, чтобы снять отметку.</p>
     <ul class="mini" id="cx-pro"></ul>
@@ -492,7 +484,7 @@ button:disabled{opacity:.45;cursor:default}
 
   <footer class="foot"><div id="cx-steam-note"></div><div>Часы — примерная длина основного сюжета; у начатых игр — сколько осталось до титров.</div><div class="save" id="cx-save-note">Отметки сохраняются в этом браузере. Основное место для них — бот в Telegram.</div></footer>
 </div>
-<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="hub-game-dialog"><button id="hub-dialog-close" class="btn" type="button">Закрыть ×</button><div id="hub-dialog-content"></div><button id="hub-dialog-manage" class="btn" type="button">Выбрать для управления</button></dialog><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <style>
 
@@ -506,6 +498,12 @@ body{background:radial-gradient(ellipse at 70% 0%,#233857 0%,#0b1324 46%,#090e1a
 @media(max-width:680px){.cx-top{display:grid;grid-template-columns:1fr auto;gap:10px}.cx-brand{grid-column:1;grid-row:1}.cx-lvl{grid-column:2;grid-row:1;gap:6px}.cx-lvl .t span{font-size:10px}.cx-tabs{grid-column:1/-1;grid-row:2;width:100%;margin:0;padding:0;gap:4px}.cx-tabs button{font-size:14px;padding:10px 9px}.ps-home-label{margin-top:18px}.ps-strip{gap:11px}.ps-strip .cx-tile{width:92px}.cx-spot{min-height:350px;padding:20px;align-items:end;grid-template-columns:minmax(0,1fr)}.cx-spot-art{background-position:center top}.cx-spot::before{background:linear-gradient(0deg,#090e1a 0%,rgba(9,14,26,.94) 22%,rgba(9,14,26,.57) 63%,rgba(9,14,26,.12) 100%)}.cx-spot-in{padding-top:76px}.cx-title{font-size:32px}.cx-actions{gap:7px}.bb{font-size:13px;padding:9px 13px}.cx-poster{display:none}.ab-grid#list-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px 10px}.pool-t{font-size:12px}.pool-a{font-size:10px}.tro{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
+</style>
+
+<style id="hub21">
+:root{--bg:#090e18;--panel:#151e30;--line:#ffffff16;--line-2:#ffffff28;--accent:#a9cfff;--f-display:system-ui,-apple-system,sans-serif;--f-body:system-ui,-apple-system,sans-serif}
+body{background:radial-gradient(ellipse at 60% 0%,#263d63 0,#111a2b 40%,#090e18 75%);background-attachment:fixed}.backdrop{display:none}.wrap.cx{max-width:1280px;padding-top:18px;padding-bottom:110px}.cx-top{display:flex;justify-content:space-between;margin-bottom:26px;gap:12px}.cx-brand{font-size:20px;letter-spacing:.08em}.cx-lvl{margin-left:auto}.hub-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:50;display:flex;justify-content:space-around;align-items:stretch;width:min(100%,760px);box-sizing:border-box;padding:8px 8px max(10px,env(safe-area-inset-bottom));background:#0d1524f2;border:1px solid #ffffff20;border-radius:20px 20px 0 0;backdrop-filter:blur(20px);gap:0;overflow:visible}.hub-nav button{flex:1;display:grid;place-items:center;gap:4px;padding:8px 3px;color:#929db2;font-size:12px;min-width:0}.hub-nav svg{width:24px;height:24px}.hub-nav button[aria-selected=true]{color:#e6f1ff;background:#263a58;border-radius:12px}.hub-nav button[aria-selected=true]::after{display:none}.hub-home-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:24px;font-weight:650}.hub-home-head .btn{font-size:12px}.ps-strip{margin:4px -10px 0;padding:14px 12px 20px;gap:12px}.ps-strip .cx-tile{width:clamp(104px,15vw,160px)}.ps-strip .cover{aspect-ratio:1;border-radius:11px}.ps-strip .cx-tile[aria-current=true] .cover{outline:2px solid white;outline-offset:3px;box-shadow:none;transform:none}.ps-strip .ct{font-size:11cqw}.cx-spot{display:block;min-height:0;margin:0;padding:0;border:0;border-radius:0;overflow:visible;background:none;box-shadow:none;position:relative}.cx-spot-art{position:absolute;inset:0 0 auto;height:clamp(235px,38vw,460px);background-size:cover;background-position:center;border-radius:16px;mask-image:linear-gradient(#000 0%,#000 45%,transparent 100%);opacity:.85}.cx-spot::before{display:none}.cx-spot-in{padding:clamp(20px,4vw,48px) 0 0;max-width:680px;position:relative;display:grid;gap:8px}.cx-spot.has-hero .cx-spot-in{padding-top:clamp(145px,26vw,320px)}.cx-title{font-size:clamp(30px,5vw,56px);line-height:1.04;margin:0;text-shadow:0 3px 22px #090e18}.cx-spot .eyebrow{font-size:11px;color:#c3d6ef}.cx-meta{margin:0;gap:8px 13px}.cx-note{margin:0;color:#b8c5d9}.cx-poster{display:none!important}.cx-actions{margin-top:8px;display:flex;gap:8px}.bb{min-height:44px;font-size:14px;padding:10px 16px}.hook{margin-top:8px;background:#1a293e!important;border:1px solid #ffffff22!important;border-radius:14px}.hook .buy-row{display:flex;flex-wrap:wrap}.hub-subnav,.hub-library-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 18px}.hub-subnav .active,.hub-library-tools button[aria-pressed=true]{background:#e5eeff;color:#101827}.hub-library-tools{justify-content:space-between}.hub-library-tools .btn{font-size:12px}.cx-sec-h{margin-top:0}.ab-grid#list-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:18px 12px;margin-top:12px}.pool-tile .cover,.ab-grid .cx-tile .cover{aspect-ratio:1;border-radius:9px}.pool-tile .cover img{object-fit:cover}.pool-tile .pool-t{font-size:12px;display:block;margin-top:7px;line-height:1.25}.pool-a{font-size:10px}.pool-bar{margin:0 0 14px}.list-q{border-radius:12px}.chips{margin-top:10px}.chip{font-size:12px}.acts-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.ab{aspect-ratio:16/10;padding:14px}.ab-fan{height:45%;justify-content:flex-end;margin-bottom:4px}.ab-num{font-size:22px}.ab-t{font-size:14px}.ab-bg{filter:brightness(.55) blur(4px)}.ab-open{border-radius:14px}.hub-store-hero{position:relative;display:flex;align-items:center;min-height:190px;border-radius:16px;overflow:hidden;padding:22px;background:#192a43;border:1px solid #ffffff22;box-sizing:border-box;margin-bottom:18px}.hub-store-art{position:absolute;right:0;top:0;width:50%;height:100%;object-fit:cover;mask-image:linear-gradient(90deg,transparent,#000 45%);opacity:.72}.hub-store-hero>div{position:relative;max-width:65%;z-index:1}.hub-store-hero h2{margin:5px 0;font-size:24px;line-height:1.1}.hub-store-hero p{margin:6px 0;color:#e4ebf6}.hub-store-hero .btn{margin-top:8px;background:#eef4ff;color:#111a2a}.store{grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:20px 12px}.st .cover{aspect-ratio:1}.st-p{font-size:17px}.hub-profile{display:flex;gap:16px;align-items:center;margin-bottom:20px}.hub-profile h2{margin:0;font-size:26px}.hub-profile p{color:#c5d5ef;margin:3px 0}.hub-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(145deg,#8ab4f5,#465b8c);display:grid;place-items:center;font-size:32px;font-weight:700;color:white}.hub-profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}.hub-profile-stats>div{background:#152238;border:1px solid #ffffff16;border-radius:14px;padding:12px;display:grid;gap:4px}.hub-profile-stats strong{font-size:25px}.hub-profile-stats span{font-size:12px;color:#aab8cf}.viewbar{display:none}.share{margin:10px 0 20px}.foot{margin-top:30px}.toast{bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:60}#hub-game-dialog{background:#162338;color:#f5f7ff;border:1px solid #ffffff35;border-radius:18px;width:min(340px,85vw);padding:18px}#hub-game-dialog::backdrop{background:#000b}#hub-dialog-close{display:block;margin-left:auto}.hub-dialog-cover{margin:14px auto 0;width:140px;aspect-ratio:2/3;background:#263957;border-radius:10px;overflow:hidden}.hub-dialog-cover img{width:100%;height:100%;object-fit:cover}.hub-dialog-cover img[src="data:,"]{visibility:hidden}
+@media(max-width:600px){.wrap.cx{padding-inline:15px;padding-top:16px}.cx-top{margin-bottom:20px}.cx-brand{font-size:16px}.cx-lvl .t b{font-size:12px}.cx-lvl .t span{font-size:10px}.ring{width:38px;height:38px}.ring span{width:31px;height:31px}.hub-home-head{font-size:21px}.ps-strip .cx-tile{width:100px}.cx-spot-art{height:250px}.cx-spot.has-hero .cx-spot-in{padding-top:148px}.cx-spot-in{padding-top:12px}.cx-title{font-size:31px}.cx-note{font-size:14px}.cx-meta{font-size:12px}.cx-actions .bb{flex:1 1 auto;padding:10px 12px;font-size:13px}.ab-grid#list-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:17px 9px}.acts-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ab{aspect-ratio:4/3;padding:10px}.ab-t{font-size:12px}.hub-store-hero{padding:15px}.hub-store-hero h2{font-size:20px}.hub-store-hero>div{max-width:75%}.store{grid-template-columns:repeat(2,minmax(0,1fr))}.hub-nav{border-radius:16px 16px 0 0}.hub-nav button{font-size:10.5px}.hub-nav svg{width:22px;height:22px}.hub-profile-stats>div{padding:9px}.hub-profile-stats span{font-size:11px}}
 </style>
 <script>
 const GAMES = {
@@ -719,14 +717,13 @@ function officialHero(id){
   return STEAM_BASE + parts[0] + '/library_hero.jpg';
 }
 function showHero(id){
-  const el=document.getElementById('cx-spot-art');
-  el.dataset.game=id;
-  const cover=drawArt(id), url=officialHero(id);
-  const apply=u=>{if(el.dataset.game===id) el.style.backgroundImage=u?'url("'+u+'")':'none';};
-  apply(cover);
-  if(!url) return;
-  if(heroCache.has(url)){if(heroCache.get(url))apply(url);return;}
-  const img=new Image();img.onload=()=>{heroCache.set(url,true);apply(url);};img.onerror=()=>heroCache.set(url,false);img.src=url;
+  const el=document.getElementById('cx-spot-art');el.dataset.game=id;
+  const path=STEAM_COVER[id]; const parts=path?path.split('/'):[];const base=parts[0]?STEAM_BASE+parts[0]+'/':'';
+  const folder=parts.length>2?base+parts[1]+'/':base;
+  const urls=base?[...new Set([folder+'library_hero.jpg',base+'library_hero.jpg',folder+'header.jpg',base+'header.jpg'])]:[];
+  const apply=u=>{if(el.dataset.game===id){el.style.backgroundImage=u?'url("'+u+'")':'none';el.closest('.cx-spot').classList.toggle('has-hero',!!u);}};
+  if(el.dataset.loaded!==id){apply('');el.dataset.loaded=id;}
+  const next=k=>{if(el.dataset.game!==id||k>=urls.length)return;const u=urls[k];if(heroCache.has(u)){if(heroCache.get(u))apply(u);else next(k+1);return;}const img=new Image();img.onload=()=>{heroCache.set(u,true);apply(u);};img.onerror=()=>{heroCache.set(u,false);next(k+1);};img.src=u;};next(0);
 }
 
 /* ---------- achievements ---------- */
@@ -1033,7 +1030,7 @@ const TIER_RU = {platinum:"платина", gold:"золото", silver:"сер�
 const TIER_C = {platinum:["#e8f1ff","#8fa6c9"], gold:["#ffe7a8","#d99a2b"], silver:["#f2f4f7","#9aa3ae"], bronze:["#f3c39a","#a8622f"]};
 const cup = t => { const c = TIER_C[t]; return '<svg class="cup" viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="g' + t + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></linearGradient></defs><path fill="url(#g' + t + ')" d="M7 3h10v3h3v2a5 5 0 0 1-4.6 5A5 5 0 0 1 13 15.9V18h3v3H8v-3h3v-2.1A5 5 0 0 1 8.6 13 5 5 0 0 1 4 8V6h3V3zm0 5H6a3 3 0 0 0 1.2 2.4A7 7 0 0 1 7 8zm10 0a7 7 0 0 1-.2 2.4A3 3 0 0 0 18 8h-1z"/></svg>'; };
 var cxTab = "home", cxSel = null, cxOpen = null;
-try { cxTab = localStorage.getItem("plan-cx-tab") || "home"; } catch (e) {}
+let hubManage = false;
 function cxDefaultSel(){
   const plan = Object.keys(GAMES).filter(i => !GAMES[i].pro && !GAMES[i].ps);
   const playing = plan.filter(i => st(i) === "play");
@@ -1110,6 +1107,9 @@ function renderList(){
       '<span class="small list-count">' + (n ? 'Выбрано: ' + n + (n > CUSTOM_MAX ? '. В один акт можно не больше ' + CUSTOM_MAX : n > ACT_MAX ? '. Больше ' + ACT_MAX + ' игр: акт получится длинным' : '') : 'Нажми на обложки, чтобы выбрать игры') + '</span>';
   }
   document.getElementById("list-bar").innerHTML = bar;
+  document.getElementById("list-bar").hidden = !hubManage && !poolPick.size && !listTarget && listF !== "del";
+  const manage = document.getElementById("hub-manage"); manage.setAttribute("aria-pressed", String(hubManage)); manage.textContent = hubManage ? "Готово" : "Управление коллекцией";
+  document.getElementById("hub-library-count").textContent = ids.length + " игр";
   document.getElementById("list-grid").innerHTML = ids.map(id => { const g = ALL_GAMES[id], on = poolPick.has(id), a = actOf(id), s = st(id), art = drawArt(id, true);
     const tag = a ? (a.series ? "Серия " + a.t : a.custom || !a.side ? "Акт " + a.r : a.t) : "без акта";
     return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + (art||'data:,') + '" alt=""><span class="ct' + ctCls(g.t) + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span></button>'; }).join("") || '<p class="small">Ничего не найдено.</p>';
@@ -1147,13 +1147,13 @@ function renderConsole(){
   document.getElementById("cx-rank-sub").textContent = nxt ? "до «" + nxt[1] + "» ещё " + (nxt[0] - total) : "весь путь пройден";
   const ring = document.getElementById("cx-ring"); ring.style.setProperty("--p", nxt ? Math.round((total - cur[0]) / (nxt[0] - cur[0]) * 100) : 100);
   ring.querySelector("span").textContent = total;
-  document.querySelectorAll(".cx-tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === cxTab)));
+  root.dataset.hubTab = cxTab; document.querySelectorAll(".cx-tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === cxTab || (cxTab === "series" && b.dataset.tab === "path") || (cxTab === "prologue" && b.dataset.tab === "trophies"))));
   ["home","path","series","list","store","trophies","prologue"].forEach(t => { document.getElementById("cx-" + t).hidden = t !== cxTab; });
   if (!cxSel || !GAMES[cxSel] || GAMES[cxSel].pro) cxSel = cxDefaultSel();
   const main = ACTS.filter(x => !x.side), curA = main.find(x => x.g.some(i => !closed(i)));
   if (cxOpen === null) cxOpen = new Set([ACTS.indexOf(curA || main[0])]);
   if (cxTab === "series" && !serOpened) pickSeries();
-  document.getElementById("cx-spot").hidden = !["home","path","series"].includes(cxTab);
+  document.getElementById("cx-spot").hidden = cxTab !== "home";
   if(cxTab === 'home'){
     const candidates=Object.keys(GAMES).filter(i=>!GAMES[i].pro && !GAMES[i].ps && owned(i) && !closed(i));
     const ids=[...new Set([cxSel,...candidates.filter(i=>st(i)==='play'),...(curA?curA.g:[]),...candidates])].filter(i=>GAMES[i]);
@@ -1161,7 +1161,7 @@ function renderConsole(){
     strip.innerHTML=ids.map(cxTile).join('');strip.scrollLeft=left;
   }
 
-  if (["home","path","series"].includes(cxTab)){
+  if (cxTab === "home" && cxSel && GAMES[cxSel]){
     const g = GAMES[cxSel], s = st(cxSel), a = actOf(cxSel), wish = g.buy && !owned(cxSel), dis = readOnly ? " disabled" : "";
     let role; if (g.buy) role = g.buy === "DLC" ? "дополнение" : "покупка №" + g.buy; else role = ROLE[g.role][0];
     const meta = ['<span class="hl">' + role + '</span>', '<span>' + g.yr + '</span>'];
@@ -1208,6 +1208,8 @@ function renderConsole(){
     const nextBuy = ids.filter(i => GAMES[i].buy && GAMES[i].buy !== "DLC" && !rec(i).b).sort((p, q) => GAMES[p].buy - GAMES[q].buy)[0];
     document.getElementById("cx-meter-cap").innerHTML = since >= 5 ? '<span class="ok" style="color:var(--done);font-weight:700">Пять игр пройдено — можно покупать ' + esc(nextBuy ? GAMES[nextBuy].t : "новую игру") + '.</span>' : 'Пройдено <b>' + since + ' из 5</b>. Следующая: ' + esc(nextBuy ? GAMES[nextBuy].t : "—") + '.';
     document.getElementById("cx-total").innerHTML = buyTotalHtml;
+    const banner=document.getElementById("hub-store-hero");banner.hidden=!nextBuy;
+    if(nextBuy){const g=GAMES[nextBuy];banner.innerHTML='<img class="hub-store-art" alt="" src="'+esc(drawArt(nextBuy)||"data:,")+'"><div><span class="eyebrow">Следующая покупка</span><h2>'+esc(g.t)+'</h2><p>'+ (g.price?nf.format(g.price)+" ₽":"")+' · '+esc(g.after||"")+'</p><p>'+since+' / 5 пройдено</p><button class="btn" data-buyt="'+nextBuy+'" '+(readOnly?'disabled':'')+'>Отметить покупку</button></div>'; }
     const ord = g => g.buy === "DLC" ? 4.5 : g.buy, dis = readOnly ? " disabled" : "";
     document.getElementById("cx-store-list").innerHTML = ids.filter(i => GAMES[i].buy).sort((p, q) => ord(GAMES[p]) - ord(GAMES[q])).map(i => { const g = GAMES[i], got = rec(i).b, title = g.ct || g.t, locked = got && st(i);
       return '<li class="st' + (got ? " got" : "") + (g.sale ? " sale" : "") + '"><button type="button" data-buyt="' + i + '"' + dis + (locked ? ' disabled' : '') + ' aria-pressed="' + got + '" aria-label="' + esc(g.t) + (got ? ": куплено, нажми, чтобы отменить" : ": отметить купленным") + '">' +
@@ -1215,6 +1217,8 @@ function renderConsole(){
         (got ? '<span class="okb" title="Куплено">' + ICON.bought + '</span>' : '') + '<span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : '') + '</span></div></button>' +
         '<div class="st-i"><span class="st-a">' + (got ? "куплено" : "после " + esc(g.after)) + '</span><span class="st-p">' + (g.price ? nf.format(g.price) + ' ₽' : '—') + (g.sale ? '<small>по скидке</small>' : '') + '</span></div></li>'; }).join("");
   } else if (cxTab === "trophies"){
+    document.getElementById("hub-profile-rank").textContent=cur[1]+" · "+total+" пройдено";
+    document.getElementById("hub-profile-stats").innerHTML=[[total,"Пройдено"],[Object.keys(GAMES).filter(i=>st(i)==="play").length,"Играю"],[Object.keys(GAMES).filter(i=>st(i)==="drop").length,"Брошено"]].map(([n,l])=>'<div><strong>'+n+'</strong><span>'+l+'</span></div>').join("");
     const c = achContext(); let got = 0; const cnt = {platinum:0, gold:0, silver:0, bronze:0};
     const items = ACH.map(a => { const [v, m] = a.f(c), ok = v >= m, t = TIER[a.k] || "silver"; if (ok){ got++; cnt[t]++; } return {a, v, m, ok, t}; })
       .sort((p, q) => (q.ok - p.ok) || (q.v / q.m - p.v / p.m));
@@ -1252,7 +1256,9 @@ function doAction(b){
   render(); persist(id);
 }
 document.getElementById("view-console").addEventListener("click", e => {
-  const tab = e.target.closest("[data-tab]"); if (tab){ cxTab = tab.dataset.tab; if (cxTab === "series") pickSeries(); try { localStorage.setItem("plan-cx-tab", cxTab); } catch (er) {} renderConsole(); return; }
+  if(e.target.closest("#hub-manage")){hubManage=!hubManage;if(!hubManage){poolPick.clear();listTarget="";}renderList();return;}
+  if(e.target.closest("#hub-share")){document.getElementById("share-btn").click();return;}
+  const tab = e.target.closest("[data-tab]"); if (tab){ cxTab = tab.dataset.tab; if (cxTab === "series") pickSeries(); try { localStorage.setItem("plan-cx-tab", cxTab); } catch (er) {} renderConsole(); scrollTo(0,0); return; }
   const hk = e.target.closest("[data-hook-ok]");
   if (hk){ if (!readOnly){ hookOk = hookOk.concat(hk.dataset.hookOk); persistHook(); renderConsole(); } return; }
   const hd = e.target.closest("[data-hook-drop]");
@@ -1262,7 +1268,10 @@ document.getElementById("view-console").addEventListener("click", e => {
   if (e.target.closest("[data-go-series]")){ cxTab = "series"; pickSeries(); try { localStorage.setItem("plan-cx-tab", cxTab); } catch (er) {} renderConsole(); scrollTo(0, 0); return; }
   if (e.target.closest("[data-go-list]")){ cxTab = "list"; listF = "free"; poolPick.clear(); listTarget = ""; renderConsole(); scrollTo(0, 0); return; }
   const pick = e.target.closest("[data-pick]");
-  if (pick){ const id = pick.dataset.pick; if (poolPick.has(id)) poolPick.delete(id); else poolPick.add(id); renderList(); return; }
+  if (pick){ const id = pick.dataset.pick;
+    if (!hubManage && !listTarget && listF !== "del" && !poolPick.size && GAMES[id] && !GAMES[id].pro){ cxSel=id; cxTab="home"; renderConsole(); scrollTo(0,0); return; }
+    if (!hubManage && !listTarget && listF !== "del" && !poolPick.size){ openLibraryGame(id); return; }
+    if (poolPick.has(id)) poolPick.delete(id); else poolPick.add(id); renderList(); return; }
   if (e.target.closest("[data-pool-make]")){
     if (readOnly || !poolPick.size || poolPick.size > CUSTOM_MAX) return;
     const g = [...poolPick], t = poolName.trim() || "Новый акт";
@@ -1346,7 +1355,7 @@ document.getElementById("view-console").addEventListener("click", e => {
   }
   const add = e.target.closest("[data-act-add]");
   if (add){ listTarget = add.dataset.actAdd; listF = "free"; poolPick.clear(); cxTab = "list"; renderConsole(); scrollTo(0, 0); return; }
-  const sel = e.target.closest("[data-sel]"); if (sel){ cxSel = sel.dataset.sel; renderConsole(); if(cxTab === "home") return; document.getElementById("cx-spot").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"}); return; }
+  const sel = e.target.closest("[data-sel]"); if (sel){ cxSel = sel.dataset.sel; const wasHome=cxTab === "home"; cxTab="home"; renderConsole(); if(!wasHome) scrollTo(0,0); return; }
   const ab = e.target.closest("[data-act]"); if (ab){ const k = Number(ab.dataset.act); if (cxOpen.has(k)) cxOpen.delete(k); else cxOpen.add(k); renderConsole(); return; }
   const bt = e.target.closest("button[data-buyt]"); if (bt){ toggleBuy(bt.dataset.buyt); return; }
   const b = e.target.closest("button[data-id], button[data-pro]"); if (b) doAction(b);
@@ -1403,6 +1412,10 @@ document.getElementById("share-copy").addEventListener("click", async () => {
   catch (e) { ta.focus(); ta.select(); try { ok = document.execCommand("copy"); } catch (er) {} }
   note.textContent = ok ? "Скопировано. Вставь в Telegram." : "Не вышло скопировать: текст выделен, скопируй его вручную.";
 });
+let hubDialogId=null;
+function openLibraryGame(id){const g=ALL_GAMES[id];if(!g)return;hubDialogId=id;document.getElementById("hub-dialog-content").innerHTML='<div class="hub-dialog-cover"><img alt="" src="'+esc(drawArt(id)||"data:,")+'"></div><h2>'+esc(g.t)+'</h2><p>'+esc(g.note||"")+'</p><p>'+esc(String(g.yr||""))+(g.h!=null?' · ≈ '+g.h+' ч':'')+'</p>';document.getElementById("hub-game-dialog").showModal();}
+document.getElementById("hub-dialog-close").onclick=()=>document.getElementById("hub-game-dialog").close();
+document.getElementById("hub-dialog-manage").onclick=()=>{document.getElementById("hub-game-dialog").close();hubManage=true;poolPick.add(hubDialogId);renderList();};
 function bootArt(){ render(); }
 loadLocal(); applyCustomActs(); if (layoutMoved) { layoutMoved = false; saveLocal(); } bootArt();
 async function loadCloud(){
