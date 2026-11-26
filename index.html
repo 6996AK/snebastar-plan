@@ -422,6 +422,11 @@ button:disabled{opacity:.45;cursor:default}
   .cx-tabs button{font-size:10.5px;letter-spacing:0;padding:8px 3px}
   .cx-tabs button[aria-selected="true"]::after{left:3px;right:3px}
 }
+
+/* Official external and landscape cover fallbacks. */
+.cover:has(img.art[src*="playstation.com"]) > .ct,.cover:has(img.art[src*="playstation.com"]) > .yr{display:none}
+.cover:has(img.art[src*="playstation.com"])::after{background:none}
+.cover img.art[src*="playstation.com"],.cover img.art[src*="hero_capsule.jpg"],.cover img.art[src*="capsule_616x353.jpg"],.cover img.art[src*="header.jpg"]{object-fit:contain;background:#101522}
 </style>
 
 <div class="backdrop" id="backdrop" aria-hidden="true"></div>
@@ -448,7 +453,7 @@ button:disabled{opacity:.45;cursor:default}
     <div class="cx-sec-h"><h2>Игры</h2><span class="act-meta">всё, что не отмечено в Прологе</span></div>
     <input id="list-q" class="list-q" type="search" placeholder="Найти игру" aria-label="Найти игру" autocomplete="off">
     <div class="chips" id="list-chips"></div>
-    <div class="hub-library-tools"><button type="button" class="btn" id="hub-manage" aria-pressed="false">Управление коллекцией</button><span id="hub-library-count" class="small"></span></div><div class="pool-bar" id="list-bar" hidden></div>
+    <div class="hub-library-tools"><button type="button" class="btn" id="hub-manage" aria-pressed="false">Управление коллекцией</button><button type="button" class="btn" id="steam-refresh">↻ Загрузить данные Steam</button><span id="hub-library-count" class="small"></span><span class="small" id="steam-library-note" aria-live="polite"></span></div><div class="pool-bar" id="list-bar" hidden></div>
     <div class="ab-grid" id="list-grid"></div>
   </section>
 
@@ -504,6 +509,9 @@ body{background:radial-gradient(ellipse at 70% 0%,#233857 0%,#0b1324 46%,#090e1a
 :root{--bg:#090e18;--panel:#151e30;--line:#ffffff16;--line-2:#ffffff28;--accent:#a9cfff;--f-display:system-ui,-apple-system,sans-serif;--f-body:system-ui,-apple-system,sans-serif}
 body{background:radial-gradient(ellipse at 60% 0%,#263d63 0,#111a2b 40%,#090e18 75%);background-attachment:fixed}.backdrop{display:none}.wrap.cx{max-width:1280px;padding-top:18px;padding-bottom:110px}.cx-top{display:flex;justify-content:space-between;margin-bottom:26px;gap:12px}.cx-brand{font-size:20px;letter-spacing:.08em}.cx-lvl{margin-left:auto}.hub-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:50;display:flex;justify-content:space-around;align-items:stretch;width:min(100%,760px);box-sizing:border-box;padding:8px 8px max(10px,env(safe-area-inset-bottom));background:#0d1524f2;border:1px solid #ffffff20;border-radius:20px 20px 0 0;backdrop-filter:blur(20px);gap:0;overflow:visible}.hub-nav button{flex:1;display:grid;place-items:center;gap:4px;padding:8px 3px;color:#929db2;font-size:12px;min-width:0}.hub-nav svg{width:24px;height:24px}.hub-nav button[aria-selected=true]{color:#e6f1ff;background:#263a58;border-radius:12px}.hub-nav button[aria-selected=true]::after{display:none}.hub-home-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:24px;font-weight:650}.hub-home-head .btn{font-size:12px}.ps-strip{margin:4px -10px 0;padding:14px 12px 20px;gap:12px}.ps-strip .cx-tile{width:clamp(104px,15vw,160px)}.ps-strip .cover{aspect-ratio:1;border-radius:11px}.ps-strip .cx-tile[aria-current=true] .cover{outline:2px solid white;outline-offset:3px;box-shadow:none;transform:none}.ps-strip .ct{font-size:11cqw}.cx-spot{display:block;min-height:0;margin:0;padding:0;border:0;border-radius:0;overflow:visible;background:none;box-shadow:none;position:relative}.cx-spot-art{position:absolute;inset:0 0 auto;height:clamp(235px,38vw,460px);background-size:cover;background-position:center;border-radius:16px;mask-image:linear-gradient(#000 0%,#000 45%,transparent 100%);opacity:.85}.cx-spot::before{display:none}.cx-spot-in{padding:clamp(20px,4vw,48px) 0 0;max-width:680px;position:relative;display:grid;gap:8px}.cx-spot.has-hero .cx-spot-in{padding-top:clamp(145px,26vw,320px)}.cx-title{font-size:clamp(30px,5vw,56px);line-height:1.04;margin:0;text-shadow:0 3px 22px #090e18}.cx-spot .eyebrow{font-size:11px;color:#c3d6ef}.cx-meta{margin:0;gap:8px 13px}.cx-note{margin:0;color:#b8c5d9}.cx-poster{display:none!important}.cx-actions{margin-top:8px;display:flex;gap:8px}.bb{min-height:44px;font-size:14px;padding:10px 16px}.hook{margin-top:8px;background:#1a293e!important;border:1px solid #ffffff22!important;border-radius:14px}.hook .buy-row{display:flex;flex-wrap:wrap}.hub-subnav,.hub-library-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 18px}.hub-subnav .active,.hub-library-tools button[aria-pressed=true]{background:#e5eeff;color:#101827}.hub-library-tools{justify-content:space-between}.hub-library-tools .btn{font-size:12px}.cx-sec-h{margin-top:0}.ab-grid#list-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:18px 12px;margin-top:12px}.pool-tile .cover,.ab-grid .cx-tile .cover{aspect-ratio:1;border-radius:9px}.pool-tile .cover img{object-fit:cover}.pool-tile .pool-t{font-size:12px;display:block;margin-top:7px;line-height:1.25}.pool-a{font-size:10px}.pool-bar{margin:0 0 14px}.list-q{border-radius:12px}.chips{margin-top:10px}.chip{font-size:12px}.acts-grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}.ab{aspect-ratio:16/10;padding:14px}.ab-fan{height:45%;justify-content:flex-end;margin-bottom:4px}.ab-num{font-size:22px}.ab-t{font-size:14px}.ab-bg{filter:brightness(.55) blur(4px)}.ab-open{border-radius:14px}.hub-store-hero{position:relative;display:flex;align-items:center;min-height:190px;border-radius:16px;overflow:hidden;padding:22px;background:#192a43;border:1px solid #ffffff22;box-sizing:border-box;margin-bottom:18px}.hub-store-art{position:absolute;right:0;top:0;width:50%;height:100%;object-fit:cover;mask-image:linear-gradient(90deg,transparent,#000 45%);opacity:.72}.hub-store-hero>div{position:relative;max-width:65%;z-index:1}.hub-store-hero h2{margin:5px 0;font-size:24px;line-height:1.1}.hub-store-hero p{margin:6px 0;color:#e4ebf6}.hub-store-hero .btn{margin-top:8px;background:#eef4ff;color:#111a2a}.store{grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:20px 12px}.st .cover{aspect-ratio:1}.st-p{font-size:17px}.hub-profile{display:flex;gap:16px;align-items:center;margin-bottom:20px}.hub-profile h2{margin:0;font-size:26px}.hub-profile p{color:#c5d5ef;margin:3px 0}.hub-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(145deg,#8ab4f5,#465b8c);display:grid;place-items:center;font-size:32px;font-weight:700;color:white}.hub-profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}.hub-profile-stats>div{background:#152238;border:1px solid #ffffff16;border-radius:14px;padding:12px;display:grid;gap:4px}.hub-profile-stats strong{font-size:25px}.hub-profile-stats span{font-size:12px;color:#aab8cf}.viewbar{display:none}.share{margin:10px 0 20px}.foot{margin-top:30px}.toast{bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:60}#hub-game-dialog{background:#162338;color:#f5f7ff;border:1px solid #ffffff35;border-radius:18px;width:min(340px,85vw);padding:18px}#hub-game-dialog::backdrop{background:#000b}#hub-dialog-close{display:block;margin-left:auto}.hub-dialog-cover{margin:14px auto 0;width:140px;aspect-ratio:2/3;background:#263957;border-radius:10px;overflow:hidden}.hub-dialog-cover img{width:100%;height:100%;object-fit:cover}.hub-dialog-cover img[src="data:,"]{visibility:hidden}
 @media(max-width:600px){.wrap.cx{padding-inline:15px;padding-top:16px}.cx-top{margin-bottom:20px}.cx-brand{font-size:16px}.cx-lvl .t b{font-size:12px}.cx-lvl .t span{font-size:10px}.ring{width:38px;height:38px}.ring span{width:31px;height:31px}.hub-home-head{font-size:21px}.ps-strip .cx-tile{width:100px}.cx-spot-art{height:250px}.cx-spot.has-hero .cx-spot-in{padding-top:148px}.cx-spot-in{padding-top:12px}.cx-title{font-size:31px}.cx-note{font-size:14px}.cx-meta{font-size:12px}.cx-actions .bb{flex:1 1 auto;padding:10px 12px;font-size:13px}.ab-grid#list-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:17px 9px}.acts-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ab{aspect-ratio:4/3;padding:10px}.ab-t{font-size:12px}.hub-store-hero{padding:15px}.hub-store-hero h2{font-size:20px}.hub-store-hero>div{max-width:75%}.store{grid-template-columns:repeat(2,minmax(0,1fr))}.hub-nav{border-radius:16px 16px 0 0}.hub-nav button{font-size:10.5px}.hub-nav svg{width:22px;height:22px}.hub-profile-stats>div{padding:9px}.hub-profile-stats span{font-size:11px}}
+</style>
+<style>
+.steam-tile-stats{display:block;color:#b9d9ff;font-size:11px;line-height:1.35;margin-top:3px}.steam-game-button{margin-top:12px}.steam-game-stats{border-top:1px solid #ffffff20;margin-top:16px;padding-top:12px}.steam-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.steam-stats-grid>div{background:#ffffff09;border:1px solid #ffffff17;border-radius:12px;padding:12px}.steam-stats-grid b,.steam-stats-grid small{display:block}.steam-stats-grid b{font-size:20px}.steam-stats-grid small{font-size:11px;color:var(--mute)}.steam-progress{height:6px;border-radius:9px;background:#ffffff20;overflow:hidden;margin:12px 0}.steam-progress i{height:100%;display:block;background:#9fcaff}.steam-ach-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #ffffff12}.steam-ach-row img,.steam-ach-placeholder{width:52px;height:52px;flex:none;border-radius:9px;object-fit:cover}.steam-ach-placeholder{display:grid;place-items:center;background:#ffffff10}.steam-ach-row p{margin:4px 0;font-size:13px;color:var(--mute)}.steam-ach-row small{color:var(--mute)}.steam-ach-row.got small{color:#f3cf83}.steam-ach-row.locked{opacity:.7}.steam-ach-filters{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.steam-no-cover{display:block!important}.hub-library-tools{flex-wrap:wrap}#steam-library-note{width:100%}#hub-game-dialog{max-height:85dvh;overflow:auto}#hub-game-dialog .hub-dialog-cover img{object-fit:contain;max-height:200px}
 </style>
 <script>
 const GAMES = {
@@ -691,18 +699,43 @@ const ART = {};
 let artDefer = false;
 const STEAM_BASE = "https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/";
 const STEAM_COVER = {"pragmata":"3357650/2c65f388cb3ac6631c8a38ff1a59903263fc70e9/library_capsule.jpg?t=1791454600","hellraiser":"1551980/07b6068f2992ba42c2d48846eea5703b7742293b/library_600x900.jpg?t=1791462446","doom-tda":"3017860/e670b2a17acb4bfd60dfb8fb6d4d8cb5b1d5c07c/library_600x900.jpg?t=1789406231","re2":"883710/library_600x900.jpg?t=1779433152","gta3":"1546970/library_600x900.jpg?t=1781138540","gtavc":"1546990/library_600x900.jpg?t=1781138647","gtasa":"1547000/library_600x900.jpg?t=1781138712","gta4":"12210/library_600x900.jpg?t=1721061564","re7":"418370/library_600x900.jpg?t=1778464947","pbz":"4115450/471e77854910665c03eb9a53ad06f2ac12903acd/library_capsule.jpg?t=1793261976","indika":"1373960/library_600x900.jpg?t=1765218123","control-r":"3669870/7d4b4f430dc4d07e6562eb445456f9615cb52f77/library_capsule.jpg?t=1793357289","inscryption":"1092790/library_600x900.jpg?t=1777572925","titanfall2":"1237970/library_600x900.jpg?t=1779987598","rdr2":"1174180/library_600x900.jpg?t=1759502961","stray":"1332010/9c1bae81b2603c25ccf2a8f4944b3b58227005d7/library_capsule.jpg?t=1785424330","witcher3":"292030/dd1c19c4e41b120ddfa35734cc31f79254c25082/library_capsule.jpg?t=1790845156","doom2016":"379720/library_600x900.jpg?t=1750784856","eternal":"782330/library_600x900.jpg?t=1783432602","deadspace":"1693980/library_600x900.jpg?t=1777396576","callisto":"1544020/library_600x900.jpg?t=1760331403","untildawn":"2172010/library_600x900.jpg?t=1750959555","re4":"2050650/library_600x900.jpg?t=1772502922","village":"1196590/library_600x900.jpg?t=1776927117","prey":"480490/library_600x900.jpg?t=1784141088","dis2":"403640/library_600x900.jpg?t=1750785918","hol":"1583230/library_600x900.jpg?t=1792678709","e33":"1903340/8b21381a43ac5a535a838f723815f8fe14ceaf7c/library_600x900.jpg?t=1782830877","tno":"201810/library_600x900.jpg?t=1750784496","ds":"1850570/library_600x900.jpg?t=1793287496","wolf2":"612880/library_600x900.jpg?t=1750784115","ratchet":"1895880/library_600x900.jpg?t=1787838873","se5":"1029690/library_600x900.jpg?t=1770633150","bunny":"1421250/library_600x900.jpg?t=1789917370","gotg":"1088850/library_600x900.jpg?t=1780588517","hellisus":"1620730/e3cb527066ddee13371bc3f65e2c00dbadd624dc/library_600x900.jpg?t=1791467530","wd2":"447040/library_600x900.jpg?t=1751986887","kcd":"379430/e9ea7b1f4d8339f44e517963039a5a5544176497/library_capsule.jpg?t=1770998376","kcd2":"1771300/library_600x900.jpg?t=1777975568","crimson":"3321460/85f762166594b84330761c11d3106182634c882c/library_capsule.jpg?t=1792637341","gears5":"1097840/library_600x900.jpg?t=1780003997","evilwest":"1065310/library_600x900.jpg?t=1761845937","p-cyberpunk":"1091500/6399de67cce3cecadce7900e03f6e09ff910a235/library_capsule.jpg?t=1792682505","p-gowr":"2322010/library_600x900.jpg?t=1776465233","p-tsushima":"2215430/library_600x900.jpg?t=1763409398","p-tlou2":"2531310/aeac394b61ac94b5d4ea939351baf3943ac0b282/library_600x900.jpg?t=1750959180","p-gow":"1593500/library_600x900.jpg?t=1763059412","p-spiderman":"1817070/library_600x900.jpg?t=1787838689","p-007":"3768760/1159a696d257cbeb3f4479be3466cfba2ae938a0/library_600x900.jpg?t=1791886607","p-uncharted":"1659420/library_600x900.jpg?t=1779309472","p-fc5":"552520/17a8fde1e04966697669485d53f4c03d0afb7efd/library_capsule.jpg?t=1792530774","p-tlou1":"1888930/library_600x900.jpg?t=1750959031","p-rerequiem":"3764200/ed3b2cae7d15f598f41006f5f1e605ec5517b5e4/library_capsule.jpg?t=1779840172","p-spiderman2":"2651280/6fa28738ef8cde05390d3f0a9b942185b5763cbd/library_600x900.jpg?t=1763569811","p-milesmorales":"1817190/library_600x900.jpg?t=1787838710","p-splitfiction":"2001120/f9b802097eff97ac7edcc92f864d4b9a91516b67/library_600x900.jpg?t=1763484567","p-awayout":"1222700/library_600x900.jpg?t=1777323433","p-fc3":"220240/library_600x900.jpg?t=1785282057","p-se4":"312660/library_600x900.jpg?t=1681207252","p-maxpayne3":"204100/library_600x900.jpg?t=1718391374","p-ng4":"2627260/ee9b05a8120a3a4270461da133db1a10933346c9/library_600x900.jpg?t=1772643576","p-detroit":"1222140/library_600x900.jpg?t=1667468479","p-ryse":"302510/75916078093806aaebec481c6a3cca6a771cb51b/library_capsule.jpg?t=1783415457","p-bulletstorm":"501590/library_600x900.jpg?t=1782157737","p-dispatch":"2592160/6754ae9d2f555ee1cf37f9d44021d34554d9991d/library_600x900.jpg?t=1792683942","p-houseofashes":"1281590/library_600x900.jpg?t=1728912876","p-gtav":"3240220/394239e5da54fed177bd0ab04590812f6add1bb5/library_600x900.jpg?t=1781187782","p-mafia1":"1030840/library_600x900.jpg?t=1786727529","p-mafia2":"1030830/library_600x900.jpg?t=1786727561","p-mw4":"4435490/c71bc2cb60e440d1a0d2435d0c06c4d4a4050edf/library_capsule.jpg?t=1793201144","galactic":"4078430/16514821db6559e75c9067285fee5dd198492aee/library_capsule.jpg?t=1791388584","onimusha":"2638890/730daf025e5922da7441a4c02b1999f27dc026fd/library_capsule.jpg?t=1790383151","bo1":"42700/library_600x900.jpg?t=1780962720","roboquest":"692890/library_600x900.jpg?t=1780581844","hol2":"2069250/e0c451a4e1ac4502dfc52d97a0268248065796c4/library_600x900.jpg?t=1792678731","ds2":"3280350/9b523fd411eeaefe80f238489745325a1cd2317f/library_capsule.jpg?t=1774022345","mouse":"2416450/f8dc9ffcdabf10bea97e6b3d9cef3a8109339ca6/library_600x900.jpg?t=1793137611","bo2":"202970/library_600x900.jpg?t=1780962925","wwii":"476600/library_600x900.jpg?t=1780963893","bo3":"311210/library_600x900.jpg?t=1780963650"};
-const steamCover = id => STEAM_COVER[id] ? STEAM_BASE + STEAM_COVER[id] : "";
+// Official publisher artwork; no generated images or cross-game substitutions.
+const EXTRA_COVERS = {
+  re4sw: ['https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2109300/hero_capsule.jpg?t=1772502990','https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2109300/capsule_616x353.jpg?t=1772502990'],
+  order1886: ['https://image.api.playstation.com/vulcan/img/rnd/202011/0918/xecCTYpKAOSAXrcK3BgtZhcA.png'],
+  infamous: ['https://image.api.playstation.com/vulcan/img/rnd/202010/2821/Uaa2dGP7cIf8tDPn6borubcx.jpg'],
+  gowl: ['https://image.api.playstation.com/vulcan/ap/rnd/202609/1800/7454842dd52463181d493ffe0c029c3e6f54c233606d0119.jpg'],
+  gta6: ['https://image.api.playstation.com/vulcan/ap/rnd/202606/1818/4a35c9a8490c69fe89af0f52d4ac0249b230b4fdb12e8469.jpg'],
+  yotei: ['https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-complete-edition-keyart-01-en-6aug26?$1200px$','https://gmedia.playstation.com/is/image/SIEPDC/ghost-of-yotei-complete-edition-keyart-01-en-6aug26?$100px$=']
+};
+const EXTRA_HEROES = {re4sw:['https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2109300/page_bg_raw.jpg?t=1772502990','https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2109300/capsule_616x353.jpg?t=1772502990']};
 Object.keys(POOL).forEach(i => { if (POOL[i].cv) STEAM_COVER[i] = POOL[i].cv; });
-let coverRender = null;
-/* a cover Steam did not serve falls back to the drawn one */
-document.addEventListener("error", e => {
-  const el = e.target;
-  if (!el || el.tagName !== "IMG" || !el.src.startsWith(STEAM_BASE)) return;
-  const id = Object.keys(STEAM_COVER).find(k => STEAM_BASE + STEAM_COVER[k] === el.src);
-  if (!id) return;
-  delete STEAM_COVER[id];
-  clearTimeout(coverRender); coverRender = setTimeout(render, 300);
-}, true);
+const failedCoverUrls=new Set(), coverOwners=new Map(), catalogCovers=new Map();
+function validSteamCoverUrl(url){try{const u=new URL(url);return u.protocol==='https:'&&/(^|\.)(steamstatic\.com|steamcontent\.com|akamaihd\.net)$/.test(u.hostname)&&/\/apps\/\d+\//.test(u.pathname);}catch(e){return false;}}
+function coverCandidates(id){
+  const extra=EXTRA_COVERS[id]||[];
+  if(extra.length)return extra;
+  const path=STEAM_COVER[id];
+  const app=path&&/^\d+\//.test(path)?Number(path.split('/')[0]):steamAppId(id);
+  if(!app)return [];
+  const base=app+'/',folder=path&&path.split('/').length>2?path.split('/').slice(0,-1).join('/')+'/':base;
+  const known=catalogCovers.get(app);
+  const candidates=[path?STEAM_BASE+path:null,...[folder,base].flatMap(p=>['library_600x900_2x.jpg','library_600x900.jpg','library_capsule.jpg','hero_capsule.jpg'].map(n=>STEAM_BASE+p+n)),known,STEAM_BASE+folder+'capsule_616x353.jpg',STEAM_BASE+base+'capsule_616x353.jpg',STEAM_BASE+folder+'header.jpg',STEAM_BASE+base+'header.jpg', 'https://cdn.akamai.steamstatic.com/steam/apps/'+app+'/library_600x900.jpg','https://cdn.akamai.steamstatic.com/steam/apps/'+app+'/header.jpg'];
+  return [...new Set(candidates.filter(Boolean))];
+}
+function steamCover(id){
+  const url=coverCandidates(id).find(u=>!failedCoverUrls.has(u))||'';
+  if(url){if(!coverOwners.has(url))coverOwners.set(url,new Set());coverOwners.get(url).add(id);}
+  return url;
+}
+// Change only failed images, never rebuild the carousel or reset scroll.
+document.addEventListener('error',e=>{
+  const el=e.target;if(!el||el.tagName!=='IMG')return;
+  const url=el.getAttribute('src');const owners=coverOwners.get(url);if(!owners||!owners.size)return;
+  failedCoverUrls.add(url);
+  const id=[...owners][0];const next=steamCover(id);
+  document.querySelectorAll('img').forEach(img=>{if(img.getAttribute('src')===url){img.setAttribute('src',next||'data:,');}});
+},true);
 function hash(s){ let h = 2166136261; for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
 function rng(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const hex = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
@@ -720,7 +753,7 @@ function showHero(id){
   const el=document.getElementById('cx-spot-art');el.dataset.game=id;
   const path=STEAM_COVER[id]; const parts=path?path.split('/'):[];const base=parts[0]?STEAM_BASE+parts[0]+'/':'';
   const folder=parts.length>2?base+parts[1]+'/':base;
-  const urls=base?[...new Set([folder+'library_hero.jpg',base+'library_hero.jpg',folder+'header.jpg',base+'header.jpg'])]:[];
+  const urls=EXTRA_HEROES[id]||(base?[...new Set([folder+'library_hero.jpg',base+'library_hero.jpg',folder+'header.jpg',base+'header.jpg'])]:[]);
   const apply=u=>{if(el.dataset.game===id){el.style.backgroundImage=u?'url("'+u+'")':'none';el.closest('.cx-spot').classList.toggle('has-hero',!!u);}};
   if(el.dataset.loaded!==id){apply('');el.dataset.loaded=id;}
   const next=k=>{if(el.dataset.game!==id||k>=urls.length)return;const u=urls[k];if(heroCache.has(u)){if(heroCache.get(u))apply(u);else next(k+1);return;}const img=new Image();img.onload=()=>{heroCache.set(u,true);apply(u);};img.onerror=()=>{heroCache.set(u,false);next(k+1);};img.src=u;};next(0);
@@ -1050,18 +1083,25 @@ function cxTile(id){
 const ACT_MAX = 3, CUSTOM_MAX = 8;
 const longActNote = n => "В акте " + n + " " + plural(n, "игра", "игры", "игр") + ": он будет идти дольше обычного, а следующие акты подождут.";
 const STEAM_APP = {"pragmata":3357650,"hellraiser":1551980,"doom-tda":3017860,"re2":883710,"gta3":1546970,"gtavc":1546990,"gtasa":1547000,"gta4":12210,"re7":418370,"pbz":4115450,"indika":1373960,"control-r":3669870,"inscryption":1092790,"titanfall2":1237970,"rdr2":1174180,"stray":1332010,"witcher3":292030,"doom2016":379720,"eternal":782330,"deadspace":1693980,"callisto":1544020,"untildawn":2172010,"re4":2050650,"village":1196590,"prey":480490,"dis2":403640,"hol":1583230,"e33":1903340,"tno":201810,"ds":1850570,"wolf2":612880,"ratchet":1895880,"se5":1029690,"bunny":1421250,"gotg":1088850,"hellisus":1620730,"wd2":447040,"kcd":379430,"kcd2":1771300,"crimson":3321460,"gears5":1097840,"evilwest":1065310,"galactic":4078430,"onimusha":2638890,"bo1":42700,"re4sw":2109300,"roboquest":692890,"hol2":2069250,"ds2":3280350,"mouse":2416450,"bo2":202970,"wwii":476600,"bo3":311210};
+// Stable mapping includes pre-existing prologue and custom IDs; do not infer IDs from names.
+const steamIdMap = Object.fromEntries(Object.entries(STEAM_COVER).filter(([id,p])=>/^\d+\//.test(p)).map(([id,p])=>[id,Number(p.split('/')[0])]));
+Object.assign(steamIdMap, STEAM_APP);
+Object.keys(ALL_GAMES).forEach(id=>{if(/^s\d+$/.test(id))steamIdMap[id]=Number(id.slice(1));});
+const steamAppId=id=>steamIdMap[id]||(/^s\d+$/.test(id)?Number(id.slice(1)):null);
+let steamData=null, steamCatalogReady=false, steamBusy=false;
+const STEAM_RAW='https://raw.githubusercontent.com/6996ak/snebastar-plan/main/';
 const STEAM_FILE = new URLSearchParams(location.search).has("steamtest") ? "steam-test.json" : "steam.json";
 const HOOK_SKIP = ["pragmata"];
 const hookLimit = id => id === "witcher3" ? 300 : 180;
 let steamPlay = null, hookOk = [];
 function playMin(id){
   if (!steamPlay) return null;
-  const app = STEAM_APP[id] || (/^s\d+$/.test(id) ? id.slice(1) : null);
+  const app = steamAppId(id);
   if (!app || steamPlay.p[app] == null) return null;
   return Math.max(0, steamPlay.p[app] - (steamPlay.b[app] || 0));
 }
 const fmtMin = m => m < 60 ? m + " мин" : Math.floor(m / 60) + " ч" + (m % 60 ? " " + (m % 60) + " мин" : "");
-const hookApplies = id => !closed(id) && GAMES[id].role !== "finish" && !HOOK_SKIP.includes(id) && !hookOk.includes(id);
+const hookApplies = id => !!GAMES[id] && !closed(id) && GAMES[id].role !== "finish" && !HOOK_SKIP.includes(id) && !hookOk.includes(id);
 const hookDue = id => { const m = playMin(id); return m != null && GAMES[id] && !GAMES[id].pro && !GAMES[id].ps && hookApplies(id) && m >= hookLimit(id); };
 function playLabel(id){
   const m = playMin(id);
@@ -1087,10 +1127,10 @@ function listIds(){
 function renderList(){
   const del = layout.del || [], q = listQ.trim().toLowerCase(), byName = (p, r) => ALL_GAMES[p].t.localeCompare(ALL_GAMES[r].t, "ru");
   const all = listIds();
-  const pools = {all, free: all.filter(i => !actOf(i)), acts: all.filter(i => actOf(i)), del: del.filter(i => ALL_GAMES[i])};
+  const pools = {all, fresh: all.filter(i => ALL_GAMES[i].steamImported && !actOf(i) && !st(i)), free: all.filter(i => !actOf(i)), acts: all.filter(i => actOf(i)), done: Object.keys(ALL_GAMES).filter(i=>!del.includes(i)&&st(i)==="done"), del: del.filter(i => ALL_GAMES[i])};
   [...poolPick].forEach(i => { if (!pools[listF].includes(i)) poolPick.delete(i); });
   const ids = pools[listF].filter(i => !q || ALL_GAMES[i].t.toLowerCase().includes(q)).sort(byName);
-  const label = {all: "Все", free: "Без акта", acts: "В плане", del: "Удалённые"};
+  const label = {all: "Все", fresh: "Новые Steam", free: "Без акта", acts: "В плане", done: "Пройденные", del: "Удалённые"};
   document.getElementById("list-chips").innerHTML = Object.keys(label).map(k => '<button class="chip" type="button" data-list-f="' + k + '" aria-pressed="' + (listF === k) + '">' + label[k] + ' <small>' + pools[k].length + '</small></button>').join("");
   const n = poolPick.size, ro = readOnly ? " disabled" : "";
   let bar;
@@ -1110,9 +1150,11 @@ function renderList(){
   document.getElementById("list-bar").hidden = !hubManage && !poolPick.size && !listTarget && listF !== "del";
   const manage = document.getElementById("hub-manage"); manage.setAttribute("aria-pressed", String(hubManage)); manage.textContent = hubManage ? "Готово" : "Управление коллекцией";
   document.getElementById("hub-library-count").textContent = ids.length + " игр";
+  const syncNote=document.getElementById('steam-library-note');
+  if(steamData&&steamData.updated)syncNote.textContent='Steam · '+new Date(steamData.updated*1000).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
   document.getElementById("list-grid").innerHTML = ids.map(id => { const g = ALL_GAMES[id], on = poolPick.has(id), a = actOf(id), s = st(id), art = drawArt(id, true);
     const tag = a ? (a.series ? "Серия " + a.t : a.custom || !a.side ? "Акт " + a.r : a.t) : "без акта";
-    return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + (art||'data:,') + '" alt=""><span class="ct' + ctCls(g.t) + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span></button>'; }).join("") || '<p class="small">Ничего не найдено.</p>';
+    return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + (art||'data:,') + '" alt=""><span class="ct' + ctCls(g.t) + '' + (!art?" steam-no-cover":"") + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span>'+steamTileStats(id)+'</button>'; }).join("") || '<p class="small">Ничего не найдено.</p>';
 }
 /* one act or series: a closed tile, or the open card with its games and, in edit mode, the controls */
 let serOpened = false;
@@ -1156,9 +1198,17 @@ function renderConsole(){
   document.getElementById("cx-spot").hidden = cxTab !== "home";
   if(cxTab === 'home'){
     const candidates=Object.keys(GAMES).filter(i=>!GAMES[i].pro && !GAMES[i].ps && owned(i) && !closed(i));
-    const ids=[...new Set([cxSel,...candidates.filter(i=>st(i)==='play'),...(curA?curA.g:[]),...candidates])].filter(i=>GAMES[i]);
     const strip=document.getElementById('ps-strip'), left=strip.scrollLeft;
-    strip.innerHTML=ids.map(cxTile).join('');strip.scrollLeft=left;
+    const base=[...new Set([...candidates.filter(i=>st(i)==='play'),...(curA?curA.g:[]),...candidates])].filter(i=>GAMES[i]);
+    const ids=base.includes(cxSel)||!GAMES[cxSel]?base:base.concat(cxSel);
+    const tiles=Array.from(strip.children);
+    if(tiles.length===ids.length && tiles.every((tile,i)=>tile.dataset.sel===ids[i]) && strip.dataset.signature===ids.map(i=>[i,st(i),owned(i)].join(':')).join('|')){
+      tiles.forEach(tile=>tile.setAttribute('aria-current',String(tile.dataset.sel===cxSel)));
+    }else{
+      strip.innerHTML=ids.map(cxTile).join('');
+      strip.dataset.signature=ids.map(i=>[i,st(i),owned(i)].join(':')).join('|');
+      strip.scrollLeft=left;
+    }
   }
 
   if (cxTab === "home" && cxSel && GAMES[cxSel]){
@@ -1177,7 +1227,7 @@ function renderConsole(){
     document.getElementById("cx-spot").style.setProperty("--ink", g.ink);
     showHero(cxSel);
     document.getElementById("cx-spot-in").innerHTML = '<div class="eyebrow">' + esc(a ? (a.kicker || "Акт " + a.r) + " · " + a.t : "") + '</div>' +
-      '<h2 class="cx-title">' + esc(g.t) + '</h2><div class="cx-meta">' + meta.join("") + '</div><p class="cx-note">' + esc(g.note || "") + '</p>' + hook + '<div class="cx-actions">' + actions + '</div>';
+      '<h2 class="cx-title">' + esc(g.t) + '</h2><div class="cx-meta">' + meta.join("") + '</div><p class="cx-note">' + esc(g.note || "") + '</p>' + hook + '<div class="cx-actions">' + actions + '</div><button class="btn steam-game-button" data-steam-game="'+cxSel+'">Статистика и достижения Steam</button>';
     const title = g.ct || g.t;
     document.getElementById("cx-poster").innerHTML = '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + (art||'data:,') + '" alt=""><span class="yr">' + g.yr + '</span><span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : "") + '</span></div>';
   }
@@ -1256,6 +1306,8 @@ function doAction(b){
   render(); persist(id);
 }
 document.getElementById("view-console").addEventListener("click", e => {
+  const sg=e.target.closest('[data-steam-game]');if(sg){openLibraryGame(sg.dataset.steamGame);return;}
+  if(e.target.closest('#steam-refresh')){refreshSteam();return;}
   if(e.target.closest("#hub-manage")){hubManage=!hubManage;if(!hubManage){poolPick.clear();listTarget="";}renderList();return;}
   if(e.target.closest("#hub-share")){document.getElementById("share-btn").click();return;}
   const tab = e.target.closest("[data-tab]"); if (tab){ cxTab = tab.dataset.tab; if (cxTab === "series") pickSeries(); try { localStorage.setItem("plan-cx-tab", cxTab); } catch (er) {} renderConsole(); scrollTo(0,0); return; }
@@ -1269,7 +1321,6 @@ document.getElementById("view-console").addEventListener("click", e => {
   if (e.target.closest("[data-go-list]")){ cxTab = "list"; listF = "free"; poolPick.clear(); listTarget = ""; renderConsole(); scrollTo(0, 0); return; }
   const pick = e.target.closest("[data-pick]");
   if (pick){ const id = pick.dataset.pick;
-    if (!hubManage && !listTarget && listF !== "del" && !poolPick.size && GAMES[id] && !GAMES[id].pro){ cxSel=id; cxTab="home"; renderConsole(); scrollTo(0,0); return; }
     if (!hubManage && !listTarget && listF !== "del" && !poolPick.size){ openLibraryGame(id); return; }
     if (poolPick.has(id)) poolPick.delete(id); else poolPick.add(id); renderList(); return; }
   if (e.target.closest("[data-pool-make]")){
@@ -1413,11 +1464,53 @@ document.getElementById("share-copy").addEventListener("click", async () => {
   note.textContent = ok ? "Скопировано. Вставь в Telegram." : "Не вышло скопировать: текст выделен, скопируй его вручную.";
 });
 let hubDialogId=null;
-function openLibraryGame(id){const g=ALL_GAMES[id];if(!g)return;hubDialogId=id;document.getElementById("hub-dialog-content").innerHTML='<div class="hub-dialog-cover"><img alt="" src="'+esc(drawArt(id)||"data:,")+'"></div><h2>'+esc(g.t)+'</h2><p>'+esc(g.note||"")+'</p><p>'+esc(String(g.yr||""))+(g.h!=null?' · ≈ '+g.h+' ч':'')+'</p>';document.getElementById("hub-game-dialog").showModal();}
+function steamSummary(id){return steamData?.achievement_summary?.[steamAppId(id)]||null;}
+function steamTotal(id){const app=steamAppId(id);return app&&steamPlay?.p?.[app]!=null?Number(steamPlay.p[app]):null;}
+function steamTileStats(id){const m=steamTotal(id),a=steamSummary(id);return m==null&&!a?'':'<span class="steam-tile-stats">'+(m==null?'':esc(fmtMin(m)))+(a&&Number.isInteger(a.total)&&a.total>0?' · 🏆 '+a.unlocked+'/'+a.total:'')+'</span>';}
+function safeSteamIcon(value){try{const u=new URL(value);return u.protocol==='https:'&&/^(?:[a-z0-9-]+\.)*(?:steamstatic\.com|steamusercontent\.com|akamaihd\.net)$/.test(u.hostname)?u.href:'';}catch(e){return '';}}
+function openLibraryGame(id){
+  const g=ALL_GAMES[id];if(!g)return;hubDialogId=id;
+  const m=steamTotal(id), p=playMin(id), a=steamSummary(id), app=steamAppId(id);
+  const progress=a&&a.total>0?Math.round(a.unlocked/a.total*100):null;
+  document.getElementById('hub-dialog-content').innerHTML='<div class="hub-dialog-cover"><img alt="" src="'+esc(drawArt(id)||'data:,')+'"></div><h2>'+esc(g.t)+'</h2><p>'+esc(g.note||'')+'</p><p>'+esc(String(g.yr||''))+(g.h!=null?' · ≈ '+g.h+' ч':'')+'</p><section class="steam-game-stats"><h3>Steam</h3><div class="steam-stats-grid"><div><b>'+(m==null?'—':esc(fmtMin(m)))+'</b><small>Всего в игре</small></div><div><b>'+(p==null?'—':esc(fmtMin(p)))+'</b><small>С начала плана</small></div></div><h3>Достижения Steam</h3>'+(progress==null?'': '<b>'+a.unlocked+' / '+a.total+' · '+progress+'%</b><div class="steam-progress"><i style="width:'+progress+'%"></i></div>')+'<p class="small" id="steam-ach-note">'+(!app?'Нет привязки к Steam.':a&&a.status==='empty'?'Steam не вернул достижений.':a&&a.status!=='ok'?'Данные временно недоступны; при наличии покажем последнюю копию.':'Официальные достижения, отдельно от трофеев SnebaStar.')+'</p><div id="steam-ach-list"></div></section>';
+  const dialog=document.getElementById('hub-game-dialog');if(!dialog.open)dialog.showModal();
+  if(app && a && a.updated) loadSteamAchievements(id,app);
+  else if(app&&!a)document.getElementById('steam-ach-note').textContent='Достижения ещё не синхронизированы.';
+}
+const steamDetailCache=new Map();
+async function loadSteamAchievements(id,app){
+  const key=app+':'+(steamSummary(id)?.updated||0);let data=steamDetailCache.get(key);
+  try{if(!data){const dir=STEAM_FILE==='steam.json'?'steam-achievements':'steam-achievements-test';const r=await fetch(STEAM_RAW+dir+'/'+app+'.json',{cache:'no-store'});if(!r.ok)throw Error('HTTP');data=await r.json();steamDetailCache.set(key,data);}if(hubDialogId!==id||!document.getElementById('hub-game-dialog').open)return;
+    const list=document.getElementById('steam-ach-list'); const rows=Array.isArray(data.achievements)?data.achievements:[];
+    if(!rows.length){list.textContent='Нет доступных достижений.';return;}
+    const sorted=rows.slice().sort((x,y)=>Number(y.unlocked)-Number(x.unlocked)||Number(y.time)-Number(x.time));
+    const paint=only=>{list.innerHTML='<div class="steam-ach-filters"><button type="button" class="btn" data-ach-filter="all">Все '+rows.length+'</button><button type="button" class="btn" data-ach-filter="got">Получено '+rows.filter(x=>x.unlocked).length+'</button></div>'+sorted.filter(x=>!only||x.unlocked).map(x=>{const icon=safeSteamIcon(x.icon);const date=x.unlocked&&x.time?new Date(x.time*1000).toLocaleDateString('ru-RU'):'';return '<article class="steam-ach-row '+(x.unlocked?'got':'locked')+'">'+(icon?'<img loading="lazy" src="'+esc(icon)+'" alt="">':'<span class="steam-ach-placeholder">🏆</span>')+'<div><b>'+esc(x.name||x.id)+'</b><p>'+esc(x.description||'')+'</p><small>'+esc(x.unlocked?(date||'Получено'):'Не получено')+'</small></div></article>';}).join('');list.querySelectorAll('[data-ach-filter]').forEach(b=>b.onclick=()=>paint(b.dataset.achFilter==='got'));};paint(false);
+  }catch(e){if(hubDialogId===id&&document.getElementById('hub-game-dialog').open)document.getElementById('steam-ach-note').textContent='Не удалось загрузить список достижений. Попробуй открыть игру ещё раз.';}
+}
 document.getElementById("hub-dialog-close").onclick=()=>document.getElementById("hub-game-dialog").close();
-document.getElementById("hub-dialog-manage").onclick=()=>{document.getElementById("hub-game-dialog").close();hubManage=true;poolPick.add(hubDialogId);renderList();};
+document.getElementById("hub-dialog-manage").onclick=()=>{document.getElementById("hub-game-dialog").close();cxTab="list";listF=(layout.del||[]).includes(hubDialogId)?"del":listIds().includes(hubDialogId)?"all":"done";listQ="";hubManage=true;poolPick.clear();poolPick.add(hubDialogId);document.getElementById("list-q").value="";renderConsole();};
 function bootArt(){ render(); }
-loadLocal(); applyCustomActs(); if (layoutMoved) { layoutMoved = false; saveLocal(); } bootArt();
+function registerSteamLibrary(data){
+  if(!Array.isArray(data?.library)||!data.catalog)return;
+  for(const [app,info] of Object.entries(data.catalog)){if(validSteamCoverUrl(info?.header)&&info.header.includes('/apps/'+app+'/'))catalogCovers.set(Number(app),info.header);}
+  const seen=new Set(Object.values(steamIdMap).map(Number));
+  for(const row of data.library){if(!Array.isArray(row))continue;const [app,name,mins,icon]=row;
+    if(!Number.isSafeInteger(app)||app<=0||typeof name!=='string'||!name.trim()||seen.has(app)||data.catalog[app]?.type!=='game')continue;
+    const id='s'+app;if(ALL_GAMES[id])continue;
+    const g={t:name,yr:'',h:null,role:'main',m:'space',c:['#3b5278','#101827'],ink:'#b9d9ff',note:'Из библиотеки Steam.',basePro:false,steamImported:true};
+    ALL_GAMES[id]=g;POOL[id]=g;steamIdMap[id]=app;seen.add(app);
+    STEAM_COVER[id]=app+'/library_600x900.jpg';
+  }
+  steamCatalogReady=true;
+  try{localStorage.setItem('plan-steam-catalog-v2:'+STEAM_FILE,JSON.stringify({library:data.library,catalog:data.catalog}));}catch(e){}
+}
+async function fetchSteamData(){
+  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),9000);
+  try{const r=await fetch(STEAM_RAW+STEAM_FILE,{cache:'no-store',signal:controller.signal});if(!r.ok)throw Error('HTTP');const data=await r.json();if(!data||typeof data!=='object')throw Error('JSON');steamData=data;registerSteamLibrary(data);return data;}catch(e){return null;}finally{clearTimeout(timeout);}
+}
+try{registerSteamLibrary(JSON.parse(localStorage.getItem('plan-steam-catalog-v2:'+STEAM_FILE)||'null'));}catch(e){}
+function missingSteamGames(){return [...Object.keys(state),...(layout.del||[]),...(layout.pro||[]),...customActs.flatMap(a=>a.g||[]),...Object.values(layout.edit||{}).flat()].some(id=>/^s\d+$/.test(id)&&!ALL_GAMES[id]);}
+loadLocal(); readOnly=missingSteamGames()||STEAM_FILE!=="steam.json"; applyCustomActs(); if (layoutMoved && !readOnly) { layoutMoved = false; saveLocal(); } bootArt();
 async function loadCloud(){
   const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k === "acts" || k === "layout" || k.startsWith("p_"));
   if (!keys.length) return;
@@ -1426,23 +1519,23 @@ async function loadCloud(){
   if (items.acts) try { const a = JSON.parse(items.acts); if (Array.isArray(a)) customActs = a; } catch (e) {}
   if (items.layout) try { const l = JSON.parse(items.layout); if (l && typeof l === "object") layout = l; } catch (e) {}
   applyCustomActs();
-  if (layoutMoved) { layoutMoved = false; persistActs(); }
+  if (layoutMoved && !missingSteamGames() && STEAM_FILE==="steam.json") { layoutMoved = false; persistActs(); }
   const s = {};
-  keys.forEach(k => { if (!k.startsWith("p_") || !items[k]) return; const id = k.slice(2); try { const v = JSON.parse(items[k]); if (ALL_GAMES[id] && (v.s || v.b)) s[id] = {s: v.s || null, b: !!v.b, t: Number(v.t) || 0}; } catch (e) {} });
+  keys.forEach(k => { if (!k.startsWith("p_") || !items[k]) return; const id = k.slice(2); try { const v = JSON.parse(items[k]); if ((ALL_GAMES[id] || /^s\d+$/.test(id)) && (v.s || v.b)) s[id] = {s: v.s || null, b: !!v.b, t: Number(v.t) || 0}; } catch (e) {} });
   state = s;
   if (items.meta) try { const v = JSON.parse(items.meta); meta = {base: Number(v.base) || 0, log: Array.isArray(v.log) ? v.log : [], prev: v.prev || null}; } catch (e) {}
   saveLocal();
 }
 /* ---------- Steam: each finished game is applied once, so a removed mark stays removed ---------- */
 let cloudFailed = false;
-async function applySteam(){
-  if (cloudFailed) return;
-  let data;
-  try { const r = await fetch("https://raw.githubusercontent.com/6996ak/snebastar-plan/main/" + STEAM_FILE, {cache: "no-store"}); if (!r.ok) return; data = await r.json(); } catch (e) { return; }
+async function applySteam(data){
+  if (!data) return;
+  steamData=data;registerSteamLibrary(data);applyCustomActs();
   const when = data.updated ? new Date(data.updated * 1000).toLocaleString("ru-RU", {day: "numeric", month: "long", hour: "2-digit", minute: "2-digit"}) : "";
   if (when) document.getElementById("cx-steam-note").textContent = (STEAM_FILE === "steam.json" ? "" : "ТЕСТ. ") + "Steam проверен: " + when + ".";
-  steamPlay = {p: data.playtime || {}, b: data.baseline || {}};
+  steamPlay = {p: {...Object.fromEntries((data.library||[]).filter(r=>Array.isArray(r)&&r.length>=3).map(r=>[r[0],r[2]])),...(data.playtime||{})}, b: data.baseline || {}};
   try { const h = JSON.parse((cloud ? await cloudCall("getItem", "hook") : localStorage.getItem("plan-hook")) || "[]"); if (Array.isArray(h)) hookOk = h; } catch (e) {}
+  if (STEAM_FILE!=="steam.json" || cloudFailed || readOnly){render();return;}
   const due = Object.keys(GAMES).find(hookDue);
   if (due){ cxSel = due; notice(fmtMin(playMin(due)) + " в " + (GAMES[due].ct || GAMES[due].t) + ". Зацепила?", "Правило трёх часов"); }
   render();
@@ -1471,16 +1564,23 @@ async function connectTelegram(){
   readOnly = true; render();
   try { await loadCloud(); setNote("Отметки сохраняются в Telegram, их видно на всех твоих устройствах."); }
   catch (e) { cloudFailed = true; setNote("Не удалось загрузить отметки из Telegram. Закрой и открой приложение."); notice("Не удалось загрузить отметки."); }
-  readOnly = false; achPrev = null; render(); dataReady = true; renderAch();
+  const missingDynamic=missingSteamGames();
+  readOnly = missingDynamic || cloudFailed || STEAM_FILE!=="steam.json"; if(missingDynamic)setNote('Часть библиотеки Steam недоступна. Отметки защищены; обнови данные Steam.'); achPrev = null; render(); dataReady = true; renderAch();
 }
 (() => {
   const sdk = document.createElement("script");
   const fail = () => { if (!dataReady && !cloud) dataReady = true; };
   sdk.src = "https://telegram.org/js/telegram-web-app.js";
-  sdk.onload = () => connectTelegram().then(applySteam); sdk.onerror = () => { fail(); applySteam(); };
+  const initialSteam=fetchSteamData();
+  sdk.onload = async () => {const data=await initialSteam;readOnly=missingSteamGames()||STEAM_FILE!=="steam.json";applyCustomActs();await connectTelegram();await applySteam(data);};
+  sdk.onerror = async () => { fail();const data=await initialSteam;readOnly=missingSteamGames()||STEAM_FILE!=="steam.json";await applySteam(data); };
   document.head.appendChild(sdk);
 })();
 
+async function refreshSteam(){
+  if(steamBusy)return;steamBusy=true;const b=document.getElementById('steam-refresh');b.disabled=true;b.textContent='Обновляем…';
+  try{const data=await fetchSteamData();if(!data){notice('Не удалось получить данные Steam. Старые данные сохранены.');return;}if(readOnly&&cloud&&!cloudFailed&&STEAM_FILE==="steam.json"){await loadCloud();}readOnly=missingSteamGames()||cloudFailed||STEAM_FILE!=="steam.json";await applySteam(data);notice('Загружен последний снимок Steam. Серверная синхронизация выполняется автоматически.');}finally{steamBusy=false;b.disabled=false;b.textContent='↻ Загрузить данные Steam';}
+}
 /* ---------- transfer code ---------- */
 function exportCode(){
   const by = f => Object.keys(state).filter(f);
