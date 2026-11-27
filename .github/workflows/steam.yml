@@ -181,7 +181,28 @@ jobs:
                   summaries[app]={'checked':NOW,'updated':NOW,'status':'ok' if detail else 'empty','unlocked':count,'total':len(detail)}
                   # Store only sanitized achievement metadata; original schema is needed for cached updates.
                   write(path,{'updated':NOW,'schema_updated':stamp,'schema':sch,'achievements':detail})
-              out={**old,'finished':finished,'hidden':sorted(hidden),'unavailable':sorted(unavailable),'errors':errors,'playtime':playtime,'baseline':baseline,'library':sorted(library.values(),key=lambda r:r[0]),'catalog':catalog,'achievement_summary':summaries,'updated':NOW,'version':2}
+              # Monthly time: only positive deltas between observed per-app counters.
+              # New/missing apps and counter resets never contribute historic hours.
+              month = datetime.fromtimestamp(NOW, timezone.utc).strftime('%Y-%m')
+              monthly = old.get('monthly_play') or {}
+              months = dict(monthly.get('months',{}))
+              previous = monthly.get('snapshot',{})
+              previous_at = int(monthly.get('at',0))
+              current = {app:int(g['playtime_forever']) for app,g in games.items()
+                         if catalog.get(app,{}).get('type')=='game' and isinstance(g.get('playtime_forever'),int) and g['playtime_forever']>=0}
+              row = dict(months.get(month,{'minutes':0,'partial':not previous_at or datetime.fromtimestamp(previous_at,timezone.utc).strftime('%Y-%m')==month}))
+              if previous_at and NOW>previous_at:
+                  previous_month = datetime.fromtimestamp(previous_at,timezone.utc).strftime('%Y-%m')
+                  gap = NOW-previous_at
+                  # Crossing a month boundary makes exact allocation impossible.
+                  # Assign the interval to the later observation and flag approximation.
+                  delta = sum(max(0,v-previous[a]) for a,v in current.items() if a in previous)
+                  row['minutes'] += delta
+                  if gap>3*3600 or previous_month!=month or any(a not in current or current[a]<v for a,v in previous.items()):
+                      row['partial'] = True
+              months[month] = row
+              monthly = {'months':months,'snapshot':current,'at':NOW}
+              out={**old,'monthly_play':monthly,'finished':finished,'hidden':sorted(hidden),'unavailable':sorted(unavailable),'errors':errors,'playtime':playtime,'baseline':baseline,'library':sorted(library.values(),key=lambda r:r[0]),'catalog':catalog,'achievement_summary':summaries,'updated':NOW,'version':2}
               write(OUT,out)
               print(f'Owned={len(games)} catalog={len(catalog)} achievement summaries={len(summaries)} finished={len(finished)} test={TEST} backfill={BACKFILL}')
 
