@@ -437,7 +437,7 @@ button:disabled{opacity:.45;cursor:default}
     <div class="cx-lvl"><div class="ring" id="cx-ring"><span>0</span></div><div class="t"><b id="cx-rank">Новичок</b><span id="cx-rank-sub"></span></div></div>
   </header>
 
-  <section id="cx-home" hidden><section id="home-playing" aria-labelledby="home-playing-title"><div class="hub-home-head"><span id="home-playing-title">Прохожу сейчас</span><span id="home-playing-count" class="small"></span></div><div class="cx-strip ps-strip" id="home-playing-strip"></div><p id="home-playing-empty" class="small" hidden>Нет активных игр. Отметь игру статусом «Играю».</p></section><div class="hub-home-head"><span>Игры</span><button class="btn" data-tab="list">Вся библиотека →</button></div><div class="cx-strip ps-strip" id="ps-strip"></div></section>
+  <section id="cx-home" hidden><section id="home-playing" aria-labelledby="home-playing-title"><div class="hub-home-head"><span id="home-playing-title">Прохожу сейчас</span><span id="home-playing-count" class="small"></span></div><div class="cx-strip ps-strip" id="home-playing-strip"></div><p id="home-playing-empty" class="small" hidden>Нет активных игр. Отметь игру статусом «Играю».</p></section><section id="home-next" class="rating-section"></section><div class="hub-home-head"><span>Игры</span><button class="btn" data-tab="list">Вся библиотека →</button></div><div class="cx-strip ps-strip" id="ps-strip"></div></section>
   <div class="cx-spot" id="cx-spot"><div class="cx-spot-art" id="cx-spot-art"></div><div class="cx-spot-in" id="cx-spot-in"></div><div class="cx-poster" id="cx-poster"></div></div>
   <section id="cx-path"><div class="hub-subnav"><button class="btn active" data-tab="path">Акты</button><button class="btn" data-tab="series">Серии</button></div>
     <div id="cx-rows"></div>
@@ -473,7 +473,7 @@ button:disabled{opacity:.45;cursor:default}
     <ul class="store" id="cx-store-list"></ul>
   </section>
 
-  <section id="cx-trophies" hidden><div class="hub-profile"><div class="hub-avatar">S</div><div><h2>SnebaStar</h2><p id="hub-profile-rank"></p></div></div><div class="hub-profile-stats" id="hub-profile-stats"></div><div class="hub-subnav"><button class="btn active" data-tab="trophies">Трофеи</button><button class="btn" data-tab="prologue">Пролог</button><button class="btn" id="hub-share">Статус и перенос</button></div>
+  <section id="cx-trophies" hidden><div class="hub-profile"><div class="hub-avatar">S</div><div><h2>SnebaStar</h2><p id="hub-profile-rank"></p></div></div><div class="hub-profile-stats" id="hub-profile-stats"></div><section class="rating-section"><h3>Мой рейтинг игр</h3><div id="personal-ranking"></div></section><div class="hub-subnav"><button class="btn active" data-tab="trophies">Трофеи</button><button class="btn" data-tab="prologue">Пролог</button><button class="btn" id="hub-share">Статус и перенос</button></div>
     <div class="viewbar"><button class="btn share-btn" id="share-btn" type="button" aria-expanded="false" aria-controls="share">Статус и перенос</button></div>
 <div class="share" id="share" hidden><textarea id="share-text" rows="6" readonly aria-label="Статус для Telegram"></textarea><div class="buy-row"><button class="btn" id="share-copy" type="button">Скопировать</button><span class="small" id="share-note" aria-live="polite">Вставь текст в чат.</span></div><details class="xfer"><summary>Перенос отметок</summary><p class="small">Вставь код переноса и нажми «Загрузить». Отметки из кода добавятся к текущим. Кнопка «Показать мой код» даёт резервную копию.</p><textarea id="xfer-text" rows="4" aria-label="Код переноса" autocomplete="off" spellcheck="false"></textarea><div class="buy-row"><button class="btn" id="xfer-load" type="button">Загрузить</button><button class="btn" id="xfer-show" type="button">Показать мой код</button><span class="small" id="xfer-note" aria-live="polite"></span></div></details></div>
 <div class="cx-sec-h"><h2>Трофеи</h2></div>
@@ -489,7 +489,7 @@ button:disabled{opacity:.45;cursor:default}
 
   <footer class="foot"><div id="cx-steam-note"></div><div>Часы — примерная длина основного сюжета; у начатых игр — сколько осталось до титров.</div><div class="save" id="cx-save-note">Отметки сохраняются в этом браузере. Основное место для них — бот в Telegram.</div></footer>
 </div>
-<dialog id="hub-game-dialog"><button id="hub-dialog-close" class="btn" type="button">Закрыть ×</button><div id="hub-dialog-content"></div><button id="hub-dialog-manage" class="btn" type="button">Выбрать для управления</button></dialog><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<dialog id="hub-game-dialog"><button id="hub-dialog-close" class="btn" type="button">Закрыть ×</button><div id="hub-dialog-content"></div><button id="hub-dialog-manage" class="btn" type="button">Выбрать для управления</button></dialog><dialog id="rating-dialog"><form id="rating-form"><h2 id="rating-title"></h2><p class="small">Личная оценка · от 1 до 10</p><div id="rating-stars" class="rating-stars"></div><details><summary>Дополнительные критерии</summary><div id="rating-criteria"></div></details><div class="buy-row"><button type="submit" class="btn" id="rating-save">Сохранить</button><button type="button" class="btn" id="rating-skip">Пропустить</button><button type="button" class="btn" id="rating-clear">Удалить оценку</button></div></form></dialog><div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <style>
 
@@ -497,7 +497,7 @@ button:disabled{opacity:.45;cursor:default}
 :root{--bg:#090e1a;--panel:rgba(21,31,49,.78);--panel-2:rgba(255,255,255,.07);--line:rgba(173,204,255,.15);--line-2:rgba(173,204,255,.26);--accent:#a9cfff;--accent-2:#dcecff;--fg:#f4f7ff;--mute:#a5b2c7;--f-display:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;--f-body:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;--r:15px}
 body{background:radial-gradient(ellipse at 70% 0%,#233857 0%,#0b1324 46%,#090e1a 100%);background-attachment:fixed}
 .wrap,.viewbar{max-width:1440px}.cx{padding-top:12px}.cx-top{gap:12px;align-items:center}.cx-brand{font-size:18px;letter-spacing:.1em}.cx-brand b{color:#90c4ff}.cx-tabs{flex:1;gap:4px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}.cx-tabs button{flex:none;text-transform:none;font-family:var(--f-body);font-size:15px;padding:10px 12px;letter-spacing:0}.cx-tabs button[aria-selected=true]::after{background:#dcecff;box-shadow:none}.cx-lvl .t b{color:#efd08b}.ring{background:conic-gradient(#e6b968 calc(var(--p)*1%),rgba(255,255,255,.12) 0)}
-#home-playing{margin-bottom:18px}#home-playing-count{font-size:14px;color:var(--mute);font-weight:500}#home-playing-empty{margin:12px 0 18px}#home-playing-strip[hidden],#home-playing-empty[hidden]{display:none}.ps-home-label{font-size:12px;letter-spacing:.15em;color:var(--mute);margin:24px 0 0}.ps-strip{margin-top:0;gap:13px;padding:13px 10px 19px}.ps-strip .cx-tile{width:clamp(94px,12vw,166px)}.ps-strip .cover{aspect-ratio:1/1;border-radius:8px}.ps-strip .cover img{object-fit:cover}.ps-strip .cx-tile[aria-current=true] .cover{outline:2px solid #fff;outline-offset:3px;box-shadow:0 12px 32px #0008;transform:scale(1.02)}
+#rating-dialog{width:min(92vw,460px);box-sizing:border-box;background:#101827;color:#eaf1ff;border:1px solid #43516a;border-radius:20px;padding:20px}#rating-dialog::backdrop{background:#000a}#rating-dialog h2{margin:0 0 8px;font-size:23px}.rating-stars{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;margin:18px 0}.rating-stars button{border:0;background:transparent;color:#60718b;font-size:clamp(17px,5vw,29px);padding:4px 0;cursor:pointer}.rating-stars button.lit{color:#e8c882}#rating-criteria label,.rating-rank{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #ffffff15}#rating-criteria select{background:#1d2b40;color:#eaf1ff;padding:7px;border:1px solid #43516a;border-radius:8px}.rating-section{margin:22px 0}.rating-section summary,#rating-dialog summary{cursor:pointer;color:#aab8cd}.personal-rating{position:absolute;bottom:6px;right:6px;z-index:5;background:#111b2deb;color:#e8c882;padding:3px 6px;border-radius:7px;font-size:12px;font-weight:700}#rating-clear[hidden]{display:none}#home-playing{margin-bottom:18px}#home-playing-count{font-size:14px;color:var(--mute);font-weight:500}#home-playing-empty{margin:12px 0 18px}#home-playing-strip[hidden],#home-playing-empty[hidden]{display:none}.ps-home-label{font-size:12px;letter-spacing:.15em;color:var(--mute);margin:24px 0 0}.ps-strip{margin-top:0;gap:13px;padding:13px 10px 19px}.ps-strip .cx-tile{width:clamp(94px,12vw,166px)}.ps-strip .cover{aspect-ratio:1/1;border-radius:8px}.ps-strip .cover img{object-fit:cover}.ps-strip .cx-tile[aria-current=true] .cover{outline:2px solid #fff;outline-offset:3px;box-shadow:0 12px 32px #0008;transform:scale(1.02)}
 .cx-spot{margin-top:4px;border:0;border-radius:14px;min-height:440px;padding:clamp(22px,5vw,64px);background:#101a2b;box-shadow:none;grid-template-columns: minmax(0,1fr) auto}.cx-spot-art{animation:none;transform:none;background-position:center;background-size:cover}.cx-spot::before{background:linear-gradient(90deg,rgba(7,13,25,.94),rgba(7,13,25,.49) 50%,rgba(7,13,25,.12)),linear-gradient(0deg,#090e1a 0%,transparent 65%)}.cx-title{font-size:clamp(28px,5vw,58px);letter-spacing:-.04em;text-transform:none;font-weight:650}.cx-spot .eyebrow{color:#c6d9f3}.cx-meta{font-family:var(--f-body);gap:8px 14px}.cx-note{color:#d5deed}.bb{border-radius:999px;min-height:44px;background:rgba(255,255,255,.13);padding:10px 18px}.bb:first-child:not(.on-play):not(.on-done):not(.on-drop):not(.buy){background:#f1f5ff;color:#101827}.cx-poster{width:180px}.hook{background:rgba(10,18,32,.7)!important;border-color:rgba(193,219,255,.4)!important}
 .cover,.ab,.cx-tile .cover,.st .cover{border-radius:9px}.cover::before{display:none}.cover:has(img.art[src*="steamstatic"])::after{background:none}.cover img[src="data:,"],.cover img[src=""],img[src="data:,"]{visibility:hidden}.cover{background:linear-gradient(145deg,#293b55,#131b2b)}.card.is-done .cover,.card.is-drop .cover,.cx-row.done .cx-tile .cover,.cx-tile.is-done .cover,.cx-tile.is-drop .cover,.cx-tile.is-wish .cover,.card.is-wish .cover,.ab.fin .ab-fan img,.mini li.off .cover,.st:not(.got) .cover,.pool-tile:disabled .cover{filter:none}.card.is-done .name,.card.is-drop .name{text-decoration:none}.ab.fin .ab-bg{filter:blur(2px) brightness(.6)}.okd,.okb,.cx-tile .chk{box-shadow:0 0 0 1px #0007}.cx-row-h h3,.cx-sec-h h2,.panel h2,.ab-t,.ab-ot h3{text-transform:none;letter-spacing:0}.ab{aspect-ratio:4/5;background:#162337}.ab-grid#list-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:22px 15px}.pool-bar{position:static;background:#131f32}.chip{padding:8px 13px}.pool-t{line-height:1.3}.list-q{background:#19263c}.tro li{background:rgba(20,33,52,.85)}.tro li.got{border-color:#c3a46b66}.foot{color:#9eacc2}.backdrop{filter:blur(65px) saturate(.9) brightness(.22)}
 @media(max-width:680px){.cx-top{display:grid;grid-template-columns:1fr auto;gap:10px}.cx-brand{grid-column:1;grid-row:1}.cx-lvl{grid-column:2;grid-row:1;gap:6px}.cx-lvl .t span{font-size:10px}.cx-tabs{grid-column:1/-1;grid-row:2;width:100%;margin:0;padding:0;gap:4px}.cx-tabs button{font-size:14px;padding:10px 9px}.ps-home-label{margin-top:18px}.ps-strip{gap:11px}.ps-strip .cx-tile{width:92px}.cx-spot{min-height:350px;padding:20px;align-items:end;grid-template-columns:minmax(0,1fr)}.cx-spot-art{background-position:center top}.cx-spot::before{background:linear-gradient(0deg,#090e1a 0%,rgba(9,14,26,.94) 22%,rgba(9,14,26,.57) 63%,rgba(9,14,26,.12) 100%)}.cx-spot-in{padding-top:76px}.cx-title{font-size:32px}.cx-actions{gap:7px}.bb{font-size:13px;padding:9px 13px}.cx-poster{display:none}.ab-grid#list-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px 10px}.pool-t{font-size:12px}.pool-a{font-size:10px}.tro{grid-template-columns:minmax(0,1fr)}}
@@ -690,7 +690,7 @@ const BASE_ACTS = ACTS.map(a => Object.assign({}, a, {g: a.g.slice()}));
 const RANKS = [[0,"Новичок"],[5,"Искатель"],[15,"Охотник"],[25,"Ветеран"],[40,"Мастер"],[55,"Легенда"],[75,"Прошедший путь"]];
 const ROLE = {main:["основная",""], side:["параллельно",""], short:["короткая",""], finish:["добить","r-finish"], coop:["кооп","r-coop"]};
 const KEY = "plan-snebastar-v1";
-let state = {}, meta = {base:0, log:[]}, db = null, cloud = null, readOnly = false;
+let ratings = {}; let state = {}, meta = {base:0, log:[]}, db = null, cloud = null, readOnly = false;
 const openActs = new Set();
 const pending = {};
 
@@ -863,8 +863,8 @@ let dataReady = false;
 /* ---------- state ---------- */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const nf = new Intl.NumberFormat("ru-RU");
-function loadLocal(){ try{ const j = JSON.parse(localStorage.getItem(KEY) || "{}"); if (j.state) state = j.state; if (j.meta) meta = j.meta; if (Array.isArray(j.acts)) customActs = j.acts; if (j.layout && typeof j.layout === "object") layout = j.layout; }catch(e){} }
-function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify({state, meta, acts: customActs, layout})); }catch(e){} }
+function loadLocal(){ try{ const j = JSON.parse(localStorage.getItem(KEY) || "{}"); if (j.state) state = j.state; if(j.ratings) ratings=cleanRatings(j.ratings); if (j.meta) meta = j.meta; if (Array.isArray(j.acts)) customActs = j.acts; if (j.layout && typeof j.layout === "object") layout = j.layout; }catch(e){} }
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify({state, meta, acts: customActs, layout, ratings})); }catch(e){} }
 function roman(n){ return [[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].reduce((o, [v, r]) => { while (n >= v) { o += r; n -= v; } return o; }, ""); }
 /* the act layout: edits of built-in acts, custom acts and games deleted from the common list.
    A game in an act lives in GAMES and counts; a game outside acts moves to POOL and stops counting. */
@@ -980,6 +980,35 @@ function persistActs(){
   const prev = pending.__acts || Promise.resolve();
   pending.__acts = prev.then(() => cloudCall("setItem", "acts", JSON.stringify(customActs))).then(() => cloudCall("setItem", "layout", JSON.stringify(layout))).catch(onWriteError);
 }
+const RATING_CRITERIA=['Сюжет','Геймплей','Атмосфера','Персонажи','Музыка'];
+function cleanRatings(input){
+  const out={}; if(!input||typeof input!=='object')return out;
+  for(const [id,v] of Object.entries(input)){
+    if(!Object.prototype.hasOwnProperty.call(ALL_GAMES,id)&&!/^s\d+$/.test(id))continue;
+    if(!Number.isInteger(v?.score)||v.score<1||v.score>10)continue;
+    out[id]={score:v.score,criteria:Object.fromEntries(Object.entries(v.criteria||{}).filter(([k,n])=>RATING_CRITERIA.includes(k)&&Number.isInteger(n)&&n>=1&&n<=10))};
+  }return out;
+}
+function persistRating(id){
+  saveLocal();if(!cloud)return;
+  const key='rating_'+id,v=ratings[id],prev=pending[key]||Promise.resolve();
+  pending[key]=prev.then(()=>v?cloudCall('setItem',key,JSON.stringify(v)):cloudCall('removeItem',key)).catch(onWriteError);
+}
+let ratingId=null,ratingScore=0;
+function paintRatingStars(){
+  document.getElementById('rating-stars').innerHTML=Array.from({length:10},(_,i)=>'<button type="button" data-score="'+(i+1)+'" aria-label="'+(i+1)+' из 10" aria-pressed="'+(i+1===ratingScore)+'" class="'+(i<ratingScore?'lit':'')+'">'+(i<ratingScore?'★':'☆')+'</button>').join('');
+  document.getElementById('rating-save').disabled=!ratingScore;
+}
+function openRating(id){
+  if(readOnly||!ALL_GAMES[id])return;
+  ratingId=id;ratingScore=ratings[id]?.score||0;
+  document.getElementById('rating-title').textContent=ALL_GAMES[id].t;
+  document.getElementById('rating-criteria').innerHTML=RATING_CRITERIA.map((k,i)=>'<label>'+k+'<select data-criterion="'+i+'"><option value="">Не оценено</option>'+Array.from({length:10},(_,j)=>'<option value="'+(j+1)+'" '+(ratings[id]?.criteria?.[k]===j+1?'selected':'')+'>'+(j+1)+'</option>').join('')+'</select></label>').join('');
+  document.getElementById('rating-clear').hidden=!ratings[id];
+  const d=document.getElementById('rating-dialog');d.querySelector('details').open=false;paintRatingStars();if(!d.open)d.showModal();
+}
+function ratingBadge(id){return ratings[id]&&st(id)==='done'?'<span class="personal-rating">★ '+ratings[id].score+'</span>':'';}
+function ratingButton(id){return st(id)==='done'?'<button type="button" class="btn" data-rate="'+id+'" '+(readOnly?'disabled':'')+'>'+ (ratings[id]?'★ '+ratings[id].score+'/10 · Изменить':'Оценить игру')+'</button>':'';}
 const rec = id => state[id] || {s:null, b:false};
 const st = id => rec(id).s || null;
 const owned = id => !GAMES[id].buy || rec(id).b;
@@ -1077,7 +1106,7 @@ function cxTile(id){
   const chk = s === "drop" ? ICON.drop : s === "play" ? ICON.play : "";
   const mark = s === "done" ? '<span class="okd" title="Пройдено">' + ICON.done + '</span>' : chk ? '<span class="chk">' + chk + '</span>' : wish ? '<span class="badge wish">КУПИТЬ</span>' : '';
   return '<button class="cx-tile' + (wish ? " is-wish" : s ? " is-" + s : "") + '" type="button" data-sel="' + id + '" aria-current="' + (id === cxSel) + '" aria-label="' + esc(g.t) + '">' +
-    '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + (drawArt(id)||'data:,') + '" alt="">' + mark +
+    '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + (drawArt(id)||'data:,') + '" alt="">' + mark + ratingBadge(id) +
     '<span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : '') + '</span></div></button>';
 }
 const ACT_MAX = 3, CUSTOM_MAX = 8;
@@ -1154,7 +1183,7 @@ function renderList(){
   if(steamData&&steamData.updated)syncNote.textContent='Steam · '+new Date(steamData.updated*1000).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
   document.getElementById("list-grid").innerHTML = ids.map(id => { const g = ALL_GAMES[id], on = poolPick.has(id), a = actOf(id), s = st(id), art = drawArt(id, true);
     const tag = a ? (a.series ? "Серия " + a.t : a.custom || !a.side ? "Акт " + a.r : a.t) : "без акта";
-    return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + (art||'data:,') + '" alt=""><span class="ct' + ctCls(g.t) + '' + (!art?" steam-no-cover":"") + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span>'+steamTileStats(id)+'</button>'; }).join("") || '<p class="small">Ничего не найдено.</p>';
+    return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + (art||'data:,') + '" alt=""><span class="ct' + ctCls(g.t) + '' + (!art?" steam-no-cover":"") + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + ratingBadge(id) + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span>'+steamTileStats(id)+'</button>'; }).join("") || '<p class="small">Ничего не найдено.</p>';
 }
 /* one act or series: a closed tile, or the open card with its games and, in edit mode, the controls */
 let serOpened = false;
@@ -1211,6 +1240,8 @@ function renderConsole(){
     document.getElementById('home-playing-count').textContent=String(active.length);
     document.getElementById('home-playing-empty').hidden=active.length!==0;
     activeStrip.hidden=active.length===0;
+    const next=(curA?.g||[]).filter(i=>GAMES[i]&&owned(i)&&!closed(i)&&st(i)!=='play');
+    document.getElementById('home-next').innerHTML='<div class="hub-home-head"><span>Следующее на пути</span></div>'+(next.length?next.map(i=>'<div class="rating-rank"><span>'+esc(GAMES[i].t)+'</span><button type="button" class="btn" data-sel="'+i+'">Открыть</button></div>').join(''):'<p class="small">Нет доступных следующих игр в текущем акте.</p>');
     const strip=document.getElementById('ps-strip'), left=strip.scrollLeft;
     const base=[...new Set([...candidates.filter(i=>st(i)==='play'),...(curA?curA.g:[]),...candidates])].filter(i=>GAMES[i]);
     const ids=base.includes(cxSel)||!GAMES[cxSel]?base:base.concat(cxSel);
@@ -1240,7 +1271,7 @@ function renderConsole(){
     document.getElementById("cx-spot").style.setProperty("--ink", g.ink);
     showHero(cxSel);
     document.getElementById("cx-spot-in").innerHTML = '<div class="eyebrow">' + esc(a ? (a.kicker || "Акт " + a.r) + " · " + a.t : "") + '</div>' +
-      '<h2 class="cx-title">' + esc(g.t) + '</h2><div class="cx-meta">' + meta.join("") + '</div><p class="cx-note">' + esc(g.note || "") + '</p>' + hook + '<div class="cx-actions">' + actions + '</div><button class="btn steam-game-button" data-steam-game="'+cxSel+'">Статистика и достижения Steam</button>';
+      '<h2 class="cx-title">' + esc(g.t) + '</h2><div class="cx-meta">' + meta.join("") + '</div><p class="cx-note">' + esc(g.note || "") + '</p>' + hook + '<div class="cx-actions">' + actions + '</div>'+ratingButton(cxSel)+'<button class="btn steam-game-button" data-steam-game="'+cxSel+'">Статистика и достижения Steam</button>';
     const title = g.ct || g.t;
     document.getElementById("cx-poster").innerHTML = '<div class="cover" style="--ink:' + g.ink + '"><img class="art" src="' + (art||'data:,') + '" alt=""><span class="yr">' + g.yr + '</span><span class="ct' + ctCls(title) + '">' + esc(title) + (g.sub ? '<small>' + esc(g.sub) + '</small>' : "") + '</span></div>';
   }
@@ -1282,6 +1313,9 @@ function renderConsole(){
   } else if (cxTab === "trophies"){
     document.getElementById("hub-profile-rank").textContent=cur[1]+" · "+total+" пройдено";
     document.getElementById("hub-profile-stats").innerHTML=[[total,"Пройдено"],[Object.keys(GAMES).filter(i=>st(i)==="play").length,"Играю"],[Object.keys(GAMES).filter(i=>st(i)==="drop").length,"Брошено"]].map(([n,l])=>'<div><strong>'+n+'</strong><span>'+l+'</span></div>').join("");
+    const ranked=Object.keys(ALL_GAMES).filter(i=>ratings[i]&&st(i)==='done'&&!(layout.del||[]).includes(i)).sort((a,b)=>ratings[b].score-ratings[a].score||ALL_GAMES[a].t.localeCompare(ALL_GAMES[b].t));
+    const unrated=Object.keys(ALL_GAMES).filter(i=>st(i)==='done'&&!ratings[i]&&!(layout.del||[]).includes(i));
+    document.getElementById('personal-ranking').innerHTML=(ranked.map(i=>'<div class="rating-rank"><span>'+esc(ALL_GAMES[i].t)+'</span>'+ratingButton(i)+'</div>').join('')||'<p class="small">Пока нет оценок.</p>')+(unrated.length?'<details><summary>Без оценки · '+unrated.length+'</summary>'+unrated.map(i=>'<div class="rating-rank"><span>'+esc(ALL_GAMES[i].t)+'</span>'+ratingButton(i)+'</div>').join('')+'</details>':'');
     const c = achContext(); let got = 0; const cnt = {platinum:0, gold:0, silver:0, bronze:0};
     const items = ACH.map(a => { const [v, m] = a.f(c), ok = v >= m, t = TIER[a.k] || "silver"; if (ok){ got++; cnt[t]++; } return {a, v, m, ok, t}; })
       .sort((p, q) => (q.ok - p.ok) || (q.v / q.m - p.v / p.m));
@@ -1312,13 +1346,14 @@ function doAction(b){
     if (st(id) === "done") delete state[id]; else state[id] = {s:"done", b:false, t:Date.now()};
     if (back) { layout.pro = layout.pro.filter(i => i !== id); saveLayout(); } else render();
     persist(id); return; }
-  const id = b.dataset.id, r = Object.assign({s:null, b:false}, rec(id));
+  const id = b.dataset.id, before=st(id), r = Object.assign({s:null, b:false}, rec(id));
   if (b.dataset.a === "buy"){ r.b = true; r.t = Date.now(); state[id] = r; if (GAMES[id].buy !== "DLC") recordPurchase(id); }
   else if (b.dataset.a === "unbuy"){ delete state[id]; undoPurchase(id); }
   else { r.s = r.s === b.dataset.s ? null : b.dataset.s; r.t = Date.now(); if (r.s || r.b) state[id] = r; else delete state[id]; }
-  render(); persist(id);
+  render(); persist(id); if(before!=="done"&&st(id)==="done")openRating(id);
 }
 document.getElementById("view-console").addEventListener("click", e => {
+  const rate=e.target.closest("[data-rate]");if(rate){openRating(rate.dataset.rate);return;}
   const sg=e.target.closest('[data-steam-game]');if(sg){openLibraryGame(sg.dataset.steamGame);return;}
   if(e.target.closest('#steam-refresh')){refreshSteam();return;}
   if(e.target.closest("#hub-manage")){hubManage=!hubManage;if(!hubManage){poolPick.clear();listTarget="";}renderList();return;}
@@ -1485,7 +1520,7 @@ function openLibraryGame(id){
   const g=ALL_GAMES[id];if(!g)return;hubDialogId=id;
   const m=steamTotal(id), p=playMin(id), a=steamSummary(id), app=steamAppId(id);
   const progress=a&&a.total>0?Math.round(a.unlocked/a.total*100):null;
-  document.getElementById('hub-dialog-content').innerHTML='<div class="hub-dialog-cover"><img alt="" src="'+esc(drawArt(id)||'data:,')+'"></div><h2>'+esc(g.t)+'</h2><p>'+esc(g.note||'')+'</p><p>'+esc(String(g.yr||''))+(g.h!=null?' · ≈ '+g.h+' ч':'')+'</p><section class="steam-game-stats"><h3>Steam</h3><div class="steam-stats-grid"><div><b>'+(m==null?'—':esc(fmtMin(m)))+'</b><small>Всего в игре</small></div><div><b>'+(p==null?'—':esc(fmtMin(p)))+'</b><small>С начала плана</small></div></div><h3>Достижения Steam</h3>'+(progress==null?'': '<b>'+a.unlocked+' / '+a.total+' · '+progress+'%</b><div class="steam-progress"><i style="width:'+progress+'%"></i></div>')+'<p class="small" id="steam-ach-note">'+(!app?'Нет привязки к Steam.':a&&a.status==='empty'?'Steam не вернул достижений.':a&&a.status!=='ok'?'Данные временно недоступны; при наличии покажем последнюю копию.':'Официальные достижения, отдельно от трофеев SnebaStar.')+'</p><div id="steam-ach-list"></div></section>';
+  document.getElementById('hub-dialog-content').innerHTML='<div class="hub-dialog-cover"><img alt="" src="'+esc(drawArt(id)||'data:,')+'"></div><h2>'+esc(g.t)+'</h2><p>'+esc(g.note||'')+'</p><p>'+esc(String(g.yr||''))+(g.h!=null?' · ≈ '+g.h+' ч':'')+'</p><div id="dialog-rating">'+ratingButton(id)+'</div><section class="steam-game-stats"><h3>Steam</h3><div class="steam-stats-grid"><div><b>'+(m==null?'—':esc(fmtMin(m)))+'</b><small>Всего в игре</small></div><div><b>'+(p==null?'—':esc(fmtMin(p)))+'</b><small>С начала плана</small></div></div><h3>Достижения Steam</h3>'+(progress==null?'': '<b>'+a.unlocked+' / '+a.total+' · '+progress+'%</b><div class="steam-progress"><i style="width:'+progress+'%"></i></div>')+'<p class="small" id="steam-ach-note">'+(!app?'Нет привязки к Steam.':a&&a.status==='empty'?'Steam не вернул достижений.':a&&a.status!=='ok'?'Данные временно недоступны; при наличии покажем последнюю копию.':'Официальные достижения, отдельно от трофеев SnebaStar.')+'</p><div id="steam-ach-list"></div></section>';
   const dialog=document.getElementById('hub-game-dialog');if(!dialog.open)dialog.showModal();
   if(app && a && a.updated) loadSteamAchievements(id,app);
   else if(app&&!a)document.getElementById('steam-ach-note').textContent='Достижения ещё не синхронизированы.';
@@ -1502,6 +1537,12 @@ async function loadSteamAchievements(id,app){
 }
 document.getElementById("hub-dialog-close").onclick=()=>document.getElementById("hub-game-dialog").close();
 document.getElementById("hub-dialog-manage").onclick=()=>{document.getElementById("hub-game-dialog").close();cxTab="list";listF=(layout.del||[]).includes(hubDialogId)?"del":listIds().includes(hubDialogId)?"all":"done";listQ="";hubManage=true;poolPick.clear();poolPick.add(hubDialogId);document.getElementById("list-q").value="";renderConsole();};
+document.getElementById('hub-game-dialog').addEventListener('click',e=>{const b=e.target.closest('[data-rate]');if(b)openRating(b.dataset.rate);});
+document.getElementById('rating-stars').addEventListener('click',e=>{const b=e.target.closest('[data-score]');if(b){ratingScore=Number(b.dataset.score);paintRatingStars();}});
+function finishRating(){document.getElementById('rating-dialog').close();render();const area=document.getElementById('dialog-rating');if(area&&hubDialogId)area.innerHTML=ratingButton(hubDialogId);}
+document.getElementById('rating-form').addEventListener('submit',e=>{e.preventDefault();if(readOnly||!ratingId||!ratingScore)return;const criteria={};document.querySelectorAll('#rating-criteria select').forEach(el=>{if(el.value)criteria[RATING_CRITERIA[Number(el.dataset.criterion)]]=Number(el.value);});ratings[ratingId]={score:ratingScore,criteria};persistRating(ratingId);finishRating();});
+document.getElementById('rating-skip').onclick=()=>document.getElementById('rating-dialog').close();
+document.getElementById('rating-clear').onclick=()=>{if(readOnly||!ratingId)return;delete ratings[ratingId];persistRating(ratingId);finishRating();};
 function bootArt(){ render(); }
 function registerSteamLibrary(data){
   if(!Array.isArray(data?.library)||!data.catalog)return;
@@ -1525,7 +1566,7 @@ try{registerSteamLibrary(JSON.parse(localStorage.getItem('plan-steam-catalog-v2:
 function missingSteamGames(){return [...Object.keys(state),...(layout.del||[]),...(layout.pro||[]),...customActs.flatMap(a=>a.g||[]),...Object.values(layout.edit||{}).flat()].some(id=>/^s\d+$/.test(id)&&!ALL_GAMES[id]);}
 loadLocal(); readOnly=missingSteamGames()||STEAM_FILE!=="steam.json"; applyCustomActs(); if (layoutMoved && !readOnly) { layoutMoved = false; saveLocal(); } bootArt();
 async function loadCloud(){
-  const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k === "acts" || k === "layout" || k.startsWith("p_"));
+  const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k === "acts" || k === "layout" || k.startsWith("p_") || k.startsWith("rating_"));
   if (!keys.length) return;
   const items = {};
   for (let i = 0; i < keys.length; i += 20) Object.assign(items, await cloudCall("getItems", keys.slice(i, i + 20)));
@@ -1536,6 +1577,7 @@ async function loadCloud(){
   const s = {};
   keys.forEach(k => { if (!k.startsWith("p_") || !items[k]) return; const id = k.slice(2); try { const v = JSON.parse(items[k]); if ((ALL_GAMES[id] || /^s\d+$/.test(id)) && (v.s || v.b)) s[id] = {s: v.s || null, b: !!v.b, t: Number(v.t) || 0}; } catch (e) {} });
   state = s;
+  const loadedRatings={}; keys.filter(k=>k.startsWith("rating_")).forEach(k=>{try{loadedRatings[k.slice(7)]=JSON.parse(items[k]);}catch(e){}}); ratings=cleanRatings(loadedRatings);
   if (items.meta) try { const v = JSON.parse(items.meta); meta = {base: Number(v.base) || 0, log: Array.isArray(v.log) ? v.log : [], prev: v.prev || null}; } catch (e) {}
   saveLocal();
 }
@@ -1597,7 +1639,7 @@ async function refreshSteam(){
 /* ---------- transfer code ---------- */
 function exportCode(){
   const by = f => Object.keys(state).filter(f);
-  return btoa(unescape(encodeURIComponent(JSON.stringify({d: by(i => state[i].s === "done"), p: by(i => state[i].s === "play"), x: by(i => state[i].s === "drop"), b: by(i => state[i].b), m: meta, a: customActs, l: layout}))));
+  return btoa(unescape(encodeURIComponent(JSON.stringify({d: by(i => state[i].s === "done"), p: by(i => state[i].s === "play"), x: by(i => state[i].s === "drop"), b: by(i => state[i].b), m: meta, a: customActs, l: layout, ratings}))));
 }
 function importCode(code){
   const v = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
@@ -1607,7 +1649,8 @@ function importCode(code){
   const put = (list, f) => (Array.isArray(list) ? list : []).forEach(i => { if (ALL_GAMES[i]) { state[i] = Object.assign({s: null, b: false, t: Date.now()}, state[i]); f(state[i]); touched.add(i); } });
   const touched = new Set();
   put(v.d, r => { r.s = "done"; }); put(v.p, r => { r.s = "play"; }); put(v.x, r => { r.s = "drop"; }); put(v.b, r => { r.b = true; });
-  if (!touched.size) throw new Error("empty");
+  const importedRatings=cleanRatings(v.ratings); Object.entries(importedRatings).forEach(([id,value])=>{ratings[id]=value;persistRating(id);});
+  if (!touched.size && !Object.keys(importedRatings).length) throw new Error("empty");
   if (v.m && typeof v.m === "object") { meta = {base: Number(v.m.base) || 0, log: Array.isArray(v.m.log) ? v.m.log : [], prev: v.m.prev || null}; persistMeta(); }
   render(); touched.forEach(persist);
   return touched.size;
