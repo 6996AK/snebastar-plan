@@ -1,4 +1,6 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#06070b;color:#f1efe9}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#06070b;color:#f1efe9}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>
+.profile-menu{display:grid;gap:8px;margin:16px 0 24px}.profile-menu button{display:grid;grid-template-columns:34px minmax(0,1fr) 18px;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left;background:#172439;border:1px solid #ffffff20;border-radius:14px;padding:13px 12px;color:#eaf1ff;width:100%;font:inherit;cursor:pointer}.profile-menu button>span{grid-row:1/3;font-size:23px;text-align:center;color:#e6c786}.profile-menu button>strong{font-size:15px;line-height:1.3}.profile-menu button>small{grid-column:2;font-size:12px;color:#aab8cf;margin-top:3px}.profile-menu button>i{grid-column:3;grid-row:1/3;font-size:24px;color:#aab8cf;font-style:normal}.profile-back{margin:0 0 14px}#cx-transfer .viewbar{display:none}#cx-transfer #share{margin:0}#cx-ratings .rating-rank{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}#cx-ratings .rating-rank>span{overflow-wrap:anywhere}#cx-ratings .rating-rank .btn{font-size:12px;max-width:145px;white-space:normal;padding:8px 10px}#recent-purchases-input{width:100%;box-sizing:border-box;min-height:110px;margin:10px 0;background:#111b2d;color:#eaf1ff;border:1px solid #43516a;border-radius:9px;padding:10px;font:inherit}#recent-purchases-panel[hidden]{display:none}#recent-purchases-panel a{color:#b9d9ff}
+</style></head><body>
 <title>План прохождения SnebaStar</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -452,7 +454,7 @@ button:disabled{opacity:.45;cursor:default}
   <section id="cx-list" hidden>
     <div class="cx-sec-h"><h2>Игры</h2><span class="act-meta">всё, что не отмечено в Прологе</span></div>
     <input id="list-q" class="list-q" type="search" placeholder="Найти игру" aria-label="Найти игру" autocomplete="off">
-    <div class="chips" id="list-chips"></div>
+    <div class="chips" id="list-chips"></div><section id="recent-purchases-panel" hidden class="rating-section"><p class="small">Последние 10 подтверждённых покупок, от самой новой к старой. Steam не передаёт даты покупки через API библиотеки.</p><details id="recent-purchases-edit"><summary>Обновить список покупок</summary><p class="small">Открой <a href="https://store.steampowered.com/account/history/" target="_blank" rel="noopener noreferrer">историю покупок Steam</a>. Вставь до 10 названий игр из библиотеки или Steam AppID, по одному на строку, начиная с последней покупки. DLC и пополнения кошелька не добавляй.</p><textarea id="recent-purchases-input" rows="6" aria-label="Последние покупки Steam" placeholder="Название игры или AppID"></textarea><div class="buy-row"><button type="button" class="btn" id="recent-purchases-save">Сохранить порядок</button></div><p class="small" id="recent-purchases-note" aria-live="polite"></p></details></section>
     <div class="hub-library-tools"><button type="button" class="btn" id="hub-manage" aria-pressed="false">Управление коллекцией</button><button type="button" class="btn" id="steam-refresh">↻ Загрузить данные Steam</button><span id="hub-library-count" class="small"></span><span class="small" id="steam-library-note" aria-live="polite"></span></div><div class="pool-bar" id="list-bar" hidden></div>
     <div class="ab-grid" id="list-grid"></div>
   </section>
@@ -473,15 +475,21 @@ button:disabled{opacity:.45;cursor:default}
     <ul class="store" id="cx-store-list"></ul>
   </section>
 
-  <section id="cx-trophies" hidden><div class="hub-profile"><div class="hub-avatar">S</div><div><h2>SnebaStar</h2><p id="hub-profile-rank"></p></div></div><div class="hub-profile-stats" id="hub-profile-stats"></div><section class="rating-section"><h3>Мой рейтинг игр</h3><div id="personal-ranking"></div></section><section class="rating-section"><details><summary>Игровая хронология</summary><div id="game-timeline"></div></details></section><section class="rating-section"><h3>Игровое время по месяцам</h3><div id="monthly-play"></div></section><div class="hub-subnav"><button class="btn active" data-tab="trophies">Трофеи</button><button class="btn" data-tab="prologue">Пролог</button><button class="btn" id="hub-share">Статус и перенос</button></div>
+  <section id="cx-trophies" hidden><div class="hub-profile"><div class="hub-avatar">S</div><div><h2>SnebaStar</h2><p id="hub-profile-rank"></p></div></div><div class="hub-profile-stats" id="hub-profile-stats"></div>
+    <div class="profile-menu" aria-label="Разделы профиля"><button type="button" data-tab="ratings"><span>★</span><strong>Мой рейтинг игр</strong><small id="profile-rating-count"></small><i>›</i></button><button type="button" data-tab="awards"><span>🏆</span><strong>Трофеи</strong><small id="profile-award-count"></small><i>›</i></button><button type="button" data-tab="stats"><span>▥</span><strong>Статистика</strong><small>Время и хронология</small><i>›</i></button><button type="button" data-tab="prologue"><span>◷</span><strong>Пролог</strong><small>Ранее пройденные игры</small><i>›</i></button><button type="button" data-tab="transfer"><span>⇄</span><strong>Статус и перенос</strong><small>Резервная копия и импорт</small><i>›</i></button></div>
+  </section>
+  <section id="cx-ratings" hidden><button type="button" class="btn profile-back" data-tab="trophies">‹ Профиль</button><div class="cx-sec-h"><h2>Мой рейтинг игр</h2></div><div id="personal-ranking"></div></section>
+  <section id="cx-stats" hidden><button type="button" class="btn profile-back" data-tab="trophies">‹ Профиль</button><div class="cx-sec-h"><h2>Статистика</h2></div><section class="rating-section"><h3>Игровое время по месяцам</h3><div id="monthly-play"></div></section><section class="rating-section"><details><summary>Игровая хронология</summary><div id="game-timeline"></div></details></section></section>
+  <section id="cx-transfer" hidden><button type="button" class="btn profile-back" data-tab="trophies">‹ Профиль</button><div class="cx-sec-h"><h2>Статус и перенос</h2></div>
     <div class="viewbar"><button class="btn share-btn" id="share-btn" type="button" aria-expanded="false" aria-controls="share">Статус и перенос</button></div>
 <div class="share" id="share" hidden><textarea id="share-text" rows="6" readonly aria-label="Статус для Telegram"></textarea><div class="buy-row"><button class="btn" id="share-copy" type="button">Скопировать</button><span class="small" id="share-note" aria-live="polite">Вставь текст в чат.</span></div><details class="xfer"><summary>Перенос отметок</summary><p class="small">Вставь код переноса и нажми «Загрузить». Отметки из кода добавятся к текущим. Кнопка «Показать мой код» даёт резервную копию.</p><textarea id="xfer-text" rows="4" aria-label="Код переноса" autocomplete="off" spellcheck="false"></textarea><div class="buy-row"><button class="btn" id="xfer-load" type="button">Загрузить</button><button class="btn" id="xfer-show" type="button">Показать мой код</button><span class="small" id="xfer-note" aria-live="polite"></span></div></details></div>
-<div class="cx-sec-h"><h2>Трофеи</h2></div>
+</section>
+  <section id="cx-awards" hidden><button type="button" class="btn profile-back" data-tab="trophies">‹ Профиль</button><div class="cx-sec-h"><h2>Трофеи</h2></div>
     <div class="panel" style="margin-top:14px"><div class="tro-sum" id="cx-tro-sum"></div></div>
     <ul class="tro" id="cx-tro"></ul>
   </section>
 
-  <section id="cx-prologue" hidden><div class="hub-subnav"><button class="btn" data-tab="trophies">Профиль</button><button class="btn active" data-tab="prologue">Пролог</button></div>
+  <section id="cx-prologue" hidden><button type="button" class="btn profile-back" data-tab="trophies">‹ Профиль</button>
     <div class="cx-sec-h"><h2>Пролог</h2><span class="act-meta" id="cx-pro-meta"></span></div>
     <p class="small" style="max-width:70ch">Всё, что пройдено до этого плана. Считается в ранг, но не в пятёрку до покупки. Нажми на обложку, чтобы снять отметку.</p>
     <ul class="mini" id="cx-pro"></ul>
@@ -690,7 +698,7 @@ const BASE_ACTS = ACTS.map(a => Object.assign({}, a, {g: a.g.slice()}));
 const RANKS = [[0,"Новичок"],[5,"Искатель"],[15,"Охотник"],[25,"Ветеран"],[40,"Мастер"],[55,"Легенда"],[75,"Прошедший путь"]];
 const ROLE = {main:["основная",""], side:["параллельно",""], short:["короткая",""], finish:["добить","r-finish"], coop:["кооп","r-coop"]};
 const KEY = "plan-snebastar-v1";
-let ratings = {}, timeline = {}; let state = {}, meta = {base:0, log:[]}, db = null, cloud = null, readOnly = false;
+let ratings = {}, timeline = {}, recentPurchases = []; let state = {}, meta = {base:0, log:[]}, db = null, cloud = null, readOnly = false;
 const openActs = new Set();
 const pending = {};
 
@@ -863,8 +871,8 @@ let dataReady = false;
 /* ---------- state ---------- */
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const nf = new Intl.NumberFormat("ru-RU");
-function loadLocal(){ try{ const j = JSON.parse(localStorage.getItem(KEY) || "{}"); if (j.state) state = j.state; if(j.ratings) ratings=cleanRatings(j.ratings); if(j.timeline) timeline=cleanTimeline(j.timeline); if (j.meta) meta = j.meta; if (Array.isArray(j.acts)) customActs = j.acts; if (j.layout && typeof j.layout === "object") layout = j.layout; }catch(e){} }
-function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify({state, meta, acts: customActs, layout, ratings, timeline})); }catch(e){} }
+function loadLocal(){ try{ const j = JSON.parse(localStorage.getItem(KEY) || "{}"); if (j.state) state = j.state; if(j.ratings) ratings=cleanRatings(j.ratings); if(j.timeline) timeline=cleanTimeline(j.timeline); if(j.recentPurchases) recentPurchases=cleanRecentPurchases(j.recentPurchases); if (j.meta) meta = j.meta; if (Array.isArray(j.acts)) customActs = j.acts; if (j.layout && typeof j.layout === "object") layout = j.layout; }catch(e){} }
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify({state, meta, acts: customActs, layout, ratings, timeline, recentPurchases})); }catch(e){} }
 function roman(n){ return [[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]].reduce((o, [v, r]) => { while (n >= v) { o += r; n -= v; } return o; }, ""); }
 /* the act layout: edits of built-in acts, custom acts and games deleted from the common list.
    A game in an act lives in GAMES and counts; a game outside acts moves to POOL and stops counting. */
@@ -1190,6 +1198,42 @@ function poolHtml(){
   return '<button class="ab create" type="button" data-go-list style="--tint:#f3b94d"><span class="create-plus" aria-hidden="true">+</span><span class="ab-t">Создать</span><span class="ab-m">' + n + ' ' + plural(n, "игра", "игры", "игр") + ' без акта</span></button>';
 }
 /* everything except games marked as finished in the prologue; deleted games only in their own filter */
+function cleanRecentPurchases(value){
+  return Array.isArray(value)?[...new Set(value.filter(n=>Number.isSafeInteger(n)&&n>0))].slice(0,10):[];
+}
+function recentPurchaseIds(){
+  const del=new Set(layout.del||[]), byApp=new Map();
+  for(const id of Object.keys(ALL_GAMES)){
+    const app=steamAppId(id);
+    if(app&&!del.has(id)&&!byApp.has(app))byApp.set(app,id);
+  }
+  return recentPurchases.map(app=>byApp.get(app)).filter(Boolean);
+}
+function persistRecentPurchases(){
+  saveLocal();if(!cloud)return;
+  const prev=pending.__recentPurchases||Promise.resolve(),value=JSON.stringify(recentPurchases);
+  pending.__recentPurchases=prev.then(()=>cloudCall('setItem','recent_purchases_v1',value)).catch(onWriteError);
+}
+function saveRecentPurchaseInput(){
+  const note=document.getElementById('recent-purchases-note');
+  if(readOnly||!steamData||!Array.isArray(steamData.library)){note.textContent='Дождись загрузки библиотеки Steam.';return;}
+  const rows=document.getElementById('recent-purchases-input').value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  if(!rows.length||rows.length>10){note.textContent='Укажи от 1 до 10 игр.';return;}
+  const norm=x=>String(x).trim().toLowerCase();
+  const owned=new Set(steamData.library.filter(r=>Array.isArray(r)&&steamData.catalog?.[r[0]]?.type==='game').map(r=>r[0]));
+  const names=new Map();
+  function add(name,app){if(!name||!owned.has(app))return;const key=norm(name);if(!names.has(key))names.set(key,new Set());names.get(key).add(app);}
+  for(const row of steamData.library)if(Array.isArray(row))add(row[1],row[0]);
+  for(const [id,g] of Object.entries(ALL_GAMES))add(g.t,steamAppId(id));
+  const result=[];
+  for(const line of rows){
+    const hits=/^\d+$/.test(line)?(owned.has(Number(line))?[Number(line)]:[]):[...(names.get(norm(line))||[])];
+    if(hits.length!==1){note.textContent='Не удалось однозначно найти игру: '+line+'. Укажи её AppID.';return;}
+    if(result.includes(hits[0])){note.textContent='Игра повторяется: '+line;return;}
+    result.push(hits[0]);
+  }
+  recentPurchases=result;persistRecentPurchases();document.getElementById('recent-purchases-edit').open=false;note.textContent='Порядок сохранён.';renderList();
+}
 function listIds(){
   const del = new Set(layout.del || []);
   return Object.keys(ALL_GAMES).filter(id => !del.has(id) && !(ALL_GAMES[id].pro && st(id) === "done"));
@@ -1197,10 +1241,10 @@ function listIds(){
 function renderList(){
   const del = layout.del || [], q = listQ.trim().toLowerCase(), byName = (p, r) => ALL_GAMES[p].t.localeCompare(ALL_GAMES[r].t, "ru");
   const all = listIds();
-  const pools = {all, fresh: all.filter(i => ALL_GAMES[i].steamImported && !actOf(i) && !st(i)), free: all.filter(i => !actOf(i)), acts: all.filter(i => actOf(i)), done: Object.keys(ALL_GAMES).filter(i=>!del.includes(i)&&st(i)==="done"), del: del.filter(i => ALL_GAMES[i])};
+  const pools = {all, fresh: recentPurchaseIds(), free: all.filter(i => !actOf(i)), acts: all.filter(i => actOf(i)), done: Object.keys(ALL_GAMES).filter(i=>!del.includes(i)&&st(i)==="done"), del: del.filter(i => ALL_GAMES[i])};
   [...poolPick].forEach(i => { if (!pools[listF].includes(i)) poolPick.delete(i); });
-  const ids = pools[listF].filter(i => !q || ALL_GAMES[i].t.toLowerCase().includes(q)).sort(byName);
-  const label = {all: "Все", fresh: "Новые Steam", free: "Без акта", acts: "В плане", done: "Пройденные", del: "Удалённые"};
+  const ids = pools[listF].filter(i => !q || ALL_GAMES[i].t.toLowerCase().includes(q)); if(listF!=="fresh")ids.sort(byName); const purchasePanel=document.getElementById("recent-purchases-panel");purchasePanel.hidden=listF!=="fresh"; if(listF==="fresh"&&!document.getElementById("recent-purchases-edit").open){document.getElementById("recent-purchases-input").value=recentPurchases.join("\n");} document.getElementById("recent-purchases-save").disabled=readOnly;
+  const label = {all: "Все", fresh: "Новое в Steam", free: "Без акта", acts: "В плане", done: "Пройденные", del: "Удалённые"};
   document.getElementById("list-chips").innerHTML = Object.keys(label).map(k => '<button class="chip" type="button" data-list-f="' + k + '" aria-pressed="' + (listF === k) + '">' + label[k] + ' <small>' + pools[k].length + '</small></button>').join("");
   const n = poolPick.size, ro = readOnly ? " disabled" : "";
   let bar;
@@ -1224,7 +1268,7 @@ function renderList(){
   if(steamData&&steamData.updated)syncNote.textContent='Steam · '+new Date(steamData.updated*1000).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
   document.getElementById("list-grid").innerHTML = ids.map(id => { const g = ALL_GAMES[id], on = poolPick.has(id), a = actOf(id), s = st(id), art = drawArt(id, true);
     const tag = a ? (a.series ? "Серия " + a.t : a.custom || !a.side ? "Акт " + a.r : a.t) : "без акта";
-    return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + (art||'data:,') + '" alt=""><span class="ct' + ctCls(g.t) + '' + (!art?" steam-no-cover":"") + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + ratingBadge(id) + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span>'+steamTileStats(id)+'</button>'; }).join("") || '<p class="small">Ничего не найдено.</p>';
+    return '<button class="cx-tile pool-tile" type="button" data-pick="' + id + '" aria-pressed="' + on + '" aria-label="' + esc(g.t) + '"><div class="cover" style="--ink:' + g.ink + '"><img class="art" loading="lazy" src="' + (art||'data:,') + '" alt=""><span class="ct' + ctCls(g.t) + '' + (!art?" steam-no-cover":"") + '">' + esc(g.t) + '</span>' + (on ? '<span class="okd">' + ICON.done + '</span>' : '') + ratingBadge(id) + '</div><span class="pool-t">' + esc(g.t) + '</span><span class="pool-a' + (a ? ' in' : '') + '">' + esc(tag) + (s === "done" ? " · пройдена" : s === "drop" ? " · брошена" : s === "play" ? " · играю" : "") + '</span>'+steamTileStats(id)+'</button>'; }).join("") || (listF==='fresh'&&!recentPurchases.length?'<p class="small">Список покупок пока не заполнен. Добавь его из истории Steam.</p>':'<p class="small">Ничего не найдено.</p>');
 }
 /* one act or series: a closed tile, or the open card with its games and, in edit mode, the controls */
 let serOpened = false;
@@ -1259,8 +1303,8 @@ function renderConsole(){
   document.getElementById("cx-rank-sub").textContent = nxt ? "до «" + nxt[1] + "» ещё " + (nxt[0] - total) : "весь путь пройден";
   const ring = document.getElementById("cx-ring"); ring.style.setProperty("--p", nxt ? Math.round((total - cur[0]) / (nxt[0] - cur[0]) * 100) : 100);
   ring.querySelector("span").textContent = total;
-  root.dataset.hubTab = cxTab; document.querySelectorAll(".cx-tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === cxTab || (cxTab === "series" && b.dataset.tab === "path") || (cxTab === "prologue" && b.dataset.tab === "trophies"))));
-  ["home","path","series","list","store","trophies","prologue"].forEach(t => { document.getElementById("cx-" + t).hidden = t !== cxTab; });
+  root.dataset.hubTab = cxTab; document.querySelectorAll(".cx-tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === cxTab || (cxTab === "series" && b.dataset.tab === "path") || (["prologue","ratings","awards","stats","transfer"].includes(cxTab) && b.dataset.tab === "trophies"))));
+  ["home","path","series","list","store","trophies","prologue","ratings","awards","stats","transfer"].forEach(t => { document.getElementById("cx-" + t).hidden = t !== cxTab; });
   if (!cxSel || !GAMES[cxSel] || GAMES[cxSel].pro) cxSel = cxDefaultSel();
   const main = ACTS.filter(x => !x.side), curA = main.find(x => x.g.some(i => !closed(i)));
   if (cxOpen === null) cxOpen = new Set([ACTS.indexOf(curA || main[0])]);
@@ -1354,10 +1398,18 @@ function renderConsole(){
   } else if (cxTab === "trophies"){
     document.getElementById("hub-profile-rank").textContent=cur[1]+" · "+total+" пройдено";
     document.getElementById("hub-profile-stats").innerHTML=[[total,"Пройдено"],[Object.keys(GAMES).filter(i=>st(i)==="play").length,"Играю"],[Object.keys(GAMES).filter(i=>st(i)==="drop").length,"Брошено"]].map(([n,l])=>'<div><strong>'+n+'</strong><span>'+l+'</span></div>').join("");
-    renderHistory(); renderMonthly();
+    const rated=Object.keys(ALL_GAMES).filter(i=>ratings[i]&&st(i)==='done'&&!(layout.del||[]).includes(i)).length;
+    document.getElementById('profile-rating-count').textContent=rated+' оценено';
+    const context=achContext();document.getElementById('profile-award-count').textContent=ACH.filter(a=>{const [v,m]=a.f(context);return v>=m;}).length+' из '+ACH.length;
+  } else if (cxTab === "stats"){
+    renderHistory();renderMonthly();
+  } else if (cxTab === "transfer"){
+    document.getElementById("share").hidden=false;document.getElementById("share-text").value=statusText();document.getElementById("share-btn").setAttribute("aria-expanded","true");
+  } else if (cxTab === "ratings"){
     const ranked=Object.keys(ALL_GAMES).filter(i=>ratings[i]&&st(i)==='done'&&!(layout.del||[]).includes(i)).sort((a,b)=>ratings[b].score-ratings[a].score||ALL_GAMES[a].t.localeCompare(ALL_GAMES[b].t));
     const unrated=Object.keys(ALL_GAMES).filter(i=>st(i)==='done'&&!ratings[i]&&!(layout.del||[]).includes(i));
     document.getElementById('personal-ranking').innerHTML=(ranked.map(i=>'<div class="rating-rank"><span>'+esc(ALL_GAMES[i].t)+'</span>'+ratingButton(i)+'</div>').join('')||'<p class="small">Пока нет оценок.</p>')+(unrated.length?'<details><summary>Без оценки · '+unrated.length+'</summary>'+unrated.map(i=>'<div class="rating-rank"><span>'+esc(ALL_GAMES[i].t)+'</span>'+ratingButton(i)+'</div>').join('')+'</details>':'');
+  } else if (cxTab === "awards"){
     const c = achContext(); let got = 0; const cnt = {platinum:0, gold:0, silver:0, bronze:0};
     const items = ACH.map(a => { const [v, m] = a.f(c), ok = v >= m, t = TIER[a.k] || "silver"; if (ok){ got++; cnt[t]++; } return {a, v, m, ok, t}; })
       .sort((p, q) => (q.ok - p.ok) || (q.v / q.m - p.v / p.m));
@@ -1400,7 +1452,7 @@ document.getElementById("view-console").addEventListener("click", e => {
   const sg=e.target.closest('[data-steam-game]');if(sg){openLibraryGame(sg.dataset.steamGame);return;}
   if(e.target.closest('#steam-refresh')){refreshSteam();return;}
   if(e.target.closest("#hub-manage")){hubManage=!hubManage;if(!hubManage){poolPick.clear();listTarget="";}renderList();return;}
-  if(e.target.closest("#hub-share")){document.getElementById("share-btn").click();return;}
+  if(e.target.closest("#recent-purchases-save")){saveRecentPurchaseInput();return;}
   const tab = e.target.closest("[data-tab]"); if (tab){ cxTab = tab.dataset.tab; if (cxTab === "series") pickSeries(); try { localStorage.setItem("plan-cx-tab", cxTab); } catch (er) {} renderConsole(); scrollTo(0,0); return; }
   const hk = e.target.closest("[data-hook-ok]");
   if (hk){ if (!readOnly){ hookOk = hookOk.concat(hk.dataset.hookOk); persistHook(); renderConsole(); } return; }
@@ -1609,7 +1661,7 @@ try{registerSteamLibrary(JSON.parse(localStorage.getItem('plan-steam-catalog-v2:
 function missingSteamGames(){return [...Object.keys(state),...(layout.del||[]),...(layout.pro||[]),...customActs.flatMap(a=>a.g||[]),...Object.values(layout.edit||{}).flat()].some(id=>/^s\d+$/.test(id)&&!ALL_GAMES[id]);}
 loadLocal(); readOnly=missingSteamGames()||STEAM_FILE!=="steam.json"; applyCustomActs(); if (layoutMoved && !readOnly) { layoutMoved = false; saveLocal(); } bootArt();
 async function loadCloud(){
-  const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k === "acts" || k === "layout" || k.startsWith("p_") || k.startsWith("rating_") || k.startsWith("history_"));
+  const keys = (await cloudCall("getKeys")).filter(k => k === "meta" || k === "acts" || k === "layout" || k === "recent_purchases_v1" || k.startsWith("p_") || k.startsWith("rating_") || k.startsWith("history_"));
   if (!keys.length) return;
   const items = {};
   for (let i = 0; i < keys.length; i += 20) Object.assign(items, await cloudCall("getItems", keys.slice(i, i + 20)));
@@ -1621,6 +1673,7 @@ async function loadCloud(){
   keys.forEach(k => { if (!k.startsWith("p_") || !items[k]) return; const id = k.slice(2); try { const v = JSON.parse(items[k]); if ((ALL_GAMES[id] || /^s\d+$/.test(id)) && (v.s || v.b)) s[id] = {s: v.s || null, b: !!v.b, t: Number(v.t) || 0}; } catch (e) {} });
   state = s;
   const loadedRatings={}; keys.filter(k=>k.startsWith("rating_")).forEach(k=>{try{loadedRatings[k.slice(7)]=JSON.parse(items[k]);}catch(e){}}); ratings=cleanRatings(loadedRatings); const loadedHistory={}; keys.filter(k=>k.startsWith("history_")).forEach(k=>{try{loadedHistory[k.slice(8)]=JSON.parse(items[k]);}catch(e){}}); timeline=cleanTimeline(loadedHistory);
+  if (items.recent_purchases_v1) try { recentPurchases=cleanRecentPurchases(JSON.parse(items.recent_purchases_v1)); } catch(e) {} 
   if (items.meta) try { const v = JSON.parse(items.meta); meta = {base: Number(v.base) || 0, log: Array.isArray(v.log) ? v.log : [], prev: v.prev || null}; } catch (e) {}
   saveLocal();
 }
@@ -1682,7 +1735,7 @@ async function refreshSteam(){
 /* ---------- transfer code ---------- */
 function exportCode(){
   const by = f => Object.keys(state).filter(f);
-  return btoa(unescape(encodeURIComponent(JSON.stringify({d: by(i => state[i].s === "done"), p: by(i => state[i].s === "play"), x: by(i => state[i].s === "drop"), b: by(i => state[i].b), m: meta, a: customActs, l: layout, ratings, timeline}))));
+  return btoa(unescape(encodeURIComponent(JSON.stringify({d: by(i => state[i].s === "done"), p: by(i => state[i].s === "play"), x: by(i => state[i].s === "drop"), b: by(i => state[i].b), m: meta, a: customActs, l: layout, ratings, timeline, recentPurchases}))));
 }
 function importCode(code){
   const v = JSON.parse(decodeURIComponent(escape(atob(code.trim()))));
@@ -1694,7 +1747,9 @@ function importCode(code){
   put(v.d, r => { r.s = "done"; }); put(v.p, r => { r.s = "play"; }); put(v.x, r => { r.s = "drop"; }); put(v.b, r => { r.b = true; });
   const importedRatings=cleanRatings(v.ratings); Object.entries(importedRatings).forEach(([id,value])=>{ratings[id]=value;persistRating(id);});
   const importedHistory=cleanTimeline(v.timeline); Object.entries(importedHistory).forEach(([id,rows])=>{timeline[id]=mergeHistory(timeline[id]||[],rows);persistHistory(id);});
-  if (!touched.size && !Object.keys(importedRatings).length && !Object.keys(importedHistory).length) throw new Error("empty");
+  const importedPurchases=cleanRecentPurchases(v.recentPurchases);
+  if (!touched.size && !Object.keys(importedRatings).length && !Object.keys(importedHistory).length && !importedPurchases.length) throw new Error("empty");
+  if(importedPurchases.length){recentPurchases=importedPurchases;persistRecentPurchases();}
   if (v.m && typeof v.m === "object") { meta = {base: Number(v.m.base) || 0, log: Array.isArray(v.m.log) ? v.m.log : [], prev: v.m.prev || null}; persistMeta(); }
   render(); touched.forEach(persist);
   return touched.size;
